@@ -1,0 +1,139 @@
+﻿@model WebApplication_StockDataFixx.Models.Domain.UserTb
+
+@{
+    ViewBag.Title = "Login";
+    Layout = null; // Tidak menggunakan layout
+}
+
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #002B6A;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
+    .login-container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .login-image img {
+        margin-top: 30px;
+        width: 600px;
+        height: 600px;
+    }
+
+    .login-card {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-30%);
+        background-color: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(7px);
+        padding: 20px;
+        font-weight: 800;
+        border-radius: 15px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .login-brand {
+
+        display: flex;
+        justify-content: center;
+        margin-bottom: -80px;
+        margin-top: -0px;
+        text-align: center;
+    }
+
+        .login-brand h1 {
+            font-size: 50px;
+            color: white;
+            font-weight: 500;
+            font-family: "Arial Black";
+            margin-top: 60px;
+        }
+
+            .login-brand h3{
+            font-size: 40px;
+            color: white;
+            font-weight: 500;
+            font-family: "Arial Black";
+            }
+
+    h2 {
+        text-align: center;
+    }
+
+    /* Custom style for input elements */
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px; /* Rounded corners for input elements */
+        font-size: 16px;
+    }
+
+    input[type="submit"] {
+        background-color: #002B6A;
+        color: #ffffff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px; /* Rounded corners for the button */
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+        input[type="submit"]:hover {
+            background-color: #002B6A;
+        }
+
+    p {
+        color: #ff0000;
+        text-align: center;
+    }
+</style>
+
+<div class="login-brand">
+    <h1>Panasonic<br />Stock Data App &copy;2023</h1>
+</div>
+
+
+<div class="login-image">
+    <img src="~/images/img/LoginScreen.png"/>
+</div>
+
+
+
+<div class="login-card">
+    <h2>LOGIN</h2>
+    @using (Html.BeginForm())
+    {
+        @Html.ValidationSummary(true)
+
+        <div>
+            @Html.LabelFor(model => model.UserId)
+            @Html.TextBoxFor(model => model.UserId, new { @class = "input-rounded" }) 
+        </div>
+
+        <div>
+            @Html.LabelFor(model => model.Password)
+            @Html.PasswordFor(model => model.Password, new { @class = "input-rounded" }) 
+        </div>
+
+        <input type="submit" value="Login" />
+        <p>@ViewBag.ErrorMessage</p>
+    }
+</div>
+
+

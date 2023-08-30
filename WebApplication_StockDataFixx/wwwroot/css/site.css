@@ -1,0 +1,675 @@
+﻿html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+/*Table */
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 2rem 0;
+    width: 100%;
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
+
+th, td {
+    padding: 1rem 1.5rem;
+    text-align: left;
+}
+
+th {
+    background-color: #1D5D9B; /* header background color */
+    color: #fff; /* header text color */
+    font-weight: 600;
+}
+
+tr {
+    padding: 0;
+}
+
+td {
+    vertical-align: middle;
+}
+
+tr:nth-child(even) td {
+    background-color: rgba(0, 0, 0, .075); /* striped background color */
+}
+
+@media screen and (max-width: 640px) {
+    thead, th {
+        display: none;
+    }
+
+    tr, td {
+        display: block;
+    }
+
+    tr {
+        border: 1px solid rgba(0, 0, 0,.15);
+        margin-bottom: 2rem;
+    }
+
+        tr:last-child {
+            margin-bottom: 0;
+        }
+
+        tr:nth-child(even) td {
+            background-color: transparent;
+        }
+
+    td {
+        clear: both;
+        text-align: right;
+    }
+
+        td:before {
+            content: attr(data-label)': ';
+            float: left;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+}
+
+/*Conten*/
+
+/*End Content*/
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
+
+:root {
+    --header-height: 3rem;
+    --nav-width: 200px;
+    --first-color: #1D5D9B;
+    --first-color-light: #F7F6FB;
+    --white-color: #F7F6FB;
+    --blue-color: #001C30;
+    --body-font: Verdana;
+    --normal-font-size: 1rem;
+    --z-fixed: 100
+}
+
+*, ::before, ::after {
+    box-sizing: border-box
+}
+
+body {
+    position: relative;
+    margin: var(--header-height) 0 0 0;
+    padding: 0 1rem;
+    font-family: var(--body-font);
+    font-size: var(--normal-font-size);
+    transition: .5s
+}
+
+a {
+    text-decoration: none;
+    color: darkgray;
+}
+
+.header {
+    width: 100%;
+    height: var(--header-height);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    background-color: var(--blue-color);
+    z-index: var(--z-fixed);
+    transition: .5s
+}
+
+.header_toggle {
+    color: var(--first-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+}
+
+.header_img {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    border-radius: 50%;
+    overflow: hidden
+}
+
+    .header_img img {
+        width: 40px
+    }
+
+.l-navbar {
+    position: fixed;
+    top: 0;
+    left: -100%; /* Change this value to -100% to hide the navbar by default */
+    width: var(--nav-width);
+    height: 100vh;
+    background-color: var(--first-color);
+    padding: .5rem 1rem 0 0;
+    transition: .5s;
+    z-index: var(--z-fixed);
+}
+
+.l-navbar-active {
+    left: 0; /* Show the navbar when the class is active */
+}
+.hamburger {
+    display: block;
+    cursor: pointer;
+    padding: 10px;
+    position: relative;
+    transition: left 0.5s;
+    margin-left: 0px;
+}
+
+.hamburger-container {
+    position: relative;
+    transition: left 0.5s;
+}
+
+.l-navbar-active + .hamburger-container {
+    left: 200px; /* Move the container to the right by 200px */
+    transition: left 0.5s;
+}
+
+.line {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 6px 0;
+}
+
+
+/*.header-bar p{
+    font-size: 18px;
+    color: white;
+    line-height: 70px;
+    text-align: center;
+    background: #063146;
+    user-select: none;
+}*/
+.nav {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden
+}
+
+.nav_logo{
+    display: grid;
+    grid-template-columns: max-content max-content;
+    align-items: center;
+    column-gap: 1rem;
+    padding: .5rem 0 .5rem 1.5rem;
+    text-decoration: none;
+}
+.nav_link {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    align-items: center;
+    column-gap: 1rem;
+    padding: .5rem 0 .5rem 1.5rem;
+    text-decoration: none;
+}
+
+.nav_logo {
+    margin-bottom: 2rem
+}
+
+.nav_logo-icon {
+    font-size: 1.25rem;
+    color: var(--white-color)
+}
+
+.nav_logo-name {
+    color: var(--white-color);
+    font-weight: 700
+}
+
+.nav-logout {
+    position: relative;
+    color: var(--first-color-light);
+    margin-bottom: 1.5rem;
+    transition: .3s;
+    text-decoration: none;
+}
+.nav-logout:hover {
+    color: var(--white-color)
+}
+
+.nav_link {
+    position: relative;
+    color: var(--first-color-light);
+    margin-bottom: 1.5rem;
+    transition: .3s; 
+    text-decoration: none;
+}
+
+    .nav_link:hover {
+        color: var(--white-color)
+    }
+
+.nav_icon {
+    font-size: 1.25rem
+}
+
+.nav-icon:active {
+    color: var(--white-color);
+}
+
+.show {
+    left: 0
+}
+
+.cont-body {
+    margin-left: -0%;
+}
+
+.content-container {
+    transition: margin-left 0.5s;
+}
+
+.l-navbar-active + .content-container {
+    margin-left: var(--nav-width);
+    transition: margin-left 0.5s;
+}
+
+
+
+/*.body-pd {
+    padding-left: calc(var(--nav-width) + 1rem)
+}*/
+
+.active {
+    color: var(--white-color);
+}
+
+    .active::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        width: 2px;
+        height: 32px;
+        background-color: var(--white-color)
+    }
+
+.height-100 {
+    height: 100vh
+}
+
+/*Card Sidebar*/
+
+.card {
+    border-radius: 100px;
+    border: 5px;
+    border-color: black;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    background-color: #FFE0E0;
+    position: absolute;
+    width: 200px;
+    height: 280px;
+    left: 10px;
+    top: 50px;
+    
+}
+.card-sidebar img {
+    display: block;
+    margin-top: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 180px;
+}
+
+
+@media (max-width: 767px) {
+    .card-img-top {
+        display: none;
+    }
+}
+
+.card:hover {
+    box-shadow: 0 6px 12px 0 rgba(0,0,0,0.2);
+}
+
+.card-img-top {
+    display: block;
+    margin-top: 15px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.card-text {
+    margin-left: 10px;
+    color: #1D5D9B;
+    margin-top: 20px;
+    font-weight: 700;
+}
+
+.upload-form {
+    width: 800px;
+    height: 550px;
+    margin: 20px;
+}
+
+.header-upload p {
+    margin: 0;
+}
+
+
+.drop-zone {
+    border: 2px dashed #1D5D9B;
+    border-radius: 20px;
+    width: 350px;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #D1D1EE;
+    margin-top: 90px;
+    margin-bottom: 10px;
+}
+
+    .drop-zone p {
+        margin: 0;
+        font-size: 14px;
+        color: #888;
+    }
+
+    .drop-zone img {
+        justify-content: center;
+        width: 120px;
+        align-items: center;
+    }
+    .drop-zone p.drag-text {
+        font-size: 14px;
+        color: #888;
+    }
+.form-group {
+    margin-bottom: 15px;
+}
+
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.popup-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 30px;
+    width: 450px;
+    height: 320px; 
+    text-align: center;
+    border-radius: 20px;
+
+}
+
+.close-button {
+    margin-top: 5px;
+    padding: 10px 15px;
+    background-color: #1D5D9B;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    color: whitesmoke;
+}
+
+
+/* Untuk radio button yang belum dipilih */
+input[type="radio"] {
+    -webkit-appearance: none; /* Menghilangkan tampilan default radio button */
+    -moz-appearance: none;
+    appearance: none;
+    border: 2px dashed #1D5D9B; /* Mengatur border radio button */
+    border-radius: 50%; /* Membuat radio button berbentuk lingkaran */
+    width: 19px; /* Mengatur lebar radio button */
+    height: 19px; /* Mengatur tinggi radio button */
+    background-color: #D1D1EE;
+}
+
+    /* Untuk radio button yang dipilih */
+    input[type="radio"]:checked {
+        background-color: #1D5D9B; /* Mengubah warna latar belakang radio button */
+    }
+
+.storage input{
+    margin-right: 8px;
+}
+.storage label {
+    margin-right: 10px;
+    margin-top: -10px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1D5D9B;
+}
+.storage h5 {
+    font-weight: 800;
+    color: #1D5D9B;
+}
+
+
+
+
+
+.profile {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+   
+}
+.profile h3{
+    margin-top: 15px;
+    margin-bottom: 25px;
+    font-size: 15px;
+}
+.profile img{
+    margin-top: 15px;
+}
+
+.title-header h3 {
+  color: white;
+  font-size: 18px;
+  margin-top: 5px;
+}
+
+@media screen and (max-width: 640px) {
+    .profile-image {
+        display: none;
+    }
+}
+
+
+.nav-bottom-brand {
+    margin-left: 20px;
+    margin-bottom: 8px;
+}
+.nav-bottom-brand h3 {
+    font-size: 20px;
+    color: white;
+    font-weight: 500;
+    font-family: "Arial Black";
+}
+
+
+.select-month {
+    display: inline-block;
+    margin-left: 10px;
+    background-color: #1D5D9B;
+    border-radius: 5px;
+    padding: 5px;
+    position: relative;
+}
+
+    .select-month label {
+        margin-right: 5px;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .select-month select {
+        font-size: 14px;
+        border: none;
+        background-color: #1D5D9B;
+        color: #D1D1EE;
+        outline: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        cursor: pointer;
+        padding-right: 20px;
+    }
+    /* Dropdown icon style */
+    .select-month::after {
+        content: '\25BC'; /* Unicode karakter untuk panah bawah */
+        position: absolute;
+        top: 50%;
+        right: 6px;
+        transform: translateY(-50%);
+        pointer-events: none;
+        color: white;
+        font-size: 12px;
+    }
+
+    /* Hover effect */
+    .select-month select:hover {
+        background-color: #1D5D9B;
+    }
+
+    /* Focus effect */
+    .select-month select:focus {
+        box-shadow: 0 0 3px #007bff;
+    }
+
+.header-upload p {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 10px;
+    display: inline; /* Mengatur elemen menjadi inline */
+    margin: 0;
+    margin-left: 20px;
+    margin-top: 20px;
+    color: #1D5D9B;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+
+.btn-upload {
+    padding: 8px 13px;
+    background-color: #1D5D9B;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 15px;
+}
+
+.over-img {
+    justify-content: center;
+}
+
+.btn-zone {
+    margin-top: 10px;
+    justify-content: center;
+    margin-left: 80px;
+}
+    .btn-zone label {
+        width: 80px;
+        height: 35px;
+        font-size: 14px;
+        font-weight: 600;
+        background-color: #1D5D9B;
+        border: 1px solid #1D5D9B;
+        color: #fff;
+    }
+        .btn-zone label:hover {
+            background-color: #888;
+            color: #1D5D9B;
+        }
+    .btn-zone button {
+        width: 80px;
+        height: 35px;
+        font-size: 13px;
+        margin-top: -5px;
+        font-weight: 700;
+        color: #1D5D9B;
+        border: 1px solid #1D5D9B;
+    }
+        .btn-zone button:hover {
+            background-color: #565682;
+            color: #fff;
+            border: 1px solid #1D5D9B;
+        }
+
+.li-file ul {
+    list-style-type: none; 
+    padding: 0;
+}
+.li-file li {
+    font-size: 13px;
+    font-weight: 500;
+}
+.li-file h5 {
+    font-weight: 800;
+    font-size: 17px;
+    color: #1D5D9B;
+}
+
+.chart-card {
+    width: 320px;
+    height: 345px;
+    margin-bottom: -100px;
+    margin-right: 3px;
+}
+
+.card-body {
+    margin-bottom: -100px;
+}
+
+.input-rounded{
+    padding: 8px 20px;
+    border-radius: 15px;
+    color: #001C30;
+    border-color: #001C30;
+}

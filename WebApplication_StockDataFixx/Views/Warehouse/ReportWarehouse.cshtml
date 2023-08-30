@@ -1,0 +1,218 @@
+﻿
+@{
+    ViewBag.Title = "Warehouse";
+    Layout = "~/Views/Shared/_LayoutWarehouse.cshtml";
+}
+@model List<WebApplication_StockDataFixx.Models.Domain.WarehouseItem>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>@ViewBag.Title</title>
+
+    <script type="text/javascript"> 
+        var js = jQuery.noConflict(true);
+        js(document).ready(function () {
+            js('#data-table').DataTable({
+                "paging": false // ngilangi fitur pagination
+            });
+
+            var selectedTypeParam = new URLSearchParams(window.location.search).get('selectedType');
+
+            // Set opsi dropdown sesuai dengan nilai selectedTypeParam
+            if (selectedTypeParam === "VMI") {
+                document.getElementById("selectedType").value = "VMI";
+                updateReportTitle("VMI"); // Tambahkan pemanggilan fungsi untuk mengatur judul
+            } else if (selectedTypeParam === "NON_VMI") {
+                document.getElementById("selectedType").value = "NON_VMI";
+                updateReportTitle("NON_VMI"); // Tambahkan pemanggilan fungsi untuk mengatur judul
+            }
+        });
+
+
+        function filterDataByMonth() {
+            var selectedMonth = document.getElementById("selectedMonth").value;
+            var selectedType = document.getElementById("selectedType").value;
+
+            var url = "/Warehouse/ReportWarehouse";
+
+            if (selectedType === "Pilih_Tipe") {
+                // If no type is selected, only pass the selected month as a query parameter
+                url += "?selectedMonth=" + encodeURIComponent(selectedMonth);
+            } else {
+                // If a type is selected, pass both the selected month and type as query parameters
+                url += "?selectedMonth=" + encodeURIComponent(selectedMonth) + "&selectedType=" + encodeURIComponent(selectedType);
+            }
+
+            // Redirect to the generated URL
+            window.location.href = url;
+        }
+
+        // ...
+        function filterData() {
+            // Get the selected type from the dropdown
+            var selectedType = document.getElementById("selectedType").value;
+
+            // Get the AccessPlant value from the ViewBag
+            var accessPlantValue = "@(ViewBag.AccessPlant)";
+
+            // Redirect to the ReportWarehouse action with the selected type and AccessPlant as query parameters
+            window.location.href = "/Warehouse/ReportWarehouse?selectedType=" + encodeURIComponent(selectedType) + "&accessPlant=" + encodeURIComponent(accessPlantValue);
+        }
+        // ...
+
+
+        function downloadExcel() {
+            // Dapatkan nilai input nomor seri
+            var serialNoInput = document.getElementById("serialNoInput").value;
+
+            // Redirect to the Warehouse/DownloadExcel action with the serial number as a query parameter
+            window.location.href = "/Warehouse/DownloadExcel?serialNo=" + encodeURIComponent(serialNoInput);
+        }
+
+        function updateReportTitle(selectedType) {
+            var titleElement = document.getElementById("reportTitle");
+            if (titleElement) {
+                if (selectedType === "VMI") {
+                    titleElement.textContent = "Report Data @ViewBag.Title VMI";
+                } else if (selectedType === "NON_VMI") {
+                    titleElement.textContent = "Report Data @ViewBag.Title Non VMI";
+                }
+            }
+        }
+
+        function validateSerialNumber() {
+            var serialNoInput = document.getElementById("serialNoInput").value;
+            if (!serialNoInput) {
+                alert("Please enter a serial number before downloading the file.");
+            } else {
+                // Serial number is entered, proceed with the download
+                downloadExcel();
+            }
+        }
+
+    </script>
+
+</head>
+<body>
+
+    <div class="container-fluid p-0">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 id="reportTitle" class="h3 mb-0"><strong>Report Data @ViewBag.Title</strong></h1>
+
+
+            <div class="select-month" style="margin-left: 10px;">
+                <label style="margin-right: 5px;">Pilih Bulan :</label>
+                <select id="selectedMonth" onchange="filterDataByMonth()">
+                    <option value="Latest Update">Bulan ini (sedang berlangsung)</option>
+                    @foreach (var month in ViewBag.LastUpload)
+                    {
+                        <option value="@month.ToString("yyyy-MM")">@month.ToString("MMMM yyyy")</option>
+                    }
+                </select>
+            </div>
+
+            <div class="select-month" style="margin-left: 10px;">
+                <label style="margin-right: 5px;">Pilih Tipe :</label>
+                <select id="selectedType" onchange="filterData()">
+                    <option value="Pilih_Tipe">ALL</option>
+                    <option value="VMI">VMI</option>
+                    <option value="NON_VMI">NON VMI</option>
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+    <br />
+
+  
+
+    <div class="row  mb-10" style="margin-top:60px;">
+        <div class="col-md-12">
+            @*<div class="card w-100 h-100">*@
+            @*  <div class="card-body">*@
+            <table class="display" width="100%" height="100%" id="data-table">
+                <thead>
+                    <tr>
+                        <th>Serial Number</th>
+                        <th>Tag No</th>
+                        <th>Material</th>
+                        <th>Material Description</th>
+                        <th>Actual Qty</th>
+                        <th>Unit</th>
+                        <th>StockType</th>
+                        <th>Vendor Code</th>
+                        <th>Vendor Name</th>
+                        <th>Issue Planner</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Serial Number</th>
+                        <th>Tag No</th>
+                        <th>Material</th>
+                        <th>Material Description</th>
+                        <th>Actual Qty</th>
+                        <th>Unit</th>
+                        <th>Stock Type</th>
+                        <th>Vendor Code</th>
+                        <th>Vendor Name</th>
+                        <th>Issue Planner</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.SerialNo</td>
+                                <td>@item.TagNo</td>
+                                <td>@item.Material</td>
+                                <td>@item.MaterialDesc</td>
+                                <th>@(item.ActualQty.ToString())</th>
+                                <td>@item.Unit</td>
+                                <td>@item.StockType</td>
+                                <td>@(item.VendorCode != "-" ? item.VendorCode : "-")</td>
+                                <td>@(item.VendorName != "-" ? item.VendorName : "-")</td>
+                                <td>@item.IssuePlanner</td>
+                            </tr>
+                        }
+                    }
+                  
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br />
+    <div style="margin-bottom: 5px;"></div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card text-center w-100" style="margin-left: -20px; height: 170px; background-color: dimgray;">
+                    <h1 class="m-0" style="color: whitesmoke; font-weight: 700; font-family: Arial;">Download File</h1>
+                    <div class="card-body d-flex justify-content-center align-items-center" style="margin-top: -90px;">
+                        <div class="btn-dow">
+                            <input type="text" class="input-rounded" id="serialNoInput" placeholder="Enter Serial Number">
+                            <button class="btn btn-primary" onclick="validateSerialNumber()">Download file .xls</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <div style="margin-bottom: 50px;"></div> 
+    
+ 
+</body>
+</html>
+
+

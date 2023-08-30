@@ -1,0 +1,52 @@
+﻿@model List<WebApplication_StockDataFixx.Models.Domain.WarehouseItem>
+
+    <table class="display" width="100%" height="100%" id="WarehouseVmi">
+        <thead>
+            <tr>
+                <th>Serial Number</th>
+                <th>Tag No</th>
+                <th>Material</th>
+                <th>Material Description</th>
+                <th>Actual Qty</th>
+                <th>Unit</th>
+                <th>IssuePlanner</th>
+                <th class="warehouse-columns">Stock Type</th>
+                <th class="warehouse-columns">Vendor Code</th>
+                <th class="warehouse-columns">Vendor Name</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Serial Number</th>
+                <th>Tag No</th>
+                <th>Material</th>
+                <th>Material Description</th>
+                <th>Actual Qty</th>
+                <th>Unit</th>
+                <th>IssuePlanner</th>
+                <th class="warehouse-columns">Stock Type</th>
+                <th class="warehouse-columns">Vendor Code</th>
+                <th class="warehouse-columns">Vendor Name</th>
+            </tr>
+        </tfoot>
+        <tbody>
+        @if (Model != null && Model.Count > 0)
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.SerialNo</td>
+                    <td>@item.TagNo</td>
+                    <td>@item.Material</td>
+                    <td>@item.MaterialDesc</td>
+                    <th>@item.ActualQty</th>
+                    <td>@item.Unit</td>
+                    <td>@item.IssuePlanner</td>
+                    <td class="warehouse-columns">@item.StockType</td>
+                    <td class="warehouse-columns">@item.VendorCode</td>
+                    <td class="warehouse-columns">@item.VendorName</td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>

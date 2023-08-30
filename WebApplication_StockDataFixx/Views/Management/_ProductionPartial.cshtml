@@ -1,0 +1,43 @@
+﻿@model List<WebApplication_StockDataFixx.Models.Domain.ProductionItem>
+
+    <table class="display" width="100%" height="100%" id="Production">
+        <thead>
+            <tr>
+                <th>Serial Number</th>
+                <th>Tag No</th>
+                <th>Material</th>
+                <th>Material Description</th>
+                <th>Actual Qty</th>
+                <th>Unit</th>
+                <th>Sloc</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Serial Number</th>
+                <th>Tag No</th>
+                <th>Material</th>
+                <th>Material Description</th>
+                <th>Actual Qty</th>
+                <th>Unit</th>
+            <th>Sloc</th>
+            </tr>
+        </tfoot>
+        <tbody>
+        @if (Model != null && Model.Count > 0)
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.SerialNo</td>
+                    <td>@item.TagNo</td>
+                    <td>@item.Material</td>
+                    <td>@item.MaterialDesc</td>
+                    <th>@item.ActualQty</th>
+                    <td>@item.Unit</td>
+                    <td>@item.Sloc</td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>

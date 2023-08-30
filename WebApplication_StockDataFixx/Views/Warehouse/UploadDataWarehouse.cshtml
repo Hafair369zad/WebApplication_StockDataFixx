@@ -1,0 +1,290 @@
+﻿@{
+    ViewData["Title"] = "Warehouse";
+    Layout = "~/Views/Shared/_LayoutWarehouse.cshtml";
+}
+
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+    <div class="container-fluid p-0">
+        <div class="row" style="margin-top: -70px;">
+            <div class="col-md-12 mb-10">
+                <div class="card flex-fill w-100 mb-10" style="border-radius: 10px;background: #FFF;">
+                    <div class="card-dash">
+                        <div class="card-body py-3">
+                            <div class="chart chart-sm">
+                                <!-- <canvas id="chartjs-dashboard-line"></canvas> -->
+                                <img src="~/images/img/Frame_3_1.png"
+                                     style="width: 320px;margin-left: 260px; position: absolute; right: -1px">
+                                <h5 class="text-dash">Halo User @ViewData["Title"] !</h5>
+                                <p style="color: #001C30; font-weight: 500; font-size: 20px; margin-top: 60px;">
+                                    Enhance Production Management with<br>Real-Time <strong style="font-weight: 800;">Stock Data Insights</strong>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+
+    <div class="container-fluid p-0">
+        <div class="card flex-fill w-100 h-100 mb-10">
+            <div class="card-cr">
+                <div class="upload-form">
+                    <form id="myForm" asp-controller="Warehouse" asp-action="UploadFile" enctype="multipart/form-data" method="post">
+                        <div class="header-upload">
+                            <p>UPLOAD FILE .XLS</p>
+                        </div>
+                        <button type="submit" class="btn-upload">Upload</button>
+                        <div class="row">
+                            <div class="col-12 col-md-8">
+                                <div class="form-group">
+                                    <!-- Hidden input file element -->
+                                    <input type="file" class="form-control-file" id="file" accept=".xls, .xlsx, .csv" style="display: none;" name="file">
+                                    <div class="drop-zone" id="dropZone">
+                                        <div class="image-container">
+                                            <img src="/images/img/Frame_4.png" style="margin-left: 3px; margin-bottom: 5px;">
+                                            <p class="drag-text" style="margin-left: -10px;">Drag and drop file here</p>
+                                        </div>
+                                    </div>
+                                    <div class="btn-zone w-100 col-12">
+                                        <!-- Apply button -->
+                                        <label for="file" class="btn col-3">Pilih</label>
+                                        <button class="btn col-3" id="resetBtn" type="button" value="Reset">Hapus</button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-12 col-md-4" style="margin-left: -140px; margin-top: 80px;">
+
+                                <div class="row">
+                                    <div class="form-group">
+                                        <div class="storage">
+                                            <h5>Pilih Tipe Storage : </h5><br />
+                                            <input type="radio" id="radio1" name="Storage_Type" value="VMI" onclick="setStorageType('VMI')">
+                                            <label for="radio1">VMI</label>
+                                            <input type="radio" id="radio2" name="Storage_Type" value="NON-VMI" onclick="setStorageType('NonVMI')">
+                                            <label for="radio2">NON-VMI</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="storageType" name="storageType" value="" />
+
+
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="li-file">
+                                            <h5>Ketentuan File :</h5><br />
+                                            <p>
+                                                <ul>
+                                                    <ol>
+                                                        <li>File upload harus dalam format .XLS, .XLSX, .CSV (Microsoft Excel).</li>
+                                                        <li>File harus mengandung beberapa tabel yang terpisah secara jelas.</li>
+                                                        <li>Setiap tabel harus ditempatkan di lembar kerja (sheet) yang berbeda.</li>
+                                                        <li>Pastikan setiap tabel memiliki judul yang jelas dan informatif.</li>
+                                                        <li>Pastikan setiap tabel memiliki judul yang jelas dan informatif.</li>
+                                                        <li>Pastikan tidak ada data yang tersembunyi atau terlindungi dengan kata sandi.</li>
+                                                    </ol>
+                                                </ul>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const fileInput = document.getElementById('file');
+            const resetBtn = document.getElementById('resetBtn');
+            const dropZone = document.getElementById('dropZone');
+
+            fileInput.addEventListener('change', function () {
+                const fileLabel = document.createElement('p');
+                fileLabel.textContent = `File name: ${fileInput.files[0].name}`;
+                fileLabel.style.marginTop = '10px';
+                fileLabel.classList.add('file-label'); // Add a class to the file label for easy identification
+
+                // Check if there's already a file label and remove it before adding the new one
+                const existingFileLabel = document.querySelector('.file-label');
+                if (existingFileLabel) {
+                    existingFileLabel.remove();
+                }
+
+                document.querySelector('.form-group').appendChild(fileLabel);
+            });
+
+            resetBtn.addEventListener('click', function () {
+                fileInput.value = ''; // Clear the selected file
+                const existingFileLabel = document.querySelector('.file-label');
+                if (existingFileLabel) {
+                    existingFileLabel.remove();
+                }
+            });
+
+            // Function to handle files dropped into the drop-zone
+            function handleFileDrop(event) {
+                event.preventDefault();
+                const files = event.dataTransfer.files;
+                fileInput.files = files;
+
+                const fileLabel = document.createElement('p');
+                fileLabel.textContent = `File name: ${files[0].name}`;
+                fileLabel.style.marginTop = '10px';
+                fileLabel.classList.add('file-label'); // Add a class to the file label for easy identification
+
+                // Check if there's already a file label and remove it before adding the new one
+                const existingFileLabel = document.querySelector('.file-label');
+                if (existingFileLabel) {
+                    existingFileLabel.remove();
+                }
+
+                document.querySelector('.form-group').appendChild(fileLabel);
+            }
+
+            // Event listener for the drop-zone to handle the drop event
+            dropZone.addEventListener('drop', handleFileDrop);
+
+            // Event listener for the drop-zone to handle the dragover event
+            dropZone.addEventListener('dragover', function (event) {
+                event.preventDefault();
+            });
+        </script>
+    </div>
+
+    <!--Pop Up-->
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <h2>File Uploaded!</h2>
+            <img src="~/images/img/Frame_5_1.png" width="140px" />
+            <p id="popup-message" style="font-weight: 600;"></p>
+            <button class="close-button" onclick="closePopup()">Close</button>
+        </div>
+    </div>
+    <div class="popup" id="popupMismatch">
+        <div class="popup-content">
+            <h2>Storage Type Mismatch</h2>
+            <img src="~/images/img/Frame_7.png" width="140px" style="margin-bottom: 10px;margin-top: 10px;" />
+            <p id="popup-mismatch-message" style="font-weight: 600;"></p>
+            <button class="close-button" onclick="closePopupMismatch()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        function setStorageType(type) {
+            document.getElementById('storageType').value = type;
+        }
+        function showStorageTypeAlert() {
+            alert("Please select a storage type before uploading.");
+        }
+
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+        }
+
+
+        function showPopup() {
+            document.getElementById("popup").style.display = "block";
+        }
+
+        function showStorageTypeMismatchPopup() {
+            document.getElementById("popupMismatch").style.display = "block";
+        }
+
+        function closePopupMismatch() {
+            document.getElementById("popupMismatch").style.display = "none";
+        }
+
+
+        // Fungsi untuk mengirim form dan menampilkan popup setelah berhasil
+        //function submitFormAndShowPopup() {
+        //    const selectedStorageType = document.querySelector('input[name="Storage_Type"]:checked');
+        //    if (!selectedStorageType) {
+        //        showStorageTypeAlert();
+        //        return;
+        //    }
+        //    document.getElementById("myForm").submit(); // Kirim form
+        //    checkDataSaved(); // Panggil fungsi untuk cek data sudah disimpan dan tampilkan popup jika ya
+        //}
+
+        function submitFormAndShowPopup() {
+            const selectedStorageType = document.querySelector('input[name="Storage_Type"]:checked');
+            if (!selectedStorageType) {
+                showStorageTypeAlert();
+                return;
+            }
+
+            const detectedStorageType = document.getElementById('storageType').value;
+            if (selectedStorageType.value !== detectedStorageType) {
+                showStorageTypeMismatchPopup();
+                return;
+            }
+
+            document.getElementById("myForm").submit(); // Submit form
+            checkDataSaved(); // Check data saved and show popup if successful
+        }
+
+
+
+        // Fungsi untuk cek data sudah disimpan dan tampilkan popup jika berhasil
+        //function checkDataSaved() {
+        //    fetch("/Warehouse/CheckDataSaved")
+        //        .then(response => response.json())
+        //        .then(data => {
+        //            if (data.saved) {
+        //                // Data berhasil disimpan, tampilkan popup dengan pesan sukses
+        //                document.getElementById("popup-message").textContent = "File Anda telah berhasil diunggah dan data telah disimpan ke dalam database.";
+        //                showPopup();
+        //            } else {
+        //                // Data belum berhasil disimpan, coba cek lagi setelah beberapa waktu (misalnya 1 detik)
+        //                setTimeout(checkDataSaved, 1000);
+        //            }
+        //        })
+        //        .catch(error => {
+        //            console.error('Error checking data saved:', error);
+        //        });
+        //}
+        function checkDataSaved() {
+            fetch("/Warehouse/CheckDataSaved")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.saved) {
+                        // Data successfully saved, show success popup
+                        document.getElementById("popup-message").textContent = "File Anda telah berhasil diunggah dan data telah disimpan ke dalam database.";
+                        showPopup();
+                    } else {
+                        // Data not yet saved, check again after a delay (e.g., 1 second)
+                        setTimeout(checkDataSaved, 1000);
+                    }
+
+                    // Close the storage type mismatch popup if it's open
+                    closePopupMismatch();
+                })
+                .catch(error => {
+                    console.error('Error checking data saved:', error);
+                });
+        }
+
+
+
+        // Tambahkan event listener untuk form submit
+        document.getElementById("myForm").addEventListener("submit", function (event) {
+            event.preventDefault(); // Hentikan submit default
+            submitFormAndShowPopup(); // Panggil fungsi untuk submit form dan tampilkan popup
+        });
+    </script>
+
+
+</body>
+</html>

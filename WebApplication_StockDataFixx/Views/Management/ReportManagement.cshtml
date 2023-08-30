@@ -1,0 +1,206 @@
+﻿@{
+    ViewBag.Title = "";
+    Layout = "~/Views/Shared/_LayoutManagement.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>@ViewBag.Title</title>
+
+    <!--Cdn Files-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" />
+    <script src="~/js/report.js"></script>
+
+
+    <!-- Tambahkan referensi ke file CSS DataTables -->
+    <link rel="stylesheet" type="text/css" href="~/css/jquery.dataTables.css" />
+    <link rel="stylesheet" href="/DataTables/datatables.css" />
+
+    <script src="/DataTables/datatables.js"></script>
+    <!-- Tambahkan referensi ke file JavaScript DataTables -->
+    <script src="~/js/jquery.dataTables.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
+</head>
+<body>
+    <div class="container-fluid p-0">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 id="pageTitle" class="h3 mb-0"><strong>Report Data @ViewBag.Title</strong></h1>
+
+            <div class="select-month" style="margin-left: 10px;">
+                <label style="margin-right: 5px;">Pilih Bulan :</label>
+                <select id="selectedMonth">
+                    <option value="thisMonth">Bulan ini (sedang berlangsung)</option>
+                    <option value="lastMonth">Bulan lalu</option>
+                </select>
+            </div>
+
+            <div class="select-month" style="margin-left: 10px;">
+                <label style="margin-right: 5px;">Pilih Tahun :</label>
+                <select id="selectedMonth">
+                    <option value="thisYear">Tahun ini (sedang berlangsung)</option>
+                    <option value="lastYear">Tahun lalu</option>
+                </select>
+            </div>
+
+            <div class="select-month" style="margin-left: 10px;">
+                <label style="margin-right: 5px;">Pilih Tipe :</label>
+                <select id="selectedType" onchange="updatePageTitle()">
+                    <option value="Production">Data Production</option>
+                    <option value="Warehouse_VMI">Data Warehouse VMI</option>
+                    <option value="Warehouse_NVMI">Data Warehouse Non VMI</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <br />
+
+    <div class="row mb-10" style="margin-top:60px;">
+        <div class="col-md-12">
+            <div id="partial-container"></div>
+        </div>
+    </div>
+
+    <br />
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card text-center w-100" style="margin-left: -20px; height: 170px; background-color: dimgray;">
+                    <h1 class="m-0">Download File</h1>
+                    <div class="card-body d-flex justify-content-center align-items-center" style="margin-top: -90px;">
+                        <div class="btn-dow">
+                            <input type="text" class="input-rounded" id="serialNumberInput" placeholder="Enter Serial Number">
+                            <button class="btn btn-primary" onclick="validateSerialNumber()">Download file .xls</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <div style="margin-bottom: 50px;"></div>
+
+    <script type="text/javascript">
+
+        function updatePageTitle() {
+            var selectedType = document.getElementById("selectedType").value;
+            var newTitle = "Report Data ";
+
+            if (selectedType === "Production") {
+                newTitle += "Production";
+            } else if (selectedType === "Warehouse_VMI") {
+                newTitle += "Warehouse VMI";
+            } else if (selectedType === "Warehouse_NVMI") {
+                newTitle += "Warehouse Non VMI";
+            }
+
+            document.getElementById("pageTitle").innerHTML = '<strong>' + newTitle + '</strong>';
+        }
+
+
+        var js = jQuery.noConflict(true);
+
+        js(document).ready(function () {
+            var activeType = "Production";
+            var activeMonth = "thisMonth"; // Default active month
+
+            function loadDefaultView() {
+                js.ajax({
+                    type: "GET",
+                    url: "/Management/PartialPage?type=" + activeType + "&month=" + activeMonth,
+                    success: function (data) {
+                        js("#partial-container").html(data);
+                        initializeDataTables(activeType); // Initialize DataTables after loading content
+                    },
+                    error: function () {
+                        alert("Error occurred while fetching data from the server.");
+                    }
+                });
+            }
+
+            // Panggil fungsi untuk memuat tampilan awal
+            loadDefaultView();
+
+            js("#selectedType").change(function () {
+                activeType = js(this).val();
+                loadDefaultView();
+            });
+
+            js("#selectedMonth").change(function () {
+                activeMonth = js(this).val();
+                loadDefaultView();
+            });
+
+            // Fungsi untuk menginisialisasi DataTables
+            function initializeDataTables(selectedType) {
+                // Destroy any existing DataTable instances before reinitializing
+                js("#WarehouseVmi, #WarehouseNonVMI, #Production").DataTable().destroy();
+
+                // Initialize DataTables for the appropriate table based on selectedType
+                if (selectedType === "Warehouse_VMI") {
+                    js("#WarehouseVmi").DataTable({
+                        paging: false // Disable pagination
+                    });
+                } else if (selectedType === "Warehouse_NVMI") {
+                    js("#WarehouseNonVMI").DataTable({
+                        paging: false // Disable pagination
+                    });
+                } else if (selectedType === "Production") {
+                    js("#Production").DataTable({
+                        paging: false // Disable pagination
+                    });
+                }
+            }
+
+            // Fungsi untuk mendownload Excel
+            function downloadExcel() {
+                var serialNumber = js("#serialNumberInput").val();
+                var selectedType = js("#selectedType").val(); // Get the selected type
+
+                if (serialNumber) {
+                    var url = "/Management/DownloadExcel?type=" + selectedType + "&serialNo=" + serialNumber; // Pass selectedType and serialNo
+                    window.location.href = url;
+                } else {
+                    alert("Please enter a serial number before downloading.");
+                }
+            }
+
+            function validateSerialNumber() {
+                var serialNoInput = document.getElementById("serialNoInput").value;
+                if (!serialNoInput) {
+                    alert("Please enter a serial number before downloading the file.");
+                } else {
+                    // Serial number is entered, proceed with the download
+                    downloadExcel();
+                }
+            }
+
+            // Mengaitkan fungsi downloadExcel() dengan tombol
+            js(".btn.btn-primary").click(function () {
+                downloadExcel();
+            });
+
+            
+        });
+    </script>
+
+
+
+</body>
+</html>
