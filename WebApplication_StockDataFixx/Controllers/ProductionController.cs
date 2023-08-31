@@ -116,7 +116,7 @@ namespace WebApplication_StockDataFixx.Controllers
             }
 
             // Get unique months from the uploaded data
-            IEnumerable<string> uniqueMonths = GetUniqueMonths();
+            IEnumerable<DateTime> uniqueMonths = GetUniqueMonths();
 
             // Pass the unique months to the view
             ViewBag.UniqueMonths = uniqueMonths;
@@ -173,12 +173,13 @@ namespace WebApplication_StockDataFixx.Controllers
         private IEnumerable<DateTime> GetUniqueMonths()
         {
             var uniqueMonths = _dbContext.ProductionItems
-                .Select(w => w.Month)
+                .Select(w => w.LastUpload.Date)
                 .Distinct()
                 .ToList();
 
             return uniqueMonths;
         }
+
 
         // Action method to handle the request for checking the status of saved data
         [HttpGet]
@@ -352,9 +353,8 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
 
-
-
         //  ///////////// Chart Data //////////////
+
 
         [HttpGet]
         public IActionResult GetChartData(string selectedMonth)

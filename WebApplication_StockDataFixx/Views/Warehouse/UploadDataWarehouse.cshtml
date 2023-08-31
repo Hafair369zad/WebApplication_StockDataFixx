@@ -207,7 +207,6 @@
         }
 
 
-        // Fungsi untuk mengirim form dan menampilkan popup setelah berhasil
         //function submitFormAndShowPopup() {
         //    const selectedStorageType = document.querySelector('input[name="Storage_Type"]:checked');
         //    if (!selectedStorageType) {
@@ -218,6 +217,8 @@
         //    checkDataSaved(); // Panggil fungsi untuk cek data sudah disimpan dan tampilkan popup jika ya
         //}
 
+
+        // Fungsi untuk mengirim form dan menampilkan popup setelah berhasil
         function submitFormAndShowPopup() {
             const selectedStorageType = document.querySelector('input[name="Storage_Type"]:checked');
             if (!selectedStorageType) {
@@ -237,7 +238,7 @@
 
 
 
-        // Fungsi untuk cek data sudah disimpan dan tampilkan popup jika berhasil
+        
         //function checkDataSaved() {
         //    fetch("/Warehouse/CheckDataSaved")
         //        .then(response => response.json())
@@ -255,6 +256,8 @@
         //            console.error('Error checking data saved:', error);
         //        });
         //}
+
+        // Fungsi untuk cek data sudah disimpan dan tampilkan popup jika berhasil
         function checkDataSaved() {
             fetch("/Warehouse/CheckDataSaved")
                 .then(response => response.json())

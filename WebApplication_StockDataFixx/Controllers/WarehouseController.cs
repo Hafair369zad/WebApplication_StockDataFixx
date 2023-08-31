@@ -38,8 +38,7 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
 
-
-        // Method for handling file uploads
+        // jika Nonaktifkan PopUp 
         //[HttpPost]
         //public IActionResult UploadFile(IFormFile file)
         //{
@@ -49,48 +48,97 @@ namespace WebApplication_StockDataFixx.Controllers
         //        return RedirectToAction("UploadDataWarehouse");
         //    }
 
-        //    bool Isvmi = Request.Form["Storage_Type"] == "VMI";
-
-        //    List<WarehouseItem> uploadedData = ProcessExcelFile(file, Isvmi);
-
-        //    // Save the data to the database
-        //    foreach (var item in uploadedData)
+        //    string tempPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+        //    if (!Directory.Exists(tempPath))
         //    {
-        //        // Check if data with the same month, Sloc, and StockType already exists in the database
-        //        var existingData = _dbContext.WarehouseItems
-        //            .Where(w => w.Month == item.Month &&
-        //                        w.Sloc == item.Sloc &&
-        //                        w.StockType == item.StockType)
-        //            .ToList();
-
-        //        if (existingData.Count > 0)
-        //        {
-        //            // If data with the same month, Sloc, and StockType already exists, replace the old data with the new data
-        //            foreach (var existingItem in existingData)
-        //            {
-        //                _dbContext.WarehouseItems.Remove(existingItem); // Remove the old data
-        //            }
-        //        }
-
-        //        // Add the new data to the database
-        //        _dbContext.WarehouseItems.Add(item);
+        //        Directory.CreateDirectory(tempPath);
         //    }
 
-        //    _dbContext.SaveChanges();
+        //    string filePath = Path.Combine(tempPath, Guid.NewGuid().ToString() + Path.GetExtension(file.FileName));
 
-        //    // Serialize the uploadedData list to JSON before storing it in TempData
-        //    string jsonUploadedData = JsonConvert.SerializeObject(uploadedData);
+        //    using (var stream = new FileStream(filePath, FileMode.Create))
+        //    {
+        //        file.CopyTo(stream);
+        //    }
 
-        //    // Store the JSON data in TempData
-        //    TempData["UploadedData"] = jsonUploadedData;
+        //    List<WarehouseItem> uploadedData;
 
-        //    // Redirect to the ReportWarehouse action
-        //    return RedirectToAction("ReportWarehouse");
+        //    using (var workbook = new XLWorkbook(filePath))
+        //    {
+        //        var worksheet = workbook.Worksheet(1);
+        //        var rows = worksheet.RowsUsed();
+
+        //        bool detectedIsVMI = IsUploadedFileVMI(rows);
+        //        bool selectedIsVMI = Request.Form["Storage_Type"] == "VMI";
+        //        bool selectedIsNonVMI = Request.Form["Storage_Type"] == "NON-VMI";
+
+        //        if ((detectedIsVMI && selectedIsVMI) || (!detectedIsVMI && !selectedIsVMI))
+        //        {
+        //            if (selectedIsVMI)
+        //            {
+        //                uploadedData = ProcessExcelFileVMI(rows);
+        //            }
+        //            else
+        //            {
+        //                uploadedData = ProcessExcelFileNonVMI(rows);
+        //            }
+
+        //            foreach (var item in uploadedData)
+        //            {
+        //                var existingData = _dbContext.WarehouseItems
+        //                    .Where(w => w.Month == item.Month &&
+        //                                w.Sloc == item.Sloc &&
+        //                                w.StockType == item.StockType)
+        //                    .ToList();
+
+        //                foreach (var existingItem in existingData)
+        //                {
+        //                    _dbContext.WarehouseItems.Remove(existingItem);
+        //                }
+
+        //                _dbContext.WarehouseItems.Add(item);
+        //            }
+
+        //            _dbContext.SaveChanges();
+
+        //            if (System.IO.File.Exists(filePath))
+        //            {
+        //                System.IO.File.Delete(filePath);
+        //            }
+
+        //            TempData["Message"] = "File Uploaded";
+
+        //            return RedirectToAction("UploadDataWarehouse");
+        //        }
+        //        else
+        //        {
+        //            TempData["Message"] = "Storage Type Mismatch";
+        //            return RedirectToAction("UploadDataWarehouse");
+        //        }
+        //    }
+        //}
+
+
+        //private bool IsUploadedFileVMI(IEnumerable<IXLRow> rows)
+        //{
+        //    // Check if the uploaded file is VMI
+        //    foreach (var row in rows.Skip(1)) // Skip header row
+        //    {
+        //        string stockType = row.Cell(6).Value.ToString();
+        //        string vendorCode = row.Cell(7).Value.ToString();
+        //        string vendorName = row.Cell(8).Value.ToString();
+
+        //        if (!string.IsNullOrWhiteSpace(stockType) && !string.IsNullOrWhiteSpace(vendorCode) && !string.IsNullOrWhiteSpace(vendorName))
+        //        {
+        //            return true;  // If all three fields are not empty, the file is VMI
+        //        }
+        //    }
+        //    return false;
         //}
 
 
 
-
+        //// jika menggunakan popup 
         [HttpPost]
         public IActionResult UploadFile(IFormFile file)
         {
@@ -100,9 +148,6 @@ namespace WebApplication_StockDataFixx.Controllers
                 return RedirectToAction("UploadDataWarehouse");
             }
 
-            //bool selectedIsVMI = Request.Form["Storage_Type"] == "VMI";
-
-            // Get the temporary file path to save the uploaded Excel file
             string tempPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
             if (!Directory.Exists(tempPath))
             {
@@ -118,73 +163,95 @@ namespace WebApplication_StockDataFixx.Controllers
 
             List<WarehouseItem> uploadedData;
 
-            // Read data from the Excel file using UTF-8 encoding
             using (var workbook = new XLWorkbook(filePath))
             {
-                var worksheet = workbook.Worksheet(1); // Assuming data is in the first worksheet
+                var worksheet = workbook.Worksheet(1);
                 var rows = worksheet.RowsUsed();
 
-                bool selectedIsVMI = Request.Form["Storage_Type"] == "VMI";
-                bool selectedIsNonVMI = Request.Form["Storage_Type"] == "NonVMI";
-
                 bool detectedIsVMI = IsUploadedFileVMI(rows);
+                bool detectedIsNonVMI = IsUploadedFileNonVMI(rows);
+                bool selectedIsVMI = Request.Form["Storage_Type"] == "VMI";
+                bool selectedIsNonVMI = Request.Form["Storage_Type"] == "NON-VMI";
 
-                if (selectedIsVMI != detectedIsVMI || selectedIsNonVMI == detectedIsVMI)
+                if ((detectedIsVMI && selectedIsVMI) || (detectedIsNonVMI && selectedIsNonVMI))
                 {
-                    TempData["Message"] = "Error: Detected storage type and selected storage type do not match.";
-                    return RedirectToAction("UploadDataWarehouse");
-                }
+                    if ((detectedIsVMI && selectedIsVMI) || (detectedIsNonVMI && selectedIsNonVMI))
+                    {
+                        uploadedData = detectedIsVMI ? ProcessExcelFileVMI(rows) : ProcessExcelFileNonVMI(rows);
 
-                if (selectedIsVMI)
-                {
-                    uploadedData = ProcessExcelFileVMI(rows);
+                        foreach (var item in uploadedData)
+                        {
+                            var existingData = _dbContext.WarehouseItems
+                                .Where(w => w.Month == item.Month &&
+                                            w.Sloc == item.Sloc &&
+                                            w.StockType == item.StockType)
+                                .ToList();
+
+                            foreach (var existingItem in existingData)
+                            {
+                                _dbContext.WarehouseItems.Remove(existingItem);
+                            }
+
+                            _dbContext.WarehouseItems.Add(item);
+                        }
+
+                        _dbContext.SaveChanges();
+
+                        if (System.IO.File.Exists(filePath))
+                        {
+                            System.IO.File.Delete(filePath);
+                        }
+
+                        TempData["Message"] = "File Uploaded";
+
+                        return RedirectToAction("ReportWarehouse");
+                    }
+                    else
+                    {
+                        TempData["Message"] = "Storage Type Mismatch";
+                        return RedirectToAction("UploadDataWarehouse");
+                    }
                 }
                 else
                 {
-                    uploadedData = ProcessExcelFileNonVMI(rows);
+                    TempData["Message"] = "Storage Type Mismatch";
+                    return RedirectToAction("UploadDataWarehouse");
                 }
-
-                // Save the data to the database
-                foreach (var item in uploadedData)
-                {
-                    // Check if data with the same month, Sloc, and StockType already exists in the database
-                    var existingData = _dbContext.WarehouseItems
-                        .Where(w => w.Month == item.Month &&
-                                    w.Sloc == item.Sloc &&
-                                    w.StockType == item.StockType)
-                        .ToList();
-
-                    if (existingData.Count > 0)
-                    {
-                        // If data with the same month, Sloc, and StockType already exists, replace the old data with the new data
-                        foreach (var existingItem in existingData)
-                        {
-                            _dbContext.WarehouseItems.Remove(existingItem); // Remove the old data
-                        }
-                    }
-
-                    // Add the new data to the database
-                    _dbContext.WarehouseItems.Add(item);
-                }
-
-                _dbContext.SaveChanges();
             }
-
-            // Delete the temporary file after reading the data
-            if (System.IO.File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
-            }
-
-            // Serialize the uploadedData list to JSON before storing it in TempData
-            string jsonUploadedData = JsonConvert.SerializeObject(uploadedData);
-
-            // Store the JSON data in TempData
-            TempData["UploadedData"] = jsonUploadedData;
-
-            // Redirect to the ReportWarehouse action
-            return RedirectToAction("ReportWarehouse");
         }
+
+        private bool IsUploadedFileVMI(IEnumerable<IXLRow> rows)
+        {
+            // Check if the uploaded file is VMI
+            foreach (var row in rows.Skip(1)) // Skip header row
+            {
+                string stockType = row.Cell(6).Value.ToString();
+                string vendorCode = row.Cell(7).Value.ToString();
+                string vendorName = row.Cell(8).Value.ToString();
+
+                if (!string.IsNullOrWhiteSpace(stockType) && !string.IsNullOrWhiteSpace(vendorCode) && !string.IsNullOrWhiteSpace(vendorName))
+                {
+                    return true;  // If all three fields are not empty, the file is VMI
+                }
+            }
+            return false;
+        }
+        private bool IsUploadedFileNonVMI(IEnumerable<IXLRow> rows)
+        {
+            foreach (var row in rows.Skip(1)) // Skip header row
+            {
+                string stockType = row.Cell(6).Value.ToString();
+                string vendorCode = row.Cell(7).Value.ToString();
+                string vendorName = row.Cell(8).Value.ToString();
+
+                if (string.IsNullOrWhiteSpace(stockType) && string.IsNullOrWhiteSpace(vendorCode) && string.IsNullOrWhiteSpace(vendorName))
+                {
+                    return true; // If all three fields are empty, the file is NonVMI
+                }
+            }
+            return false;
+        }
+
 
 
 
@@ -360,7 +427,7 @@ namespace WebApplication_StockDataFixx.Controllers
             return Json(new { saved = dataSaved });
         }
 
-        // ... (rest of the code)
+ 
 
 
         // Main method for processing the uploaded Excel file based on the selected storage type
@@ -540,22 +607,7 @@ namespace WebApplication_StockDataFixx.Controllers
             return uploadedData;
         }
 
-        private bool IsUploadedFileVMI(IEnumerable<IXLRow> rows)
-        {
-            // Check if the uploaded file is VMI
-            foreach (var row in rows.Skip(1)) // Skip header row
-            {
-                string stockType = row.Cell(6).Value.ToString();
-                string vendorCode = row.Cell(7).Value.ToString();
-                string vendorName = row.Cell(8).Value.ToString();
-
-                if (!string.IsNullOrWhiteSpace(stockType) && !string.IsNullOrWhiteSpace(vendorCode) && !string.IsNullOrWhiteSpace(vendorName))
-                {
-                    return true;  // If all three fields are not empty, the file is VMI
-                }
-            }
-            return false;
-        }
+        
 
         private List<WarehouseItem> GetDataFromDatabase(string serialNo, bool? Isvmi, string accessPlant)
         {

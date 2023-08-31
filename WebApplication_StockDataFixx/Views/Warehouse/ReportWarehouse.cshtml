@@ -5,6 +5,7 @@
 }
 @model List<WebApplication_StockDataFixx.Models.Domain.WarehouseItem>
 
+
 <html>
 <head>
     <meta charset="utf-8" />
@@ -111,7 +112,8 @@
                     <option value="Latest Update">Bulan ini (sedang berlangsung)</option>
                     @foreach (var month in ViewBag.LastUpload)
                     {
-                        <option value="@month.ToString("yyyy-MM")">@month.ToString("MMMM yyyy")</option>
+                        <option value="@month.ToString("yyyy-MM")"><script></script>@month.ToString("MMMM yyyy")</option>
+                        
                     }
                 </select>
             </div>
