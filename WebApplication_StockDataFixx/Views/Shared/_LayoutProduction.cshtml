@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Production";
+    var CurrentUsername = Context.Session.GetString("CurrentUsername");
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -71,12 +72,33 @@
         </div>
     </header>
     <div class="l-navbar" id="nav-bar">
+        <div class="headerLogo">
+            <h5>Stock Taking App 1.0</h5>
+        </div>
         <nav class="nav">
             <div>
                 <div class="nav_list">
                     <div class="profile">
-                        <img src="~/images/img/Frame_6.png" width="120px" height="120px">
-                        <h3>@ViewData["Title"]</h3>
+                        @if (ViewBag.LevelId == 3)
+                        {
+                            <img src="~/images/img/gambarWrh.png" width="120px" height="120px">
+                        }
+                        else if (ViewBag.LevelId == 4)
+                        {
+                            <img src="~/images/img/gambarProd.png" width="120px" height="120px">
+                        }
+                        else if (ViewBag.LevelId == 5)
+                        {
+                            <img src="~/images/img/gambarView.png" width="120px" height="120px">
+                        }
+                        else
+                        {
+                            <img src="~/images/img/Frame_6.png" width="120px" height="120px">
+                        }
+
+                        @using Microsoft.AspNetCore.Http;
+                        <h3>@CurrentUsername</h3>
+                        @*<h3>@ViewData["Title"]</h3>*@
                     </div>
                     <a class="nav_link" asp-area="" asp-controller="Production" asp-action="DashboardProduction">
                         <i class='bx bx-grid-alt nav_icon'></i>

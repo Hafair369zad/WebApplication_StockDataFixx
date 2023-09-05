@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Admin";
+    var CurrentUsername = Context.Session.GetString("CurrentUsername");
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -71,12 +72,17 @@
         </div>
     </header>
     <div class="l-navbar" id="nav-bar" style="background-color: #17C637;">
+        <div class="headerLogo">
+            <h5>Stock Taking App 1.0</h5>
+        </div>
         <nav class="nav">
             <div>
                 <div class="nav_list">
                     <div class="profile">
                         <img src="~/images/img/Frame_6.png" width="120px" height="120px">
-                        <h3>@ViewData["Title"]</h3>
+                        @using Microsoft.AspNetCore.Http;
+                        <h3>@CurrentUsername</h3>
+                        @*<h3>@ViewData["Title"]</h3>*@
                     </div>
                     <a class="nav_link" asp-area="" asp-controller="Admin" asp-action="DashboardAdmin">
                         <i class='bx bx-grid-alt nav_icon'></i>

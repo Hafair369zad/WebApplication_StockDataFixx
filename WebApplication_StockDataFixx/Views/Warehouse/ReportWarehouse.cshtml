@@ -15,7 +15,10 @@
     <meta name="author" content="" />
     <title>@ViewBag.Title</title>
 
-    <script type="text/javascript"> 
+    <script type="text/javascript">
+
+        var lastChangeSource = ""; // Initialize the lastChangeSource variable
+
         var js = jQuery.noConflict(true);
         js(document).ready(function () {
             js('#data-table').DataTable({
@@ -23,15 +26,30 @@
             });
 
             var selectedTypeParam = new URLSearchParams(window.location.search).get('selectedType');
+            var selectedMonthParam = new URLSearchParams(window.location.search).get('selectedMonth');
 
             // Set opsi dropdown sesuai dengan nilai selectedTypeParam
             if (selectedTypeParam === "VMI") {
                 document.getElementById("selectedType").value = "VMI";
-                updateReportTitle("VMI"); // Tambahkan pemanggilan fungsi untuk mengatur judul
+                updateReportTitle("VMI");
             } else if (selectedTypeParam === "NON_VMI") {
                 document.getElementById("selectedType").value = "NON_VMI";
-                updateReportTitle("NON_VMI"); // Tambahkan pemanggilan fungsi untuk mengatur judul
+                updateReportTitle("NON_VMI");
+            } else {
+                document.getElementById("selectedType").value = "Update Terbaru";
             }
+
+            var selectedType = document.getElementById("selectedType").value;
+            var selectedTypeBox = document.getElementById("selectedTypeBox");
+            selectedTypeBox.textContent = selectedType;
+
+            if (selectedMonthParam) {
+                document.getElementById("selectedMonth").value = selectedMonthParam;
+            }
+
+            var selectedMonth = document.getElementById("selectedMonth").value;
+            var selectedMonthBox = document.getElementById("selectedMonthBox");
+            selectedMonthBox.textContent = selectedMonth;
         });
 
         function filterDataByMonth() {
@@ -41,15 +59,33 @@
             var url = "/Warehouse/ReportWarehouse";
 
             if (selectedType === "Pilih_Tipe") {
-                // If no type is selected, only pass the selected month as a query parameter
+                lastChangeSource = "month";
                 url += "?selectedMonth=" + encodeURIComponent(selectedMonth);
             } else {
-                // If a type is selected, pass both the selected month and type as query parameters
+                lastChangeSource = "type";
                 url += "?selectedMonth=" + encodeURIComponent(selectedMonth) + "&selectedType=" + encodeURIComponent(selectedType);
             }
 
-            // Redirect to the generated URL
             window.location.href = url;
+        }
+
+        function changeTypeDropdown(selectedType) {
+            lastChangeSource = "type";
+            document.getElementById("selectedType").value = selectedType;
+            filterDataByMonth();
+        }
+
+        function updateReportTitle(selectedType) {
+            var titleElement = document.getElementById("reportTitle");
+            if (titleElement) {
+                if (selectedType === "VMI") {
+                    titleElement.textContent = "Report Data @ViewBag.Title VMI";
+                } else if (selectedType === "NON_VMI") {
+                    titleElement.textContent = "Report Data @ViewBag.Title Non VMI";
+                } else {
+                    titleElement.textContent = "Report Data @ViewBag.Title Update Terbaru";
+                }
+            }
         }
 
         // ...
@@ -107,14 +143,27 @@
 
             <div class="select-month" style="margin-left: 10px;">
                 <label style="margin-right: 5px;">Pilih Bulan :</label>
+                
                 <select id="selectedMonth" onchange="filterDataByMonth()">
+                    <option value="Latest Update">Update Terbaru</option>
+                    @foreach (var month in ViewBag.LastUpload)
+                    {
+                        <option value="@month">@month</option>
+                    }
+                </select>
+
+
+
+
+                @*jika menggunakan kolom last Upload*@
+                @*<select id="selectedMonth" onchange="filterDataByMonth()">
                     <option value="Latest Update">Bulan ini (sedang berlangsung)</option>
                     @foreach (var month in ViewBag.LastUpload)
                     {
-                        <option value="@month.ToString("yyyy-MM")"><script></script>@month.ToString("MMMM yyyy")</option>
-                        
+                        <option value="@month.ToString("yyyy-MM")">@month.ToString("MMMM yyyy")</option>
                     }
-                </select>
+                </select>*@
+
             </div>
 
             <div class="select-month" style="margin-left: 10px;">
@@ -131,9 +180,30 @@
 
     <br />
 
-  
+
+    <!-- Tampilkan kotak tampilan bulan yang dipilih -->
+    
 
     <div class="row  mb-10" style="margin-top:60px;">
+
+        
+            <div class="row d-flex align-items-start">
+                <div class="col">
+                    <div class="selected-type-box" style="margin-left: 10px;">
+                        <strong>Selected Type: </strong>
+                        <span id="selectedTypeBox"></span>
+                    </div>
+
+                    <div class="selected-month-box" style="margin-left: 10px; width: 300px;">
+                        <strong>Selected Month: </strong>
+                        <span id="selectedMonthBox"></span>
+                    </div>
+                </div>
+            </div>
+        
+
+
+
         <div class="col-md-12">
             @*<div class="card w-100 h-100">*@
             @*  <div class="card-body">*@

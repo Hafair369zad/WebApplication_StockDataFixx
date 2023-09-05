@@ -45,11 +45,18 @@ namespace WebApplication_StockDataFixx.Controllers
                     // Menyimpan informasi user di session
                     HttpContext.Session.SetString("CurrentUser", userId);
 
+
                     // Get the user's AccessPlant value
                     string accessPlant = GetAccessPlantFromDatabase(userId);
                     ViewBag.AccessPlant = accessPlant; // Store AccessPlant in ViewBag
                     HttpContext.Session.SetString("AccessPlant", accessPlant); // Store in session
 
+
+                    string username = GetUsernameFromDatabase(userId);
+                    HttpContext.Session.SetString("CurrentUsername", username);
+
+                    // Menyimpan LevelId di ViewBag
+                    ViewBag.LevelId = levelId;
 
                     // Redirect ke halaman utama sesuai dengan jenis user
                     if (levelId == 0)
@@ -102,6 +109,16 @@ namespace WebApplication_StockDataFixx.Controllers
                 return user.AccessPlant;
             }
             return ""; // Return null if the AccessPlant is not found
+        }
+
+        private string GetUsernameFromDatabase(string userId)
+        {
+            var user = _dbContext.UserTbs.FirstOrDefault(u => u.UserId == userId);
+            if (user != null)
+            {
+                return user.Username;
+            }
+            return ""; // Return an empty string if the username is not found
         }
 
 

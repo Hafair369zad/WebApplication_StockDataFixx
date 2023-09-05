@@ -207,72 +207,34 @@
         }
 
 
-        //function submitFormAndShowPopup() {
-        //    const selectedStorageType = document.querySelector('input[name="Storage_Type"]:checked');
-        //    if (!selectedStorageType) {
-        //        showStorageTypeAlert();
-        //        return;
-        //    }
-        //    document.getElementById("myForm").submit(); // Kirim form
-        //    checkDataSaved(); // Panggil fungsi untuk cek data sudah disimpan dan tampilkan popup jika ya
-        //}
-
-
-        // Fungsi untuk mengirim form dan menampilkan popup setelah berhasil
+        // Function lama
         function submitFormAndShowPopup() {
             const selectedStorageType = document.querySelector('input[name="Storage_Type"]:checked');
             if (!selectedStorageType) {
                 showStorageTypeAlert();
                 return;
             }
-
-            const detectedStorageType = document.getElementById('storageType').value;
-            if (selectedStorageType.value !== detectedStorageType) {
-                showStorageTypeMismatchPopup();
-                return;
-            }
-
-            document.getElementById("myForm").submit(); // Submit form
-            checkDataSaved(); // Check data saved and show popup if successful
+            document.getElementById("myForm").submit(); // Kirim form
+            checkDataSaved(); // Panggil fungsi untuk cek data sudah disimpan dan tampilkan popup jika ya
         }
 
+       
 
 
-        
-        //function checkDataSaved() {
-        //    fetch("/Warehouse/CheckDataSaved")
-        //        .then(response => response.json())
-        //        .then(data => {
-        //            if (data.saved) {
-        //                // Data berhasil disimpan, tampilkan popup dengan pesan sukses
-        //                document.getElementById("popup-message").textContent = "File Anda telah berhasil diunggah dan data telah disimpan ke dalam database.";
-        //                showPopup();
-        //            } else {
-        //                // Data belum berhasil disimpan, coba cek lagi setelah beberapa waktu (misalnya 1 detik)
-        //                setTimeout(checkDataSaved, 1000);
-        //            }
-        //        })
-        //        .catch(error => {
-        //            console.error('Error checking data saved:', error);
-        //        });
-        //}
 
-        // Fungsi untuk cek data sudah disimpan dan tampilkan popup jika berhasil
+        // Fungsi lama
         function checkDataSaved() {
             fetch("/Warehouse/CheckDataSaved")
                 .then(response => response.json())
                 .then(data => {
                     if (data.saved) {
-                        // Data successfully saved, show success popup
+                        // Data berhasil disimpan, tampilkan popup dengan pesan sukses
                         document.getElementById("popup-message").textContent = "File Anda telah berhasil diunggah dan data telah disimpan ke dalam database.";
                         showPopup();
                     } else {
-                        // Data not yet saved, check again after a delay (e.g., 1 second)
+                        // Data belum berhasil disimpan, coba cek lagi setelah beberapa waktu (misalnya 1 detik)
                         setTimeout(checkDataSaved, 1000);
                     }
-
-                    // Close the storage type mismatch popup if it's open
-                    closePopupMismatch();
                 })
                 .catch(error => {
                     console.error('Error checking data saved:', error);
@@ -280,14 +242,35 @@
         }
 
 
-
         // Tambahkan event listener untuk form submit
         document.getElementById("myForm").addEventListener("submit", function (event) {
             event.preventDefault(); // Hentikan submit default
             submitFormAndShowPopup(); // Panggil fungsi untuk submit form dan tampilkan popup
         });
+
+
     </script>
 
 
 </body>
 </html>
+
+
+
+@* //function submitFormAndShowPopup() {
+        //    const selectedStorageType = document.querySelector('input[name="Storage_Type"]:checked');
+        //    if (!selectedStorageType) {
+        //        showStorageTypeAlert();
+        //        return;
+        //    }
+
+        //    const uploadedStorageType = document.getElementById('storageType').value;
+
+        //    if (selectedStorageType.value !== uploadedStorageType) {
+        //        showStorageTypeMismatchPopup();
+        //        return;
+        //    }
+
+        //    document.getElementById("myForm").submit(); // Submit the form
+        //    checkDataSaved(); // Call the function to check if data is saved and show popup if yes
+        //}*@

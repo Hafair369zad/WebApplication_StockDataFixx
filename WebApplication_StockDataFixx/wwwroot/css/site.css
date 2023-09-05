@@ -515,8 +515,8 @@ input[type="radio"] {
 
 
 .nav-bottom-brand {
-    margin-left: 20px;
-    margin-bottom: 8px;
+    margin-left: 25px;
+    margin-bottom: 55px;
 }
 .nav-bottom-brand h3 {
     font-size: 20px;
@@ -672,4 +672,46 @@ input[type="radio"] {
     border-radius: 15px;
     color: #001C30;
     border-color: #001C30;
+}
+
+
+.selected-type-box,
+.selected-month-box {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #1D5D9B;
+    background-color: aliceblue;
+    font-size: 14px;
+    width: 200px; /* Lebar kotak */
+    text-align: center; /* Tengahkan teks di dalam kotak */
+    box-sizing: border-box; /* Sesuaikan padding dan border ke dalam lebar kotak */
+}
+
+.selected-type-box {
+    color: #cc3333;
+    margin-top: 20px;
+    margin-bottom: -10px;
+}
+
+.selected-month-box {
+    color: #3333cc;
+    margin-top: 20px;
+    margin-bottom: -10px;
+}
+
+
+
+/*Layout*/
+.headerLogo {
+    font-style: oblique;
+    font-weight: 800;
+    padding: 10px;
+    margin-right: -14px;
+    background-color: #00552E;
+    text-align: center;
+    margin-top: -6px;
+    margin-bottom: 10px;
+    color: white;
+    font-size: 20px;
 }

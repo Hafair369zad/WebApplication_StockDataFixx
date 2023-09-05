@@ -136,6 +136,8 @@ public partial class PMIDbContext : DbContext
 
         modelBuilder.Entity<WarehouseItem>(entity =>
         {
+            entity.HasKey(e => e.WarehouseId).HasName("PK_WAREHOUSE_ITEM_1");
+
             entity.ToTable("WAREHOUSE_ITEM", tb =>
             {
                 tb.HasTrigger("TRG_LAST_INPUT_DATA_WAREHOUSE_ITEM");

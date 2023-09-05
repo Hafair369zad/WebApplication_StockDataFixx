@@ -10,9 +10,6 @@ namespace WebApplication_StockDataFixx.Models.Domain;
 public partial class ProductionItem
 {
     [Key]
-    [Column("ID")]
-    public int Id { get; set; }
-
     [Column("PRODUCTION_ID")]
     public string ProductionId { get; set; } = null!;
 
