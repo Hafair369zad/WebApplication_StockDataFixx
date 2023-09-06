@@ -19,10 +19,10 @@ public partial class WarehouseTb
 
     [Column("PLANT_ID")]
     [StringLength(4)]
-    public string? PlantId { get; set; }
+    public string PlantId { get; set; } = null!;
 
     [Column("PLANNER_DESC")]
-    public string? PlannerDesc { get; set; }
+    public string PlannerDesc { get; set; } = null!;
 
     [InverseProperty("Wrh")]
     public virtual ICollection<AccessTb> AccessTbs { get; set; } = new List<AccessTb>();

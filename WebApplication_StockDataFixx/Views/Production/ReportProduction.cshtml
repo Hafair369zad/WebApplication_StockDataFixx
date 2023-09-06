@@ -76,9 +76,9 @@
                 <label style="margin-right: 5px;">Pilih Bulan :</label>
                 <select id="selectedMonth" onchange="filterDataByMonth()">
                     <option value="Latest Update">Bulan ini (sedang berlangsung)</option>
-                    @foreach (var month in ViewBag.LastUpload)
+                    @foreach (var month in ViewBag.UniqueMonths)
                     {
-                        <option value="@month">@month</option>
+                        <option value="@month.ToString("yyyy-MM")">@month.ToString("MMMM yyyy")</option>
                     }
                 </select>
             </div>

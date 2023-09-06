@@ -34,19 +34,19 @@ namespace WebApplication_StockDataFixx.Controllers
         [HttpGet]
         public ActionResult DashboardProduction()
         {
-            // Tampilkan halaman dashboard Production
+            // Display DashboardProduction page 
             return View();
         }
 
         [HttpGet]
         public ActionResult UploadDataProduction()
         {
-            // Tampilkan halaman upload file Production
+            // Disp-lay UploadDataProduction Page
             return View();
         }
 
 
-        // Awal Method UploadFile //
+        // Initial UploadFile Method: To set up file uploads  //
 
         [HttpPost]
         public IActionResult UploadFile(IFormFile file)
@@ -75,17 +75,13 @@ namespace WebApplication_StockDataFixx.Controllers
                     {
                         _dbContext.ProductionItems.Remove(existingItem); // Hapus data lama
                     }
-
-                    // Simpan perubahan penghapusan
-                    _dbContext.SaveChanges();
                 }
 
                 // Tambahkan data baru ke dalam database
                 _dbContext.ProductionItems.Add(item);
-
-                // Simpan perubahan penambahan
-                _dbContext.SaveChanges();
             }
+
+            _dbContext.SaveChanges();
 
             // Serialize the uploadedData list to JSON before storing it in TempData
             string jsonUploadedData = JsonConvert.SerializeObject(uploadedData);
@@ -98,7 +94,8 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
 
-        // Akhir Method UploadFile //
+        // The end of the UploadFile method //
+
 
 
         //[HttpGet]
@@ -135,72 +132,128 @@ namespace WebApplication_StockDataFixx.Controllers
         //    return View(uploadedDataList);
         //}
 
-        [HttpGet]
-        public ActionResult ReportProduction(string serialNo, string selectedMonth)
-        {
-            List<ProductionItem> data;
 
+
+        // Initial Report Production Method: to display data on the report page //
+        [HttpGet]
+        public ActionResult ReportProduction(string selectedMonth)
+        {
+            List<ProductionItem> uploadedDataList = null!;
+
+            // Retrieve the AccessPlant value from the session
             string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
-            data = GetDataFromDatabase(serialNo, accessPlant); // Tidak ada Isvmi
-
-            if (!string.IsNullOrEmpty(accessPlant))
+            if (selectedMonth == "Latest Update" || string.IsNullOrWhiteSpace(selectedMonth))
             {
-                // Filter data based on the AccessPlant value
-                data = data.Where(w => w.AccessPlant == accessPlant).ToList();
+                // If "Latest Update" or no month selected, fetch data from the database without month filter
+                uploadedDataList = GetDataFromDatabase(accessPlant);
+            }
+            else
+            {
+                // Fetch data from the database based on the selected month
+                uploadedDataList = GetDataFromDatabaseByMonth(selectedMonth, accessPlant);
             }
 
-            // Jika menggunakan kolom Month
-            if (selectedMonth == "Latest Update")
-            {
-                // Filter data based on the highest month value
-                var highestMonth = data.Max(d => d.Month);
-                data = data.Where(d => d.Month == highestMonth).ToList();
-            }
-            else if (!string.IsNullOrEmpty(selectedMonth))
-            {
-                // Filter data based on the selected month
-                data = data.Where(w => w.Month == selectedMonth).ToList();
-            }
+            // Get unique months from the uploaded data
+            IEnumerable<DateTime> uniqueMonths = GetUniqueMonths();
 
-            ViewBag.SerialNo = serialNo;
-            ViewBag.LastUpload = GetUniqueMonths();
+            // Pass the unique months to the view
+            ViewBag.UniqueMonths = uniqueMonths;
 
-            return View(data);
+            return View(uploadedDataList);
         }
 
-       
+        private List<ProductionItem> GetDataFromDatabase(string accessPlant)
+        {
+            // Dapatkan data ProductionItems
+            var data = _dbContext.ProductionItems.ToList();
 
-        private IEnumerable<string> GetUniqueMonths()
+            // Temukan bulan dan tahun terbaru pada field "LastUpload"
+            var latestUploadDate = data.Max(item => item.LastUpload);
+
+            // Filter data untuk hanya data terbaru berdasarkan bulan dan tahun
+            var latestProductionItems = data
+                .Where(pi => pi.LastUpload.Year == latestUploadDate.Year && pi.LastUpload.Month == latestUploadDate.Month && pi.AccessPlant == accessPlant)
+                .ToList();
+
+            return latestProductionItems;
+        }
+
+        private List<ProductionItem> GetDataFromDatabaseByMonth(string selectedMonth, string accessPlant)
+        {
+            if (selectedMonth == "Latest Update" || string.IsNullOrWhiteSpace(selectedMonth))
+            {
+                return GetDataFromDatabase(accessPlant);
+            }
+
+            DateTime parsedMonth;
+
+            if (DateTime.TryParseExact(selectedMonth, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedMonth))
+            {
+                var data = _dbContext.ProductionItems
+                    .Where(w => w.LastUpload.Month == parsedMonth.Month && w.LastUpload.Year == parsedMonth.Year && w.AccessPlant == accessPlant)
+                    .ToList();
+
+                return data;
+            }
+            else
+            {
+                // Handle kesalahan jika selectedMonth tidak valid
+                // Misalnya, lempar pengecualian atau kembalikan data kosong, sesuai dengan kebutuhan Anda.
+                throw new ArgumentException("selectedMonth is not in the correct format.");
+            }
+        }
+
+
+
+        private IEnumerable<DateTime> GetUniqueMonths()
         {
             var uniqueMonths = _dbContext.ProductionItems
-                .Select(w => w.Month)
+                .Select(w => w.LastUpload.Date)
                 .Distinct()
-                .OrderByDescending(m => m)
                 .ToList();
 
             return uniqueMonths;
         }
 
-        private List<ProductionItem> GetDataFromDatabase(string serialNo, string accessPlant)
-        {
-            var data = _dbContext.ProductionItems.AsQueryable();
-
-            if (!string.IsNullOrEmpty(serialNo))
-            {
-                data = data.Where(w => w.SerialNo == serialNo);
-            }
-
-            if (!string.IsNullOrEmpty(accessPlant))
-            {
-                data = data.Where(w => w.AccessPlant == accessPlant);
-            }
-
-            return data.OrderBy(w => w.SerialNo).ToList();
-        }
 
 
-        // Action method to handle the request for checking the status of saved data
+        // Initial GetUniqueMonths Method: to filter data by coloumn Month for display data //
+        //private IEnumerable<string> GetUniqueMonths()
+        //{
+        //    var uniqueMonths = _dbContext.ProductionItems
+        //        .Select(w => w.Month)
+        //        .Distinct()
+        //        .OrderByDescending(m => m)
+        //        .ToList();
+
+        //    return uniqueMonths;
+        //}
+        // End of the GetUniqueMonths method/
+
+
+        // Initial GetDataFromDatabase Method: to fetch data form database //
+        //private List<ProductionItem> GetDataFromDatabase(string serialNo, string accessPlant)
+        //{
+        //    var data = _dbContext.ProductionItems.AsQueryable();
+
+        //    if (!string.IsNullOrEmpty(serialNo))
+        //    {
+        //        data = data.Where(w => w.SerialNo == serialNo);
+        //    }
+
+        //    if (!string.IsNullOrEmpty(accessPlant))
+        //    {
+        //        data = data.Where(w => w.AccessPlant == accessPlant);
+        //    }
+
+        //    return data.OrderBy(w => w.SerialNo).ToList();
+        //}
+        // End of the GetDataFromDatabase method/
+
+
+
+        // Initial CheckDataSaved method : Action method to handle the request for checking the status of saved data
         [HttpGet]
         public IActionResult CheckDataSaved()
         {
@@ -210,10 +263,12 @@ namespace WebApplication_StockDataFixx.Controllers
             // Return the result in JSON format
             return Json(new { saved = dataSaved });
         }
+        // End of the CheckDataSaved method/
 
 
 
 
+        // Initial ProcessExcelFile method : to read Excel input data per row
         private List<ProductionItem> ProcessExcelFile(IFormFile file)
         {
             List<ProductionItem> uploadedData = new List<ProductionItem>();
@@ -304,15 +359,18 @@ namespace WebApplication_StockDataFixx.Controllers
 
             return uploadedData;
         }
+        // End of the ProcessExcelFile method/
 
 
+
+        // Iinitial DownloadExcel method : to Process Download file Excel 
         [HttpGet]
         public IActionResult DownloadExcel(string serialNo)
         {
 
             string accessPlant = ViewBag.AccessPlant?.ToString() ?? "";
             // Fetch data from the database based on the serial number
-            List<ProductionItem> data = GetDataFromDatabase(serialNo, accessPlant);
+            List<ProductionItem> data = GetDataFromDatabase(serialNo);
 
             // Create the Excel file
             var workbook = new XLWorkbook();
@@ -359,6 +417,8 @@ namespace WebApplication_StockDataFixx.Controllers
 
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFileName);
         }
+        // End of the DownloadExcel method/
+
 
 
         //private List<ProductionItem> GetDataFromDatabaseForDownload(string serialNo)
@@ -378,9 +438,7 @@ namespace WebApplication_StockDataFixx.Controllers
         //  ///////////// Chart Data //////////////
 
 
-
-
-
+        // Iinitial GetChartData method : to 
         [HttpGet]
         public IActionResult GetChartData(string selectedMonth)
         {
@@ -416,10 +474,10 @@ namespace WebApplication_StockDataFixx.Controllers
             }
 
             int monthlyActualQty = _dbContext.ProductionItems
-               .Where(item =>item.LastUpload.Month == selectedMonthValue)
+               .Where(item => item.LastUpload.Month == selectedMonthValue)
                .Sum(item => item.ActualQty);
 
-            var chartData = new { TotalActualQty = monthlyActualQty};
+            var chartData = new { TotalActualQty = monthlyActualQty };
 
             return Json(chartData);
         }

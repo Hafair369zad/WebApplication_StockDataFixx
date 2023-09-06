@@ -5,6 +5,8 @@ using ClosedXML.Excel;
 using Newtonsoft.Json;
 using WebApplication_StockDataFixx.Database;
 using Microsoft.IdentityModel.Tokens;
+using System.Globalization;
+using NPOI.SS.Formula.Functions;
 
 namespace WebApplication_StockDataFixx.Controllers
 {
@@ -42,6 +44,116 @@ namespace WebApplication_StockDataFixx.Controllers
 
 
 
+       
+
+
+
+        [HttpGet]
+        public ActionResult ReportWarehouse(string serialNo, string selectedType, string selectedMonth)
+        {
+            List<WarehouseItem> data;
+
+            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
+            // Fetch data based on the selectedType (VMI or NonVMI) and selectedMonth
+            if (selectedType == "VMI")
+            {
+                data = GetDataFromDatabase(serialNo, Isvmi: true, accessPlant);
+            }
+            else if (selectedType == "NON_VMI")
+            {
+                data = GetDataFromDatabase(serialNo, Isvmi: false, accessPlant);
+            }
+            else
+            {
+                data = GetDataFromDatabase(serialNo, Isvmi: null, accessPlant); // Fetch all data
+            }
+
+            if (!string.IsNullOrEmpty(accessPlant))
+            {
+                // Filter data based on the AccessPlant value
+                data = data.Where(w => w.AccessPlant == accessPlant).ToList();
+            }
+
+            // Check if there are any elements in the filtered data
+            if (data.Any())
+            {
+                // Jika selectedMonth tidak ada atau kosong, ambil data terbaru seperti di ReportProduction
+                if (string.IsNullOrEmpty(selectedMonth) || selectedMonth == "Latest Update")
+                {
+                    // Filter data based on the latest upload month and year
+                    var latestUploadDate = data.Max(item => item.LastUpload);
+                    data = data.Where(wi => wi.LastUpload.Year == latestUploadDate.Year && wi.LastUpload.Month == latestUploadDate.Month && wi.AccessPlant == accessPlant)
+                               .ToList();
+                }
+                else
+                {
+                    // Ambil data berdasarkan bulan dan tahun yang dipilih pada selectedMonth
+                    if (DateTime.TryParseExact(selectedMonth, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedMonth))
+                    {
+                        data = data.Where(w => w.LastUpload.Year == parsedMonth.Year && w.LastUpload.Month == parsedMonth.Month && w.AccessPlant == accessPlant)
+                                   .ToList();
+                    }
+                    else
+                    {
+                        // Handle kesalahan jika selectedMonth tidak valid
+                        // Misalnya, lempar pengecualian atau kembalikan data kosong, sesuai dengan kebutuhan Anda.
+                        throw new ArgumentException("selectedMonth is not in the correct format.");
+                    }
+                }
+            }
+            else
+                {
+                // Handle the case where there are no elements in the filtered data
+                // You can choose to return an empty list or handle it as needed.
+                throw new ArgumentException("selectedMonth is not in the correct format.");
+            }
+
+                ViewBag.SerialNo = serialNo;
+                ViewBag.LastUpload = GetUniqueMonths();
+
+                return View(data);
+            }
+
+
+            // Jika Menggunakan Kolom Last Upload 
+            private IEnumerable<DateTime> GetUniqueMonths()
+        {
+            var uniqueMonths = _dbContext.WarehouseItems
+                .Select(w => w.LastUpload)
+                .Distinct()
+                .ToList();
+
+            return uniqueMonths;
+        }
+
+        private List<WarehouseItem> GetDataFromDatabase(string serialNo, bool? Isvmi, string accessPlant)
+        {
+            // Fetch data from the warehouse database (adjust this based on your actual database context)
+            var data = _dbContext.WarehouseItems.AsQueryable();
+
+            if (!string.IsNullOrEmpty(serialNo))
+            {
+                data = data.Where(w => w.SerialNo == serialNo);
+            }
+
+            if (Isvmi.HasValue)
+            {
+                data = data.Where(w => w.Isvmi == (Isvmi.Value ? "VMI" : "NonVMI"));
+            }
+
+            if (!string.IsNullOrEmpty(accessPlant))
+            {
+                data = data.Where(w => w.AccessPlant == accessPlant);
+            }
+
+            return data.OrderBy(w => w.SerialNo).ToList();
+        }
+
+
+
+
+
         [HttpPost]
         public IActionResult UploadFile(IFormFile file)
         {
@@ -60,7 +172,8 @@ namespace WebApplication_StockDataFixx.Controllers
             {
                 // Check if data with the same month, Sloc, and StockType already exists in the database
                 var existingData = _dbContext.WarehouseItems
-                    .Where(w => w.Month == item.Month &&
+                    .Where(w => w.Plant == item.Plant &&
+                                w.Month == item.Month &&
                                 w.Sloc == item.Sloc &&
                                 w.StockType == item.StockType)
                     .ToList();
@@ -92,90 +205,216 @@ namespace WebApplication_StockDataFixx.Controllers
 
 
 
-
+        // Action method to handle the request for checking the status of saved data
         [HttpGet]
-        public ActionResult ReportWarehouse(string serialNo, string selectedType, string selectedMonth)
+        public IActionResult CheckDataSaved()
         {
-            List<WarehouseItem> data;
+            // Example: Check if there is any WarehouseItem data in the database
+            bool dataSaved = _dbContext.WarehouseItems.Any();
 
-
-            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
-
-
-            // Fetch data based on the selectedType (VMI or NonVMI) and selectedMonth
-            if (selectedType == "VMI")
-            {
-                data = GetDataFromDatabase(serialNo, Isvmi: true, accessPlant);
-
-            }
-            else if (selectedType == "NON_VMI")
-            {
-                data = GetDataFromDatabase(serialNo, Isvmi: false, accessPlant);
-            }
-            else
-            {
-                data = GetDataFromDatabase(serialNo, Isvmi: null, accessPlant); // Fetch all data
-            }
-
-            if (!string.IsNullOrEmpty(accessPlant))
-            {
-                // Filter data based on the AccessPlant value
-                data = data.Where(w => w.AccessPlant == accessPlant).ToList();
-            }
-
-            // Jika menggunaka Kolom Month 
-            if (selectedMonth == "Latest Update")
-            {
-                // Filter data based on the highest month value
-                var highestMonth = data.Max(d => d.Month);
-                data = data.Where(d => d.Month == highestMonth).ToList();
-            }
-            else if (!string.IsNullOrEmpty(selectedMonth))
-            {
-                // Filter data based on the selected month
-                data = data.Where(w => w.Month == selectedMonth).ToList();
-            }
-            // jika menggunakan kolom Last Upload 
-            //if (selectedMonth != DateTime.MinValue)
-            //{
-            //    // Filter data based on the selected month
-            //    data = data.Where(w => w.LastUpload.Year == selectedMonth.Year &&
-            //                w.LastUpload.Month == selectedMonth.Month &&
-            //                w.LastUpload.Day == selectedMonth.Day &&
-            //                w.LastUpload.Hour == selectedMonth.Hour &&
-            //                w.LastUpload.Minute == selectedMonth.Minute &&
-            //                w.LastUpload.Second == selectedMonth.Second)
-            //   .ToList();
-            //}
-
-            ViewBag.SerialNo = serialNo;
-            ViewBag.LastUpload = GetUniqueMonths();
-
-            return View(data);
+            // Return the result in JSON format
+            return Json(new { saved = dataSaved });
         }
 
-        private IEnumerable<string> GetUniqueMonths()
-        {
-            var uniqueMonths = _dbContext.WarehouseItems
-                .Select(w => w.Month) // Assuming "Month" is the name of the column
-                .Distinct()
-                .OrderByDescending(month => month)
-                .ToList();
+        // ... (rest of the code)
 
-            return uniqueMonths;
+
+        // Main method for processing the uploaded Excel file based on the selected storage type
+        private List<WarehouseItem> ProcessExcelFile(IFormFile file, bool Isvmi)
+        {
+            List<WarehouseItem> uploadedData = new List<WarehouseItem>();
+
+            // Get the temporary file path to save the uploaded Excel file
+            string tempPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+            if (!Directory.Exists(tempPath))
+            {
+                Directory.CreateDirectory(tempPath);
+            }
+
+            string filePath = Path.Combine(tempPath, Guid.NewGuid().ToString() + Path.GetExtension(file.FileName));
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+
+            // Read data from the Excel file using UTF-8 encoding
+            using (var workbook = new XLWorkbook(filePath))
+            {
+                var worksheet = workbook.Worksheet(1); // Assuming data is in the first worksheet
+                var rows = worksheet.RowsUsed();
+
+                if (Isvmi)
+                {
+                    uploadedData = ProcessExcelFileVMI(rows);
+                }
+                else
+                {
+                    uploadedData = ProcessExcelFileNonVMI(rows);
+                }
+            }
+
+            // Delete the temporary file after reading the data
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+
+            return uploadedData;
+        }
+
+        private List<WarehouseItem> ProcessExcelFileVMI(IEnumerable<IXLRow> rows)
+        {
+            List<WarehouseItem> uploadedData = new List<WarehouseItem>();
+
+            foreach (var row in rows.Skip(1)) // Skip header row
+            {
+                int actualQty;
+                var actualQtyCell = row.Cell(11); // Corrected index for the Unrestr field
+                if (actualQtyCell.TryGetValue(out actualQty))
+                {
+                    // If Unrestr field contains a numeric value, set ActualQty to 0
+                    actualQty = 0;
+                }
+
+                string plant = row.Cell(1).Value.ToString();
+                string Description = "";
+
+                // Tambahkan logika kondisional di sini
+                switch (plant)
+                {
+                    case "RIFA":
+                        Description = "PMI-AUDIO";
+                        break;
+                    case "RIFC":
+                        Description = "PMI-AIR CONDITIONER (AC)";
+                        break;
+                    case "RIFR":
+                        Description = "PMI-REFRIGRATOR";
+                        break;
+                    case "RIFW":
+                        Description = "PMI-IAQ";
+                        break;
+                    default:
+                        Description = "Default Description"; // Deskripsi default jika tidak ada kondisi yang cocok
+                        break;
+                }
+
+                WarehouseItem item = new WarehouseItem
+                {
+                    WarehouseId = $"{row.Cell(1).Value.ToString()}{row.Cell(2).Value.ToString()}{row.Cell(3).Value.ToString()}{row.Cell(7).Value.ToString()}{row.Cell(9).Value.ToString()}",
+                    Plant = row.Cell(1).Value.ToString(),
+                    Sloc = row.Cell(2).Value.ToString(),
+                    Month = row.Cell(3).Value.ToString(),
+                    SerialNo = row.Cell(4).Value.ToString(),
+                    TagNo = row.Cell(5).Value.ToString(),
+                    StockType = row.Cell(6).Value.ToString(),
+                    VendorCode = row.Cell(7).Value.ToString(),
+                    VendorName = row.Cell(8).Value.ToString(),
+                    Material = row.Cell(9).Value.ToString(),
+                    MaterialDesc = row.Cell(10).Value.ToString(),
+                    ActualQty = actualQty,
+                    QualInsp = row.Cell(12).Value.ToString(),
+                    Blocked = row.Cell(13).Value.ToString(),
+                    Unit = row.Cell(14).Value.ToString(),
+                    IssuePlanner = row.Cell(15).Value.ToString(),
+                    Isvmi = "VMI",
+                    Description = Description,
+                    WrhId = $"WRH-{row.Cell(1).Value.ToString()}-{row.Cell(15).Value.ToString()}",
+                    AccessPlant = $"WRH-{row.Cell(1).Value.ToString()}"
+                };
+
+                uploadedData.Add(item);
+            }
+
+            return uploadedData;
+        }
+
+        private List<WarehouseItem> ProcessExcelFileNonVMI(IEnumerable<IXLRow> rows)
+        {
+            List<WarehouseItem> uploadedData = new List<WarehouseItem>();
+
+            foreach (var row in rows.Skip(1)) // Skip header row
+            {
+                int actualQty;
+                var actualQtyCell = row.Cell(8); // Corrected index for the Unrestr field
+                if (actualQtyCell.TryGetValue(out actualQty))
+                {
+                    // If Unrestr field contains a numeric value, set ActualQty to 0
+                    actualQty = 0;
+                }
+
+                string plant = row.Cell(1).Value.ToString();
+                string Description = "";
+
+                // Tambahkan logika kondisional di sini
+                switch (plant)
+                {
+                    case "RIFA":
+                        Description = "PMI-AUDIO";
+                        break;
+                    case "RIFC":
+                        Description = "PMI-AIR CONDITIONER (AC)";
+                        break;
+                    case "RIFR":
+                        Description = "PMI-REFRIGRATOR";
+                        break;
+                    case "RIFW":
+                        Description = "PMI-IAQ";
+                        break;
+                    default:
+                        Description = "Default Description"; // Deskripsi default jika tidak ada kondisi yang cocok
+                        break;
+                }
+
+                WarehouseItem item = new WarehouseItem
+                {
+                    WarehouseId = $"{row.Cell(1).Value.ToString()}{row.Cell(2).Value.ToString()}{row.Cell(3).Value.ToString()}{row.Cell(6).Value.ToString()}",
+                    Plant = row.Cell(1).Value.ToString(),
+                    Sloc = row.Cell(2).Value.ToString(),
+                    Month = row.Cell(3).Value.ToString(),
+                    SerialNo = row.Cell(4).Value.ToString(),
+                    TagNo = row.Cell(5).Value.ToString(),
+                    Material = row.Cell(6).Value.ToString(),
+                    MaterialDesc = row.Cell(6).Value.ToString(),
+                    ActualQty = actualQty,
+                    QualInsp = row.Cell(9).Value.ToString(),
+                    Blocked = row.Cell(10).Value.ToString(),
+                    Unit = row.Cell(11).Value.ToString(),
+                    IssuePlanner = row.Cell(12).Value.ToString(),
+                    StockType = "-", // Set to "-" as StockType, VendorCode, and VendorName are not available for NonVMI
+                    VendorCode = "-",
+                    VendorName = "-",
+                    Isvmi = "NonVMI",
+                    Description = Description,
+                    WrhId = $"WRH-{row.Cell(1).Value.ToString()}-{row.Cell(12).Value.ToString()}",
+                    AccessPlant = $"WRH-{row.Cell(1).Value.ToString()}"
+                };
+
+                uploadedData.Add(item);
+            }
+
+            return uploadedData;
+        }
+
+        private bool IsUploadedFileVMI(IEnumerable<IXLRow> rows)
+        {
+            // Check if the uploaded file is VMI
+            foreach (var row in rows.Skip(1)) // Skip header row
+            {
+                string stockType = row.Cell(6).Value.ToString();
+                string vendorCode = row.Cell(7).Value.ToString();
+                string vendorName = row.Cell(8).Value.ToString();
+
+                if (!string.IsNullOrWhiteSpace(stockType) && !string.IsNullOrWhiteSpace(vendorCode) && !string.IsNullOrWhiteSpace(vendorName))
+                {
+                    return true;  // If all three fields are not empty, the file is VMI
+                }
+            }
+            return false;
         }
 
 
-        // Jika Menggunakan Kolom Last Upload 
-        //private IEnumerable<DateTime> GetUniqueMonths()
-        //{
-        //    var uniqueMonths = _dbContext.WarehouseItems
-        //        .Select(w => w.LastUpload)
-        //        .Distinct()
-        //        .ToList();
-
-        //    return uniqueMonths;
-        //}
 
         [HttpGet]
         public IActionResult DownloadExcel(string serialNo)
@@ -273,240 +512,6 @@ namespace WebApplication_StockDataFixx.Controllers
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFileName);
         }
 
-
-        
-
-        // Action method to handle the request for checking the status of saved data
-        [HttpGet]
-        public IActionResult CheckDataSaved()
-        {
-            // Example: Check if there is any WarehouseItem data in the database
-            bool dataSaved = _dbContext.WarehouseItems.Any();
-
-            // Return the result in JSON format
-            return Json(new { saved = dataSaved });
-        }
-
-        // ... (rest of the code)
-
-
-        // Main method for processing the uploaded Excel file based on the selected storage type
-        private List<WarehouseItem> ProcessExcelFile(IFormFile file, bool Isvmi)
-        {
-            List<WarehouseItem> uploadedData = new List<WarehouseItem>();
-
-            // Get the temporary file path to save the uploaded Excel file
-            string tempPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-            if (!Directory.Exists(tempPath))
-            {
-                Directory.CreateDirectory(tempPath);
-            }
-
-            string filePath = Path.Combine(tempPath, Guid.NewGuid().ToString() + Path.GetExtension(file.FileName));
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                file.CopyTo(stream);
-            }
-
-            // Read data from the Excel file using UTF-8 encoding
-            using (var workbook = new XLWorkbook(filePath))
-            {
-                var worksheet = workbook.Worksheet(1); // Assuming data is in the first worksheet
-                var rows = worksheet.RowsUsed();
-
-                if (Isvmi)
-                {
-                    uploadedData = ProcessExcelFileVMI(rows);
-                }
-                else
-                {
-                    uploadedData = ProcessExcelFileNonVMI(rows);
-                }
-            }
-
-            // Delete the temporary file after reading the data
-            if (System.IO.File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
-            }
-
-            return uploadedData;
-        }
-
-        private List<WarehouseItem> ProcessExcelFileVMI(IEnumerable<IXLRow> rows)
-        {
-            List<WarehouseItem> uploadedData = new List<WarehouseItem>();
-
-            foreach (var row in rows.Skip(1)) // Skip header row
-            {
-                int actualQty;
-                var actualQtyCell = row.Cell(11); // Corrected index for the Unrestr field
-                if (actualQtyCell.TryGetValue(out actualQty))
-                {
-                    // If Unrestr field contains a numeric value, set ActualQty to 0
-                    actualQty = 0;
-                }
-                
-                string Description = "";
-
-                // Tambahkan logika kondisional di sini
-                switch (Description)
-                {
-                    case "RIFA":
-                        Description = "PMI-AUDIO";
-                        break;
-                    case "RIFC":
-                        Description = "PMI-AIR CONDITIONER (AC)";
-                        break;
-                    case "RIFR":
-                        Description = "PMI-REFRIGRATOR";
-                        break;
-                    case "RIFW":
-                        Description = "PMI-IAQ";
-                        break;
-                    default:
-                        Description = "Default Description"; // Deskripsi default jika tidak ada kondisi yang cocok
-                        break;
-                }
-
-                WarehouseItem item = new WarehouseItem
-                {
-                    WarehouseId = $"{row.Cell(1).Value.ToString()}{row.Cell(2).Value.ToString()}{row.Cell(3).Value.ToString()}{row.Cell(7).Value.ToString()}{row.Cell(9).Value.ToString()}",
-                    Plant = row.Cell(1).Value.ToString(),
-                    Sloc = row.Cell(2).Value.ToString(),
-                    Month = row.Cell(3).Value.ToString(),
-                    SerialNo = row.Cell(4).Value.ToString(),
-                    TagNo = row.Cell(5).Value.ToString(),
-                    StockType = row.Cell(6).Value.ToString(),
-                    VendorCode = row.Cell(7).Value.ToString(),
-                    VendorName = row.Cell(8).Value.ToString(),
-                    Material = row.Cell(9).Value.ToString(),
-                    MaterialDesc = row.Cell(10).Value.ToString(),
-                    ActualQty = actualQty,
-                    QualInsp = row.Cell(12).Value.ToString(),
-                    Blocked = row.Cell(13).Value.ToString(),
-                    Unit = row.Cell(14).Value.ToString(),
-                    IssuePlanner = row.Cell(15).Value.ToString(),
-                    Isvmi = "VMI",
-                    Description = Description,
-                    WrhId = $"WRH-{row.Cell(1).Value.ToString()}-{row.Cell(15).Value.ToString()}",
-                    AccessPlant = $"WRH-{row.Cell(1).Value.ToString()}"
-                };
-
-                uploadedData.Add(item);
-            }
-
-            return uploadedData;
-        }
-
-        private List<WarehouseItem> ProcessExcelFileNonVMI(IEnumerable<IXLRow> rows)
-        {
-            List<WarehouseItem> uploadedData = new List<WarehouseItem>();
-
-            foreach (var row in rows.Skip(1)) // Skip header row
-            {
-                int actualQty;
-                var actualQtyCell = row.Cell(8); // Corrected index for the Unrestr field
-                if (actualQtyCell.TryGetValue(out actualQty))
-                {
-                    // If Unrestr field contains a numeric value, set ActualQty to 0
-                    actualQty = 0;
-                }
-
-                string Description = "";
-
-                // Tambahkan logika kondisional di sini
-                switch (Description)
-                {
-                    case "RIFA":
-                        Description = "PMI-AUDIO";
-                        break;
-                    case "RIFC":
-                        Description = "PMI-AIR CONDITIONER (AC)";
-                        break;
-                    case "RIFR":
-                        Description = "PMI-REFRIGRATOR";
-                        break;
-                    case "RIFW":
-                        Description = "PMI-IAQ";
-                        break;
-                    default:
-                        Description = "Default Description"; // Deskripsi default jika tidak ada kondisi yang cocok
-                        break;
-                }
-
-                WarehouseItem item = new WarehouseItem
-                {
-                    WarehouseId = $"{row.Cell(1).Value.ToString()}{row.Cell(2).Value.ToString()}{row.Cell(3).Value.ToString()}{row.Cell(6).Value.ToString()}",
-                    Plant = row.Cell(1).Value.ToString(),
-                    Sloc = row.Cell(2).Value.ToString(),
-                    Month = row.Cell(3).Value.ToString(),
-                    SerialNo = row.Cell(4).Value.ToString(),
-                    TagNo = row.Cell(5).Value.ToString(),
-                    Material = row.Cell(6).Value.ToString(),
-                    MaterialDesc = row.Cell(6).Value.ToString(),
-                    ActualQty = actualQty,
-                    QualInsp = row.Cell(9).Value.ToString(),
-                    Blocked = row.Cell(10).Value.ToString(),
-                    Unit = row.Cell(11).Value.ToString(),
-                    IssuePlanner = row.Cell(12).Value.ToString(),
-                    StockType = "-", // Set to "-" as StockType, VendorCode, and VendorName are not available for NonVMI
-                    VendorCode = "-",
-                    VendorName = "-",
-                    Isvmi = "NonVMI",
-                    Description = Description,
-                    WrhId = $"WRH-{row.Cell(1).Value.ToString()}-{row.Cell(12).Value.ToString()}",
-                    AccessPlant = $"WRH-{row.Cell(1).Value.ToString()}"
-                };
-
-                uploadedData.Add(item);
-            }
-
-            return uploadedData;
-        }
-
-        private bool IsUploadedFileVMI(IEnumerable<IXLRow> rows)
-        {
-            // Check if the uploaded file is VMI
-            foreach (var row in rows.Skip(1)) // Skip header row
-            {
-                string stockType = row.Cell(6).Value.ToString();
-                string vendorCode = row.Cell(7).Value.ToString();
-                string vendorName = row.Cell(8).Value.ToString();
-
-                if (!string.IsNullOrWhiteSpace(stockType) && !string.IsNullOrWhiteSpace(vendorCode) && !string.IsNullOrWhiteSpace(vendorName))
-                {
-                    return true;  // If all three fields are not empty, the file is VMI
-                }
-            }
-            return false;
-        }
-
-
-
-        private List<WarehouseItem> GetDataFromDatabase(string serialNo, bool? Isvmi, string accessPlant)
-        {
-            // Fetch data from the database
-            var data = _dbContext.WarehouseItems.AsQueryable();
-
-            if (!string.IsNullOrEmpty(serialNo))
-            {
-                data = data.Where(w => w.SerialNo == serialNo);
-            }
-
-            if (Isvmi.HasValue)
-            {
-                data = data.Where(w => w.Isvmi == (Isvmi.Value ? "VMI" : "NonVMI"));
-            }
-
-            if (!string.IsNullOrEmpty(accessPlant))
-            {
-                data = data.Where(w => w.AccessPlant == accessPlant);
-            }
-
-            return data.OrderBy(w => w.SerialNo).ToList();
-        }
 
 
 
@@ -624,4 +629,29 @@ namespace WebApplication_StockDataFixx.Controllers
 }
 
 
+
+
+// Jika menggunaka Kolom Month 
+//if (selectedMonth == "Latest Update")
+//{
+//    // Filter data based on the highest month value
+//    var highestMonth = data.Max(d => d.Month);
+//    data = data.Where(d => d.Month == highestMonth).ToList();
+//}
+//else if (!string.IsNullOrEmpty(selectedMonth))
+//{
+//    // Filter data based on the selected month
+//    data = data.Where(w => w.Month == selectedMonth).ToList();
+//}
+
+//private IEnumerable<string> GetUniqueMonths()
+//{
+//    var uniqueMonths = _dbContext.WarehouseItems
+//        .Select(w => w.Month) // Assuming "Month" is the name of the column
+//        .Distinct()
+//        .OrderByDescending(month => month)
+//        .ToList();
+
+//    return uniqueMonths;
+//}
 

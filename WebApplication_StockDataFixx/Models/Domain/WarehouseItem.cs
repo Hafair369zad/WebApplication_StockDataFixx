@@ -11,6 +11,7 @@ public partial class WarehouseItem
 {
     [Key]
     [Column("WAREHOUSE_ID")]
+    [StringLength(225)]
     public string WarehouseId { get; set; } = null!;
 
     [Column("PLANT")]

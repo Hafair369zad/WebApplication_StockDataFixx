@@ -144,25 +144,25 @@
             <div class="select-month" style="margin-left: 10px;">
                 <label style="margin-right: 5px;">Pilih Bulan :</label>
                 
-                <select id="selectedMonth" onchange="filterDataByMonth()">
+
+                @*jika menggunakan kolom Month*@
+                @*<select id="selectedMonth" onchange="filterDataByMonth()">
                     <option value="Latest Update">Update Terbaru</option>
                     @foreach (var month in ViewBag.LastUpload)
                     {
                         <option value="@month">@month</option>
                     }
-                </select>
-
-
+                </select>*@
 
 
                 @*jika menggunakan kolom last Upload*@
-                @*<select id="selectedMonth" onchange="filterDataByMonth()">
+                <select id="selectedMonth" onchange="filterDataByMonth()">
                     <option value="Latest Update">Bulan ini (sedang berlangsung)</option>
                     @foreach (var month in ViewBag.LastUpload)
                     {
                         <option value="@month.ToString("yyyy-MM")">@month.ToString("MMMM yyyy")</option>
                     }
-                </select>*@
+                </select>
 
             </div>
 
