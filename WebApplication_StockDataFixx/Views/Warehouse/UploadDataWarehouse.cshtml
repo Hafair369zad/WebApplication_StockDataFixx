@@ -218,7 +218,7 @@
             checkDataSaved(); // Panggil fungsi untuk cek data sudah disimpan dan tampilkan popup jika ya
         }
 
-       
+
 
 
 
@@ -241,7 +241,6 @@
                 });
         }
 
-
         // Tambahkan event listener untuk form submit
         document.getElementById("myForm").addEventListener("submit", function (event) {
             event.preventDefault(); // Hentikan submit default
@@ -257,20 +256,44 @@
 
 
 
-@* //function submitFormAndShowPopup() {
+      @* ////// Function baru
+        //function checkDataSaved() {
+        //    fetch("/Warehouse/CheckDataSaved")
+        //        .then(response => response.json())
+        //        .then(data => {
+        //            if (data.saved) {
+        //                // Data successfully saved, show success popup
+        //                document.getElementById("popup-message").textContent = "File Anda telah berhasil diunggah dan data telah disimpan ke dalam database.";
+        //                showPopup();
+        //            } else {
+        //                // Data not yet saved, check again after a delay (e.g., 1 second)
+        //                setTimeout(checkDataSaved, 1000);
+        //            }
+
+        //            // Close the storage type mismatch popup if it's open
+        //            closePopupMismatch();
+        //        })
+        //        .catch(error => {
+        //            console.error('Error checking data saved:', error);
+        //        });
+        //}
+
+
+        //// Fuction baru
+        //function submitFormAndShowPopup() {
         //    const selectedStorageType = document.querySelector('input[name="Storage_Type"]:checked');
         //    if (!selectedStorageType) {
         //        showStorageTypeAlert();
         //        return;
         //    }
 
-        //    const uploadedStorageType = document.getElementById('storageType').value;
-
-        //    if (selectedStorageType.value !== uploadedStorageType) {
+        //    const detectedStorageType = document.getElementById('storageType').value;
+        //    if (selectedStorageType.value !== detectedStorageType) {
         //        showStorageTypeMismatchPopup();
         //        return;
         //    }
 
-        //    document.getElementById("myForm").submit(); // Submit the form
-        //    checkDataSaved(); // Call the function to check if data is saved and show popup if yes
-        //}*@
+        //    document.getElementById("myForm").submit(); // Submit form
+        //    checkDataSaved(); // Check data saved and show popup if successful
+        //}
+*@

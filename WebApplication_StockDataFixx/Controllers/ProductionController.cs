@@ -168,6 +168,12 @@ namespace WebApplication_StockDataFixx.Controllers
             // Dapatkan data ProductionItems
             var data = _dbContext.ProductionItems.ToList();
 
+            if (data.Count == 0)
+            {
+                // Jika data kosong, kembalikan daftar kosong
+                return new List<ProductionItem>();
+            }
+
             // Temukan bulan dan tahun terbaru pada field "LastUpload"
             var latestUploadDate = data.Max(item => item.LastUpload);
 

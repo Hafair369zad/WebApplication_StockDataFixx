@@ -41,13 +41,6 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
 
-
-
-
-       
-
-
-
         [HttpGet]
         public ActionResult ReportWarehouse(string serialNo, string selectedType, string selectedMonth)
         {
@@ -106,26 +99,27 @@ namespace WebApplication_StockDataFixx.Controllers
                 {
                 // Handle the case where there are no elements in the filtered data
                 // You can choose to return an empty list or handle it as needed.
-                throw new ArgumentException("selectedMonth is not in the correct format.");
+                //throw new ArgumentException("selectedMonth is not in the correct format.");
             }
 
                 ViewBag.SerialNo = serialNo;
-                ViewBag.LastUpload = GetUniqueMonths();
+                ViewBag.LastUpload = GetUniqueMonths(accessPlant, selectedType);
 
                 return View(data);
             }
 
 
             // Jika Menggunakan Kolom Last Upload 
-            private IEnumerable<DateTime> GetUniqueMonths()
-        {
-            var uniqueMonths = _dbContext.WarehouseItems
-                .Select(w => w.LastUpload)
-                .Distinct()
-                .ToList();
+            private IEnumerable<DateTime> GetUniqueMonths(string accessPlant, string selectedType)
+            {
+                var uniqueMonths = _dbContext.WarehouseItems
+                    .Where(w => w.AccessPlant == accessPlant && (selectedType == "VMI" ? w.Isvmi == "VMI" : w.Isvmi == "NonVMI"))
+                    .Select(w => w.LastUpload)
+                    .Distinct()
+                    .ToList();
 
-            return uniqueMonths;
-        }
+                return uniqueMonths;
+            }
 
         private List<WarehouseItem> GetDataFromDatabase(string serialNo, bool? Isvmi, string accessPlant)
         {
