@@ -282,19 +282,7 @@ namespace WebApplication_StockDataFixx.Controllers
             DateTime now = DateTime.Now;
             DateTime lastMonth = now.AddMonths(-1);
 
-            IQueryable<ProductionItem> data = _dbContext.ProductionItems;
 
-            if (month == "thisMonth")
-            {
-                data = data.Where(item => item.LastUpload.Month == now.Month && item.LastUpload.Year == now.Year);
-            }
-            else if (month == "lastMonth")
-            {
-                data = data.Where(item => item.LastUpload.Month == lastMonth.Month && item.LastUpload.Year == lastMonth.Year);
-            }
-
-            return data.OrderBy(w => w.SerialNo).ToList();
-        }
 
 
         //  ///////////// Chart Data //////////////
