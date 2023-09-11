@@ -132,8 +132,10 @@
         var js = jQuery.noConflict(true);
      
         js(document).ready(function () {
-            var activeType = "Production";
-            var activeMonth = "Latest Update"; // Default active month
+            //var activeType = "Production";
+            //var activeMonth = "Latest Update"; // Default active month
+
+
 
 
             function loadDefaultView() {
@@ -170,7 +172,8 @@
                     type: 'GET',
                     success: function (result) {
                         js('#partial-container').html(result);
-                        updateMonthDropdown(selectedType); // Update menu dropdown bulan
+                        //updateMonthDropdown(selectedType);  // jika dikatifkan ini ,Plugin Datatablesnya tidak berfungsi 
+                        initializeDataTables(selectedType);
                     },
                     error: function (error) {
                         console.log(error);
@@ -198,22 +201,38 @@
             
 
             // Memuat tampilan parsial saat halaman dimuat
+            //js(document).ready(function () {
+            //    loadDefaultView();
+            //});
+
+
+            //// Panggil fungsi untuk memuat tampilan awal
+            //loadDefaultView();
+
+            //js("#selectedType").change(function () {
+            //    activeType = js(this).val();
+            //    loadDefaultView();
+            //});
+
+            //js("#selectedMonth").change(function () {
+            //    activeMonth = js(this).val();
+            //    loadDefaultView();
+            //});
+
+            // Memuat tampilan parsial saat halaman dimuat
             js(document).ready(function () {
+                initializeDataTables(); // Inisialisasi DataTables saat halaman dimuat
                 loadDefaultView();
-            });
 
+                js("#selectedType").change(function () {
+                    activeType = js(this).val();
+                    loadDefaultView();
+                });
 
-            // Panggil fungsi untuk memuat tampilan awal
-            loadDefaultView();
-
-            js("#selectedType").change(function () {
-                activeType = js(this).val();
-                loadDefaultView();
-            });
-
-            js("#selectedMonth").change(function () {
-                activeMonth = js(this).val();
-                loadDefaultView();
+                js("#selectedMonth").change(function () {
+                    activeMonth = js(this).val();
+                    loadDefaultView();
+                });
             });
 
             // Fungsi untuk menginisialisasi DataTables
