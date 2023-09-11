@@ -7,6 +7,7 @@ using WebApplication_StockDataFixx.Database;
 using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
 using NPOI.SS.Formula.Functions;
+using DocumentFormat.OpenXml.Vml.Spreadsheet;
 
 namespace WebApplication_StockDataFixx.Controllers
 {
@@ -148,6 +149,7 @@ namespace WebApplication_StockDataFixx.Controllers
 
 
 
+        // Method lama belum ada popup 
         [HttpPost]
         public IActionResult UploadFile(IFormFile file)
         {
@@ -198,19 +200,41 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
 
-
-        // Action method to handle the request for checking the status of saved data
-        [HttpGet]
-        public IActionResult CheckDataSaved()
+        private bool IsUploadedFileNonVMI(IEnumerable<IXLRow> rows)
         {
-            // Example: Check if there is any WarehouseItem data in the database
-            bool dataSaved = _dbContext.WarehouseItems.Any();
+            // Check if the uploaded file is VMI
+            foreach (var row in rows.Skip(1)) // Skip header row
+            {
+                string stockType = row.Cell(6).Value.ToString();
+                string vendorCode = row.Cell(7).Value.ToString();
+                string vendorName = row.Cell(8).Value.ToString();
 
-            // Return the result in JSON format
-            return Json(new { saved = dataSaved });
+                if (string.IsNullOrWhiteSpace(stockType) && string.IsNullOrWhiteSpace(vendorCode) && string.IsNullOrWhiteSpace(vendorName))
+                {
+                    return true;  // If all three fields are not empty, the file is VMI
+                }
+            }
+            return false;
         }
 
-        // ... (rest of the code)
+
+        private bool IsUploadedFileVMI(IEnumerable<IXLRow> rows)
+        {
+            // Check if the uploaded file is VMI
+            foreach (var row in rows.Skip(1)) // Skip header row
+            {
+                string stockType = row.Cell(6).Value.ToString();
+                string vendorCode = row.Cell(7).Value.ToString();
+                string vendorName = row.Cell(8).Value.ToString();
+
+                if (!string.IsNullOrWhiteSpace(stockType) && !string.IsNullOrWhiteSpace(vendorCode) && !string.IsNullOrWhiteSpace(vendorName))
+                {
+                    return true;  // If all three fields are not empty, the file is VMI
+                }
+            }
+            return false;
+        }
+
 
 
         // Main method for processing the uploaded Excel file based on the selected storage type
@@ -285,7 +309,7 @@ namespace WebApplication_StockDataFixx.Controllers
                         break;
                     case "RIFR":
                         Description = "PMI-REFRIGRATOR";
-                        break;
+                        break; 
                     case "RIFW":
                         Description = "PMI-IAQ";
                         break;
@@ -391,24 +415,22 @@ namespace WebApplication_StockDataFixx.Controllers
             return uploadedData;
         }
 
-        private bool IsUploadedFileVMI(IEnumerable<IXLRow> rows)
+        // Action method to handle the request for checking the status of saved data
+        [HttpGet]
+        public IActionResult CheckDataSaved()
         {
-            // Check if the uploaded file is VMI
-            foreach (var row in rows.Skip(1)) // Skip header row
-            {
-                string stockType = row.Cell(6).Value.ToString();
-                string vendorCode = row.Cell(7).Value.ToString();
-                string vendorName = row.Cell(8).Value.ToString();
+            // Example: Check if there is any WarehouseItem data in the database
+            bool dataSaved = _dbContext.WarehouseItems.Any();
 
-                if (!string.IsNullOrWhiteSpace(stockType) && !string.IsNullOrWhiteSpace(vendorCode) && !string.IsNullOrWhiteSpace(vendorName))
-                {
-                    return true;  // If all three fields are not empty, the file is VMI
-                }
-            }
-            return false;
+            // Return the result in JSON format
+            return Json(new { saved = dataSaved });
         }
 
 
+
+
+
+        // Download Excel 
 
         [HttpGet]
         public IActionResult DownloadExcel(string serialNo)
@@ -523,8 +545,10 @@ namespace WebApplication_StockDataFixx.Controllers
                 return BadRequest("Selected month is not a valid integer.");
             }
 
-            int vmiCount = _dbContext.WarehouseItems.Count(item => item.Isvmi == "VMI" && item.LastUpload.Month == selectedMonthValue);
-            int nonVmiCount = _dbContext.WarehouseItems.Count(item => item.Isvmi == "NonVMI" && item.LastUpload.Month == selectedMonthValue);
+            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
+            int vmiCount = _dbContext.WarehouseItems.Count(item => item.Isvmi == "VMI" && item.LastUpload.Month == selectedMonthValue && item.AccessPlant == accessPlant);
+            int nonVmiCount = _dbContext.WarehouseItems.Count(item => item.Isvmi == "NonVMI" && item.LastUpload.Month == selectedMonthValue && item.AccessPlant == accessPlant);
 
             var chartData = new[] { vmiCount, nonVmiCount };
 
@@ -544,12 +568,14 @@ namespace WebApplication_StockDataFixx.Controllers
                 return BadRequest("Selected month is not a valid integer.");
             }
 
+            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
             int vmiActualQty = _dbContext.WarehouseItems
-                .Where(item => item.Isvmi == "VMI" && item.LastUpload.Month == selectedMonthValue)
+                .Where(item => item.Isvmi == "VMI" && item.LastUpload.Month == selectedMonthValue && item.AccessPlant == accessPlant)
                 .Sum(item => item.ActualQty);
 
             int nonVmiActualQty = _dbContext.WarehouseItems
-                .Where(item => item.Isvmi == "NonVMI" && item.LastUpload.Month == selectedMonthValue)
+                .Where(item => item.Isvmi == "NonVMI" && item.LastUpload.Month == selectedMonthValue && item.AccessPlant == accessPlant)
                 .Sum(item => item.ActualQty);
 
             var chartData = new[] { vmiActualQty, nonVmiActualQty };
@@ -582,30 +608,32 @@ namespace WebApplication_StockDataFixx.Controllers
                 return BadRequest("Selected month is not a valid integer.");
             }
 
+            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
             try
             {
                 int totalKUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "K" && item.Isvmi == isvmiType)
+                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "K" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
                     .Count();
 
                 int totalPcsUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "PC" && item.Isvmi == isvmiType)
+                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "PC" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
                     .Count();
 
                 int totalSetUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "SET" && item.Isvmi == isvmiType)
+                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "SET" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
                     .Count();
 
                 int totalGUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "G" && item.Isvmi == isvmiType)
+                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "G" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
                     .Count();
 
                 int totalKGUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "KG" && item.Isvmi == isvmiType)
+                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "KG" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
                     .Count();
 
                 int totalMUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M" && item.Isvmi == isvmiType)
+                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
                     .Count();
 
                 var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits };
@@ -649,3 +677,107 @@ namespace WebApplication_StockDataFixx.Controllers
 //    return uniqueMonths;
 //}
 
+
+
+// Method baru ada poppup
+//[HttpPost]
+//public IActionResult UploadFile(IFormFile file)
+//{
+//    if (file == null || file.Length <= 0)
+//    {
+//        TempData["Message"] = "Error: File tidak ada atau kosong.";
+//        return RedirectToAction("UploadDataWarehouse");
+//    }
+
+//    bool Isvmi = IsUploadedFileVMI(file); // Detect file type based on content
+
+//    // Check the selected storage type
+//    bool isVMIStorage = Request.Form["Storage_Type"] == "VMI";
+
+//    if (Isvmi && isVMIStorage)
+//    {
+//        TempData["Message"] = "FileUploaded"; // Display "FileUploaded" popup
+//    }
+//    else if (Isvmi && !isVMIStorage)
+//    {
+//        TempData["Message"] = "Mismatch Type Storage"; // Display "Mismatch Type Storage" popup
+//        return RedirectToAction("UploadDataWarehouse"); // Redirect back to the upload page
+//    }
+//    else if (!Isvmi && !isVMIStorage)
+//    {
+//        TempData["Message"] = "FileUploaded"; // Display "FileUploaded" popup
+//    }
+//    else // !Isvmi && isVMIStorage
+//    {
+//        TempData["Message"] = "Mismatch Type Storage"; // Display "Mismatch Type Storage" popup
+//        return RedirectToAction("UploadDataWarehouse"); // Redirect back to the upload page
+//    }
+
+//    List<WarehouseItem> uploadedData = ProcessExcelFile(file, Isvmi);
+
+//    // Save the data to the database only if the selected storage type matches
+//    if (Isvmi && isVMIStorage || !Isvmi && !isVMIStorage)
+//    {
+//        foreach (var item in uploadedData)
+//        {
+//            // Check if data with the same month, Sloc, and StockType already exists in the database
+//            var existingData = _dbContext.WarehouseItems
+//                .Where(w => w.Plant == item.Plant &&
+//                            w.Month == item.Month &&
+//                            w.Sloc == item.Sloc &&
+//                            w.StockType == item.StockType)
+//                .ToList();
+
+//            if (existingData.Count > 0)
+//            {
+//                // If data with the same month, Sloc, and StockType already exists, replace the old data with the new data
+//                foreach (var existingItem in existingData)
+//                {
+//                    _dbContext.WarehouseItems.Remove(existingItem); // Remove the old data
+//                }
+//            }
+
+//            // Add the new data to the database
+//            _dbContext.WarehouseItems.Add(item);
+//        }
+
+//        _dbContext.SaveChanges();
+//    }
+
+//    // Serialize the uploadedData list to JSON before storing it in TempData
+//    string jsonUploadedData = JsonConvert.SerializeObject(uploadedData);
+
+//    // Store the JSON data in TempData
+//    TempData["UploadedData"] = jsonUploadedData;
+
+//    // Redirect to the ReportWarehouse action
+//    return RedirectToAction("ReportWarehouse");
+//}
+
+//// Corrected method to detect the file type based on content
+//private bool IsUploadedFileVMI(IFormFile file)
+//{
+//    using (var stream = file.OpenReadStream())
+//    {
+//        using (var workbook = new XLWorkbook(stream))
+//        {
+//            var worksheet = workbook.Worksheet(1); // Assuming data is in the first worksheet
+//            var rows = worksheet.RowsUsed();
+
+//            // Check if the uploaded file is VMI
+//            foreach (var row in rows.Skip(1)) // Skip header row
+//            {
+//                string stockType = row.Cell(6).Value.ToString();
+//                string vendorCode = row.Cell(7).Value.ToString();
+//                string vendorName = row.Cell(8).Value.ToString();
+
+//                if (!string.IsNullOrWhiteSpace(stockType) && !string.IsNullOrWhiteSpace(vendorCode) && !string.IsNullOrWhiteSpace(vendorName))
+//                {
+//                    return true;  // If all three fields are not empty, the file is VMI
+//                }
+//            }
+//        }
+//    }
+
+//    return false;
+//}

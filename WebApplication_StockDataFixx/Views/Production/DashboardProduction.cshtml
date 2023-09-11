@@ -90,6 +90,18 @@
             });
     }
 
+    //function fetchChart2Data() {
+    //    fetch(`/Production/GetChart2Data?selectedMonth=${selectedMonth}&accessPlant=${accessPlant}`)
+    //        .then(response => response.json())
+    //        .then(data => {
+    //            updateChart2(data);
+    //        })
+    //        .catch(error => {
+    //            console.error('Error fetching chart data:', error);
+    //        });
+    //}
+
+
     // Function to fetch chart data from the server for the third chart
     function fetchChart3Data() {
         fetch(`/Production/GetChart3Data?selectedMonth=${selectedMonth}`)
@@ -102,8 +114,7 @@
             });
     }
 
-
-
+ 
     // Function to update Chart 1 for VMI
     function updateChart1(data) {
         const ctx = chart1.getContext('2d');
@@ -114,12 +125,12 @@
         window.chart1Instance = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Total All Product'],
+                labels: ['Total Product(Month)', 'Total All Product'],
                 datasets: [{
                     label: `Total All Product for ${getMonthName(selectedMonth)}`,
-                    data: [data.TotalItems], // Menggunakan data.TotalItems
+                    data: data, // Menggunakan data.TotalItems
                     borderWidth: 2,
-                    backgroundColor: ['#36A2EB']
+                    backgroundColor: ['#36A2EB', '#FF6384']
                 }]
             },
             options: {
@@ -141,12 +152,12 @@
         window.chart2Instance = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Total ActualQty'],
+                labels: ['Ttl ActualQty(Month)', 'Total All ActualQty'],
                 datasets: [{
                     label: `Total ActualQty for ${getMonthName(selectedMonth)}`,
-                    data: [data.TotalActualQty], // Menggunakan data.TotalItems
+                    data: data, // Menggunakan data.TotalItems
                     borderWidth: 2,
-                    backgroundColor: ['#FF6384']
+                    backgroundColor: ['#36A2EB', '#FF6384']
                 }]
             },
             options: {
@@ -217,7 +228,7 @@
 
     function updateCharts() {
         fetchChartData();
-        fetchChart2Data();
+        fetchChart2Data()
         fetchChart3Data();
     }
 

@@ -13,6 +13,7 @@
     <meta name="author" content="" />
     <title>@ViewBag.Title</title>
 
+
     <!--Cdn Files-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
@@ -42,19 +43,16 @@
 
             <div class="select-month" style="margin-left: 10px;">
                 <label style="margin-right: 5px;">Pilih Bulan :</label>
-                <select id="selectedMonth">
-                    <option value="thisMonth">Bulan ini (sedang berlangsung)</option>
-                    <option value="lastMonth">Bulan lalu</option>
-                </select>
-            </div>
 
-            <div class="select-month" style="margin-left: 10px;">
-                <label style="margin-right: 5px;">Pilih Tahun :</label>
-                <select id="selectedMonth">
-                    <option value="thisYear">Tahun ini (sedang berlangsung)</option>
-                    <option value="lastYear">Tahun lalu</option>
+                <select id="selectedMonth" onchange="loadDefaultView()">
+                    <option value="Latest Update">Bulan ini (sedang berlangsung)</option>
+                    @foreach (var month in ViewBag.MonthList)
+                    {
+                        <option value="@month.Value">@month.Text</option>
+                    }
                 </select>
             </div>
+         
 
             <div class="select-month" style="margin-left: 10px;">
                 <label style="margin-right: 5px;">Pilih Tipe :</label>
@@ -70,6 +68,22 @@
     <br />
 
     <div class="row mb-10" style="margin-top:60px;">
+
+        <div class="row d-flex align-items-start">
+            <div class="col">
+                <div class="selected-type-box" style="margin-left: 10px; margin-bottom: 50px; ">
+                    <strong>Selected Type: </strong>
+                    <span id="selectedTypeBox"></span>
+                </div>
+
+                <div class="selected-month-box" style="margin-left: 10px; width: 300px;">
+                    <strong>Selected Month: </strong>
+                    <span id="selectedMonthBox"></span>
+                </div>
+            </div>
+        </div>
+
+
         <div class="col-md-12">
             <div id="partial-container"></div>
         </div>
@@ -114,25 +128,80 @@
         }
 
 
+     
         var js = jQuery.noConflict(true);
-
+     
         js(document).ready(function () {
             var activeType = "Production";
-            var activeMonth = "thisMonth"; // Default active month
+            var activeMonth = "Latest Update"; // Default active month
+
 
             function loadDefaultView() {
+
+                var selectedType = document.getElementById("selectedType").value;
+                var selectedMonth = document.getElementById("selectedMonth").value;
+
+
+                initializeDataTables(selectedType);
+
+
+                var selectedTypeBox = document.getElementById("selectedTypeBox");
+                selectedTypeBox.textContent = selectedType;
+                var selectedMonthBox = document.getElementById("selectedMonthBox");
+                selectedMonthBox.textContent = selectedMonth;
+
+
+               
+                // lama
+                //$.ajax({
+                //    url: '/Management/PartialPage?type=' + selectedType + '&selectedMonth=' + selectedMonth,
+                //    type: 'GET',
+                //    success: function (result) {
+                //        $('#partial-container').html(result);
+                //    },
+                //    error: function (error) {
+                //        console.log(error);
+                //    }
+                //});
+
+                // baru
                 js.ajax({
-                    type: "GET",
-                    url: "/Management/PartialPage?type=" + activeType + "&month=" + activeMonth,
-                    success: function (data) {
-                        js("#partial-container").html(data);
-                        initializeDataTables(activeType); // Initialize DataTables after loading content
+                    url: '/Management/PartialPage?type=' + selectedType + '&selectedMonth=' + selectedMonth,
+                    type: 'GET',
+                    success: function (result) {
+                        js('#partial-container').html(result);
+                        updateMonthDropdown(selectedType); // Update menu dropdown bulan
                     },
-                    error: function () {
-                        alert("Error occurred while fetching data from the server.");
+                    error: function (error) {
+                        console.log(error);
                     }
                 });
             }
+
+            // baru 
+            function updateMonthDropdown(selectedType) {
+                // Mengambil daftar bulan dari input tersembunyi yang telah di-update di Controller
+                var monthOptions = JSON.parse(document.getElementById("monthOptions").value);
+
+                // Mengosongkan menu dropdown bulan
+                var monthDropdown = document.getElementById("selectedMonth");
+                monthDropdown.innerHTML = '';
+
+                // Menambahkan pilihan bulan sesuai dengan daftar bulan yang diambil dari Controller
+                for (var i = 0; i < monthOptions.length; i++) {
+                    var option = document.createElement("option");
+                    option.value = monthOptions[i].value;
+                    option.text = monthOptions[i].text;
+                    monthDropdown.appendChild(option);
+                }
+            }
+            
+
+            // Memuat tampilan parsial saat halaman dimuat
+            js(document).ready(function () {
+                loadDefaultView();
+            });
+
 
             // Panggil fungsi untuk memuat tampilan awal
             loadDefaultView();
@@ -195,12 +264,9 @@
             js(".btn.btn-primary").click(function () {
                 downloadExcel();
             });
-
-            
         });
     </script>
-
-
-
 </body>
 </html>
+
+

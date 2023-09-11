@@ -15,6 +15,7 @@ using NPOI.SS.UserModel;
 using ClosedXML.Excel;
 using WebApplication_StockDataFixx.Database;
 using System.Globalization;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace WebApplication_StockDataFixx.Controllers
 {
@@ -155,7 +156,7 @@ namespace WebApplication_StockDataFixx.Controllers
             }
 
             // Get unique months from the uploaded data
-            IEnumerable<DateTime> uniqueMonths = GetUniqueMonths();
+            IEnumerable<DateTime> uniqueMonths = GetUniqueMonths(accessPlant);
 
             // Pass the unique months to the view
             ViewBag.UniqueMonths = uniqueMonths;
@@ -212,9 +213,10 @@ namespace WebApplication_StockDataFixx.Controllers
 
 
 
-        private IEnumerable<DateTime> GetUniqueMonths()
+        private IEnumerable<DateTime> GetUniqueMonths(string accessPlant)
         {
             var uniqueMonths = _dbContext.ProductionItems
+                .Where(w => w.AccessPlant == accessPlant)
                 .Select(w => w.LastUpload.Date)
                 .Distinct()
                 .ToList();
@@ -376,7 +378,7 @@ namespace WebApplication_StockDataFixx.Controllers
 
             string accessPlant = ViewBag.AccessPlant?.ToString() ?? "";
             // Fetch data from the database based on the serial number
-            List<ProductionItem> data = GetDataFromDatabase(serialNo);
+            List<ProductionItem> data = GetDataFromDatabaseDown(serialNo);
 
             // Create the Excel file
             var workbook = new XLWorkbook();
@@ -423,28 +425,37 @@ namespace WebApplication_StockDataFixx.Controllers
 
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFileName);
         }
+
+
+
+        private List<ProductionItem> GetDataFromDatabaseDown(string serialNo)
+        {
+            // Fetch data from the database
+            var data = _dbContext.ProductionItems.AsQueryable();
+
+            if (!string.IsNullOrEmpty(serialNo))
+            {
+                data = data.Where(w => w.SerialNo == serialNo);
+            }
+
+            return data.OrderBy(w => w.SerialNo).ToList();
+        }
+
         // End of the DownloadExcel method/
 
 
 
-        //private List<ProductionItem> GetDataFromDatabaseForDownload(string serialNo)
-        //{
-        //    // Fetch data from the database
-        //    var data = _dbContext.ProductionItems.AsQueryable();
 
-        //    if (!string.IsNullOrEmpty(serialNo))
-        //    {
-        //        data = data.Where(w => w.SerialNo == serialNo);
-        //    }
 
-        //    return data.OrderBy(w => w.SerialNo).ToList();
-        //}
+
+
 
 
         //  ///////////// Chart Data //////////////
 
-
         // Iinitial GetChartData method : to 
+
+
         [HttpGet]
         public IActionResult GetChartData(string selectedMonth)
         {
@@ -457,10 +468,15 @@ namespace WebApplication_StockDataFixx.Controllers
             {
                 return BadRequest("Selected month is not a valid integer.");
             }
+            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
-            int totalProductionItems = _dbContext.ProductionItems.Count(item => item.LastUpload.Month == selectedMonthValue);
+            int totalProductionItems = _dbContext.ProductionItems
+                .Where(item => item.LastUpload.Month == selectedMonthValue && item.AccessPlant == accessPlant)
+                .Count();
 
-            var chartData = new { TotalItems = totalProductionItems };
+            int totalAllProductionItems = _dbContext.ProductionItems.Count();
+
+            var chartData = new[] {totalProductionItems, totalAllProductionItems };
 
             return Json(chartData);
         }
@@ -479,16 +495,19 @@ namespace WebApplication_StockDataFixx.Controllers
                 return BadRequest("Selected month is not a valid integer.");
             }
 
+            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
             int monthlyActualQty = _dbContext.ProductionItems
-               .Where(item => item.LastUpload.Month == selectedMonthValue)
+               .Where(item => item.LastUpload.Month == selectedMonthValue && item.AccessPlant == accessPlant)
                .Sum(item => item.ActualQty);
 
-            var chartData = new { TotalActualQty = monthlyActualQty };
+            int AllActualQty = _dbContext.ProductionItems
+               .Sum(item => item.ActualQty);
+
+            var chartData = new[] {monthlyActualQty, AllActualQty };
 
             return Json(chartData);
         }
-
-
 
 
         [HttpGet]
@@ -504,30 +523,33 @@ namespace WebApplication_StockDataFixx.Controllers
                 return BadRequest("Selected month is not a valid integer.");
             }
 
+            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
+
             try
             {
                 int totalKUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "K")
+                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "K" && item.AccessPlant == accessPlant)
                     .Count();
 
                 int totalPcsUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "PC")
+                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "PC" && item.AccessPlant == accessPlant)
                     .Count();
 
                 int totalSetUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "SET")
+                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "SET" && item.AccessPlant == accessPlant)
                     .Count();
 
                 int totalGUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "G")
+                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "G" && item.AccessPlant == accessPlant)
                     .Count();
 
                 int totalKGUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "KG")
+                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "KG" && item.AccessPlant == accessPlant)
                     .Count();
 
                 int totalMUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M")
+                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M" && item.AccessPlant == accessPlant)
                     .Count();
 
                 var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits };

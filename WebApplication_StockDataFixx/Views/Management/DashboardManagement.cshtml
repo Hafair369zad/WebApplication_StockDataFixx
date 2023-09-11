@@ -331,12 +331,12 @@
         window.chart5Instance = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Total All Product'],
+                labels: ['Total Product(Month)', 'Total All Product'],
                 datasets: [{
                     label: `Total All Product for ${getMonthName(selectedMonth)}`,
-                    data: [data.TotalItems], // Menggunakan data.TotalItems
+                    data: data, // Menggunakan data.TotalItems
                     borderWidth: 2,
-                    backgroundColor: ['#36A2EB']
+                    backgroundColor: ['#36A2EB', '#FF6384']
                 }]
             },
             options: {
@@ -358,12 +358,12 @@
         window.chart6Instance = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Total ActualQty'],
+                labels: ['Ttl ActualQty(Month)', 'Total All ActualQty'],
                 datasets: [{
                     label: `Total ActualQty for ${getMonthName(selectedMonth)}`,
-                    data: [data.TotalActualQty], // Menggunakan data.TotalItems
+                    data: data, // Menggunakan data.TotalItems
                     borderWidth: 2,
-                    backgroundColor: ['#FF6384']
+                    backgroundColor: ['#36A2EB', '#FF6384']
                 }]
             },
             options: {

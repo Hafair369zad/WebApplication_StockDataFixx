@@ -52,6 +52,16 @@
                 $('.l-navbar').toggleClass('l-navbar-active');
             });
         });
+
+        function confirmLogout() {
+            // Menampilkan pop-up konfirmasi
+            if (window.confirm("Apakah Anda yakin ingin logout?")) {
+                // Jika pengguna mengkonfirmasi logout, arahkan ke tindakan logout
+                window.location.href = '@Url.Action("Logout", "Home")';
+            } else {
+                // Jika pengguna membatalkan logout, tidak ada yang terjadi
+            }
+        }
     </script>
 </head>
 <body id="body-pd">
@@ -65,7 +75,7 @@
         </div>
 
         <div>
-            <a href="@Url.Action("Logout", "Home")" class="nav-logout">
+            <a href="javascript:void(0);" onclick="confirmLogout();" class="nav-logout">
                 <i class='bx bx-log-out nav_icon'></i>
                 <span class="nav_name">Logout</span>
             </a>

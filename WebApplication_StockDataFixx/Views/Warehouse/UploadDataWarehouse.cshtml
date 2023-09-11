@@ -207,6 +207,7 @@
         }
 
 
+
         // Function lama
         function submitFormAndShowPopup() {
             const selectedStorageType = document.querySelector('input[name="Storage_Type"]:checked');
@@ -217,9 +218,6 @@
             document.getElementById("myForm").submit(); // Kirim form
             checkDataSaved(); // Panggil fungsi untuk cek data sudah disimpan dan tampilkan popup jika ya
         }
-
-
-
 
 
         // Fungsi lama
@@ -296,4 +294,58 @@
         //    document.getElementById("myForm").submit(); // Submit form
         //    checkDataSaved(); // Check data saved and show popup if successful
         //}
+
+
+
+         // fungsi baru
+
+        //function submitFormAndShowPopup() {
+        //    const selectedStorageType = document.querySelector('input[name="Storage_Type"]:checked');
+        //    if (!selectedStorageType) {
+        //        showStorageTypeAlert();
+        //        return;
+        //    }
+        //    document.getElementById("myForm").submit(); // Submit the form
+        //    checkDataSaved(); // Call the function to check if data is saved and display the appropriate popup
+        //}
+
+        //function checkDataSaved() {
+        //    fetch("/Warehouse/CheckDataSaved")
+        //        .then(response => response.json())
+        //        .then(data => {
+        //            const storageType = document.getElementById('storageType').value;
+        //            const detectedFileType = data.detectedFileType; // Assume you get this value from the server
+
+        //            if (storageType === "VMI") {
+        //                if (detectedFileType === "VMI") {
+        //                    // File is VMI, storage type is VMI
+        //                    document.getElementById("popup").style.display = "block";
+        //                    document.getElementById("popup-message").textContent = "File Uploaded!";
+        //                } else {
+        //                    // File is VMI, but storage type is Non VMI
+        //                    document.getElementById("popupMismatch").style.display = "block";
+        //                    document.getElementById("popup-mismatch-message").textContent = "Mismatch Type Storage";
+        //                }
+        //            } else if (storageType === "NonVMI") {
+        //                if (detectedFileType === "NonVMI") {
+        //                    // File is Non VMI, storage type is Non VMI
+        //                    document.getElementById("popup").style.display = "block";
+        //                    document.getElementById("popup-message").textContent = "File Uploaded!";
+        //                } else {
+        //                    // File is Non VMI, but storage type is VMI
+        //                    document.getElementById("popupMismatch").style.display = "block";
+        //                    document.getElementById("popup-mismatch-message").textContent = "Mismatch Type Storage";
+        //                }
+        //            }
+        //        })
+        //        .catch(error => {
+        //            console.error('Error checking data saved:', error);
+        //        });
+        //}
+
+        //// Add an event listener for form submit
+        //document.getElementById("myForm").addEventListener("submit", function (event) {
+        //    event.preventDefault(); // Prevent default form submission
+        //    submitFormAndShowPopup(); // Submit the form and display the appropriate popup
+        //});
 *@
