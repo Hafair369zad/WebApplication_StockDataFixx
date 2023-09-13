@@ -91,7 +91,7 @@ tr:nth-child(even) td {
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
 
 :root {
-    --header-height: 3rem;
+    --header-height: 3.5rem;
     --nav-width: 200px;
     --first-color: #1D5D9B;
     --first-color-light: #F7F6FB;
@@ -681,25 +681,67 @@ input[type="radio"] {
     margin: 10px;
     padding: 10px;
     border: 1px solid #1D5D9B;
-    background-color: aliceblue;
+    background-color: #1D5D9B;
     font-size: 14px;
     width: 200px; /* Lebar kotak */
     text-align: center; /* Tengahkan teks di dalam kotak */
     box-sizing: border-box; /* Sesuaikan padding dan border ke dalam lebar kotak */
+    border-radius: 10px;
+    border-width: 2px;
+    border-color: #888;
+    box-shadow: 3px 3px 5px #888888;
 }
 
 .selected-type-box {
-    color: #cc3333;
+    color: #fff;
     margin-top: 20px;
     margin-bottom: -10px;
 }
 
 .selected-month-box {
-    color: #3333cc;
+    color: #fff;
     margin-top: 20px;
     margin-bottom: -10px;
 }
 
+.TitleChart {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-top: 70px;
+    margin-bottom: -25px;
+    font-weight: 700;
+    margin-bottom: -40px;
+    background-color: #1D5D9B;
+    padding: 18px;
+    color: whitesmoke;
+    font-size: 18px;
+}
+
+/* CSS untuk membuat chart responsif pada breakpoint sm */
+@media (max-width: 768px) {
+    .chart-card {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+}
+
+
+/*@media (max-width: 992px) {*/
+    /* Add responsive styles here */
+    /*.card {*/
+        /* Adjust the card styles for smaller screens */
+        /*border-radius: 5px;
+    }
+
+    .chart img {*/
+        /* Adjust the image size and positioning for smaller screens */
+        /*width: 100%;
+        margin-left: 0;
+        position: relative;
+        right: 0;
+    }*/
+
+    /* You can add more responsive styles as needed */
+/*}*/
 
 
 /*Layout*/

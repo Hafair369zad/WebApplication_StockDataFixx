@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Warehouse";
     Layout = "~/Views/Shared/_LayoutWarehouse.cshtml";
+    var CurrentUsername = Context.Session.GetString("CurrentUsername");
 }
 
 <html>
@@ -20,7 +21,8 @@
                                 <!-- <canvas id="chartjs-dashboard-line"></canvas> -->
                                 <img src="~/images/img/Frame_3_1.png"
                                      style="width: 320px;margin-left: 260px; position: absolute; right: -1px">
-                                <h5 class="text-dash">Halo User @ViewData["Title"] !</h5>
+                                @using Microsoft.AspNetCore.Http;
+                                <h4 class="text-dash"><strong>Halo @CurrentUsername !! </strong></h4>
                                 <p style="color: #001C30; font-weight: 500; font-size: 20px; margin-top: 60px;">
                                     Enhance Production Management with<br>Real-Time <strong style="font-weight: 800;">Stock Data Insights</strong>
                                 </p>
@@ -61,8 +63,8 @@
                                 </div>
                             </div>
 
-
-                            <div class="col-12 col-md-4" style="margin-left: -140px; margin-top: 80px;">
+                            @*style="margin-left: -140px; margin-top: 80px;"*@
+                            <div class="col-12 col-md-4 mt-4 mt-md-0">
 
                                 <div class="row">
                                     <div class="form-group">
@@ -75,28 +77,20 @@
                                         </div>
                                     </div>
                                 </div>
-                                <input type="hidden" id="storageType" name="storageType" value="" />
-
-
-
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="li-file">
-                                            <h5>Ketentuan File :</h5><br />
-                                            <p>
-                                                <ul>
-                                                    <ol>
-                                                        <li>File upload harus dalam format .XLS, .XLSX, .CSV (Microsoft Excel).</li>
-                                                        <li>File harus mengandung beberapa tabel yang terpisah secara jelas.</li>
-                                                        <li>Setiap tabel harus ditempatkan di lembar kerja (sheet) yang berbeda.</li>
-                                                        <li>Pastikan setiap tabel memiliki judul yang jelas dan informatif.</li>
-                                                        <li>Pastikan setiap tabel memiliki judul yang jelas dan informatif.</li>
-                                                        <li>Pastikan tidak ada data yang tersembunyi atau terlindungi dengan kata sandi.</li>
-                                                    </ol>
-                                                </ul>
-                                            </p>
-                                        </div>
-                                    </div>
+                                <input type="hidden" id="storageType" name="storageType" value="" />                               
+                                <div class="li-file mt-4">
+                                    <h5>Ketentuan File :</h5><br />
+                                    <p>
+                                        <ul>
+                                            <ol>
+                                                <li>File upload harus dalam format <strong>.XLS, .XLSX, .CSV (Microsoft Excel).</strong></li>
+                                                <li>Ketika mengunggah <strong>file VMI</strong>, pastikan untuk memilih <strong>tipe Storage VMI</strong> dengan benar. Demikian pula, saat mengunggah <strong>file NonVMI</strong>, pastikan untuk memilih <strong>tipe Storage NonVMI</strong> dengan benar.</li>
+                                                <li>File harus mengandung beberapa tabel yang terpisah secara jelas.</li>
+                                                <li>Pastikan setiap tabel memiliki judul yang jelas dan informatif.</li>
+                                                <li>Pastikan tidak ada data yang tersembunyi atau terlindungi dengan kata sandi.</li>
+                                            </ol>
+                                        </ul>
+                                    </p>
                                 </div>
                             </div>
                         </div>
