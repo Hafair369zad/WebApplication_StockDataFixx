@@ -32,7 +32,6 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
 
-
         // Method to display the UploadDataWarehouse page
         [HttpGet]
         public ActionResult UploadDataWarehouse()
@@ -99,15 +98,13 @@ namespace WebApplication_StockDataFixx.Controllers
             else
                 {
                 // Handle the case where there are no elements in the filtered data
-                // You can choose to return an empty list or handle it as needed.
-                //throw new ArgumentException("selectedMonth is not in the correct format.");
             }
 
-                ViewBag.SerialNo = serialNo;
-                ViewBag.LastUpload = GetUniqueMonths(accessPlant, selectedType);
+            ViewBag.SerialNo = serialNo;
+            ViewBag.LastUpload = GetUniqueMonths(accessPlant, selectedType);
 
-                return View(data);
-            }
+            return View(data);
+        }
 
 
             // Jika Menggunakan Kolom Last Upload 
@@ -144,8 +141,6 @@ namespace WebApplication_StockDataFixx.Controllers
 
             return data.OrderBy(w => w.SerialNo).ToList();
         }
-
-
 
 
 
@@ -197,42 +192,6 @@ namespace WebApplication_StockDataFixx.Controllers
 
             // Redirect to the ReportWarehouse action
             return RedirectToAction("ReportWarehouse");
-        }
-
-
-        private bool IsUploadedFileNonVMI(IEnumerable<IXLRow> rows)
-        {
-            // Check if the uploaded file is VMI
-            foreach (var row in rows.Skip(1)) // Skip header row
-            {
-                string stockType = row.Cell(6).Value.ToString();
-                string vendorCode = row.Cell(7).Value.ToString();
-                string vendorName = row.Cell(8).Value.ToString();
-
-                if (string.IsNullOrWhiteSpace(stockType) && string.IsNullOrWhiteSpace(vendorCode) && string.IsNullOrWhiteSpace(vendorName))
-                {
-                    return true;  // If all three fields are not empty, the file is VMI
-                }
-            }
-            return false;
-        }
-
-
-        private bool IsUploadedFileVMI(IEnumerable<IXLRow> rows)
-        {
-            // Check if the uploaded file is VMI
-            foreach (var row in rows.Skip(1)) // Skip header row
-            {
-                string stockType = row.Cell(6).Value.ToString();
-                string vendorCode = row.Cell(7).Value.ToString();
-                string vendorName = row.Cell(8).Value.ToString();
-
-                if (!string.IsNullOrWhiteSpace(stockType) && !string.IsNullOrWhiteSpace(vendorCode) && !string.IsNullOrWhiteSpace(vendorName))
-                {
-                    return true;  // If all three fields are not empty, the file is VMI
-                }
-            }
-            return false;
         }
 
 
@@ -415,6 +374,8 @@ namespace WebApplication_StockDataFixx.Controllers
             return uploadedData;
         }
 
+
+
         // Action method to handle the request for checking the status of saved data
         [HttpGet]
         public IActionResult CheckDataSaved()
@@ -523,7 +484,7 @@ namespace WebApplication_StockDataFixx.Controllers
             var stream = new MemoryStream();
             workbook.SaveAs(stream);
             stream.Position = 0;
-            string excelFileName = serialNo + ".xlsx";
+            string excelFileName = "Warehouse_" + serialNo + ".xlsx";
 
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFileName);
         }
@@ -650,6 +611,49 @@ namespace WebApplication_StockDataFixx.Controllers
 
 }
 
+
+
+
+
+
+//  Method jangan dihapus dulu yakk // 
+
+//private bool IsUploadedFileNonVMI(IEnumerable<IXLRow> rows)
+//{
+//    // Check if the uploaded file is VMI
+//    foreach (var row in rows.Skip(1)) // Skip header row
+//    {
+//        string stockType = row.Cell(6).Value.ToString();
+//        string vendorCode = row.Cell(7).Value.ToString();
+//        string vendorName = row.Cell(8).Value.ToString();
+
+//        if (string.IsNullOrWhiteSpace(stockType) && string.IsNullOrWhiteSpace(vendorCode) && string.IsNullOrWhiteSpace(vendorName))
+//        {
+//            return true;  // If all three fields are not empty, the file is VMI
+//        }
+//    }
+//    return false;
+//}
+
+
+//private bool IsUploadedFileVMI(IEnumerable<IXLRow> rows)
+//{
+//    // Check if the uploaded file is VMI
+//    foreach (var row in rows.Skip(1)) // Skip header row
+//    {
+//        string stockType = row.Cell(6).Value.ToString();
+//        string vendorCode = row.Cell(7).Value.ToString();
+//        string vendorName = row.Cell(8).Value.ToString();
+
+//        if (!string.IsNullOrWhiteSpace(stockType) && !string.IsNullOrWhiteSpace(vendorCode) && !string.IsNullOrWhiteSpace(vendorName))
+//        {
+//            return true;  // If all three fields are not empty, the file is VMI
+//        }
+//    }
+//    return false;
+//}
+
+//\\\\\\\\\/\/\/////////////////\\\\\\\\///////////////////\\\\\\
 
 
 

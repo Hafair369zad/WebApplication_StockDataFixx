@@ -321,7 +321,7 @@ namespace WebApplication_StockDataFixx.Controllers
             var stream = new MemoryStream();
             workbook.SaveAs(stream);
             stream.Position = 0;
-            string excelFileName = "Production" + serialNo + ".xlsx";
+            string excelFileName = "Production_" + serialNo + ".xlsx";
 
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFileName);
         }
@@ -434,7 +434,7 @@ namespace WebApplication_StockDataFixx.Controllers
             var stream = new MemoryStream();
             workbook.SaveAs(stream);
             stream.Position = 0;
-            string excelFileName = "Warehouse" + serialNo + ".xlsx";
+            string excelFileName = "Warehouse_" + serialNo + ".xlsx";
 
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFileName);
         }

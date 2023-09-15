@@ -421,7 +421,7 @@ namespace WebApplication_StockDataFixx.Controllers
             var stream = new MemoryStream();
             workbook.SaveAs(stream);
             stream.Position = 0;
-            string excelFileName = "Production" + serialNo + ".xlsx";
+            string excelFileName = "Production_" + serialNo + ".xlsx";
 
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFileName);
         }
@@ -551,8 +551,14 @@ namespace WebApplication_StockDataFixx.Controllers
                 int totalMUnits = _dbContext.ProductionItems
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M" && item.AccessPlant == accessPlant)
                     .Count();
+                int totalMLUnits = _dbContext.ProductionItems
+                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ML" && item.AccessPlant == accessPlant)
+                    .Count();
+                int totalROLLUnits = _dbContext.ProductionItems
+                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ROLL" && item.AccessPlant == accessPlant)
+                    .Count();
 
-                var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits };
+                var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits, totalMLUnits, totalROLLUnits };
 
                 return Json(chartData);
             }
