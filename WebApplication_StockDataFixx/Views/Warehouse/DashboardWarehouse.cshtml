@@ -189,13 +189,13 @@
         window.chart3Instance = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['K', 'PC', 'SET', 'G', 'KG', 'M'],
+                labels: ['K', 'PC', 'SET', 'G', 'KG', 'M', 'ML', 'ROLL'],
                 datasets: [
                     {
                         label: `Unit Distribution VMI for ${getMonthName(selectedMonth)}`,
                         data: data,
                         borderWidth: 2,
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#E91E63', '#2196F3'],
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#E91E63', '#2196F3', '#FFA07A', '#FFD700'],
                     },
                 ],
             },
@@ -219,13 +219,13 @@
         window.chart4Instance = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['K', 'PC', 'SET', 'G', 'KG', 'M'],
+                labels: ['K', 'PC', 'SET', 'G', 'KG', 'M', 'ML', 'ROLL'],
                 datasets: [
                     {
                         label: `Unit Distribution NonVMI for ${getMonthName(selectedMonth)}`,
                         data: data,
                         borderWidth: 2,
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#E91E63', '#2196F3'],
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#E91E63', '#2196F3', '#FFA07A', '#FFD700'],
                     },
                 ],
             },

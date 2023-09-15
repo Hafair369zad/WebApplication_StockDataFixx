@@ -41,6 +41,7 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
 
+        // Method to display based on access plant, storage type dll..
         [HttpGet]
         public ActionResult ReportWarehouse(string serialNo, string selectedType, string selectedMonth)
         {
@@ -119,6 +120,8 @@ namespace WebApplication_StockDataFixx.Controllers
                 return uniqueMonths;
             }
 
+
+        // Method to Get Data from Database
         private List<WarehouseItem> GetDataFromDatabase(string serialNo, bool? Isvmi, string accessPlant)
         {
             // Fetch data from the warehouse database (adjust this based on your actual database context)
@@ -144,7 +147,7 @@ namespace WebApplication_StockDataFixx.Controllers
 
 
 
-        // Method lama belum ada popup 
+        // Method to Process Upload File  
         [HttpPost]
         public IActionResult UploadFile(IFormFile file)
         {
@@ -240,6 +243,8 @@ namespace WebApplication_StockDataFixx.Controllers
             return uploadedData;
         }
 
+
+        // Method for processing the uploaded Excel file StorageType VMI 
         private List<WarehouseItem> ProcessExcelFileVMI(IEnumerable<IXLRow> rows)
         {
             List<WarehouseItem> uploadedData = new List<WarehouseItem>();
@@ -307,6 +312,8 @@ namespace WebApplication_StockDataFixx.Controllers
             return uploadedData;
         }
 
+
+        // Method for processing the uploaded Excel file StorageType Non VMI 
         private List<WarehouseItem> ProcessExcelFileNonVMI(IEnumerable<IXLRow> rows)
         {
             List<WarehouseItem> uploadedData = new List<WarehouseItem>();
@@ -391,8 +398,7 @@ namespace WebApplication_StockDataFixx.Controllers
 
 
 
-        // Download Excel 
-
+        // Method Download File Excel 
         [HttpGet]
         public IActionResult DownloadExcel(string serialNo)
         {
@@ -493,6 +499,8 @@ namespace WebApplication_StockDataFixx.Controllers
 
 
         //  ///////////// Chart Data //////////////
+
+        // Method to display Chart for count data Vmi or Non Vmi 
         [HttpGet]
         public IActionResult GetChartData(string selectedMonth)
         {
@@ -516,6 +524,8 @@ namespace WebApplication_StockDataFixx.Controllers
             return Json(chartData);
         }
 
+
+        // Method to display Chart for count ActualQty Vmi or Non Vmi 
         [HttpGet]
         public IActionResult GetChart2Data(string selectedMonth)
         {
@@ -545,6 +555,8 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
 
+
+        // Method to display Chart for count Unit (UoM) Vmi or Non Vmi 
         [HttpGet]
         public IActionResult GetChart3Data(string selectedMonth)
         {
@@ -596,8 +608,15 @@ namespace WebApplication_StockDataFixx.Controllers
                 int totalMUnits = _dbContext.WarehouseItems
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
                     .Count();
+                int totalMLUnits = _dbContext.WarehouseItems
+                   .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ML" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
+                   .Count();
+                int totalROLLLUnits = _dbContext.WarehouseItems
+                   .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ROLL" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
+                   .Count();
 
-                var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits };
+
+                var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits, totalMLUnits, totalROLLLUnits };
 
                 return Json(chartData);
             }

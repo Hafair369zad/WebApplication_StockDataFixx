@@ -164,6 +164,8 @@ namespace WebApplication_StockDataFixx.Controllers
             return View(uploadedDataList);
         }
 
+
+        // Initial GetDataFromDatabase Method: to fetch data form database //
         private List<ProductionItem> GetDataFromDatabase(string accessPlant)
         {
             // Dapatkan data ProductionItems
@@ -186,6 +188,7 @@ namespace WebApplication_StockDataFixx.Controllers
             return latestProductionItems;
         }
 
+        // Method get data from database by per Month
         private List<ProductionItem> GetDataFromDatabaseByMonth(string selectedMonth, string accessPlant)
         {
             if (selectedMonth == "Latest Update" || string.IsNullOrWhiteSpace(selectedMonth))
@@ -212,7 +215,7 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
 
-
+        // Initial GetUniqueMonths Method: to filter data by coloumn LastUpload for display data //
         private IEnumerable<DateTime> GetUniqueMonths(string accessPlant)
         {
             var uniqueMonths = _dbContext.ProductionItems
@@ -453,8 +456,7 @@ namespace WebApplication_StockDataFixx.Controllers
 
         //  ///////////// Chart Data //////////////
 
-        // Iinitial GetChartData method : to 
-
+        // Iinitial GetChartData method : to dislay count data production based on AccesPlant and Selectedmonth //
 
         [HttpGet]
         public IActionResult GetChartData(string selectedMonth)
@@ -481,6 +483,7 @@ namespace WebApplication_StockDataFixx.Controllers
             return Json(chartData);
         }
 
+        // Iinitial GetChart2Data method : to dislay ActualQty production based on AccesPlant and Selectedmonth //
 
         [HttpGet]
         public IActionResult GetChart2Data(string selectedMonth)
@@ -510,6 +513,8 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
 
+
+        // Iinitial GetChar3tData method : to dislay count Unit(UoM) production based on AccesPlant and Selectedmonth //
         [HttpGet]
         public IActionResult GetChart3Data(string selectedMonth)
         {

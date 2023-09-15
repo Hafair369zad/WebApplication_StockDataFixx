@@ -27,6 +27,8 @@ namespace WebApplication_StockDataFixx.Controllers
             _dbContext = dbContext;
         }
 
+
+        // Method display dashboard page 
         [HttpGet]
         public ActionResult DashboardManagement()
         {
@@ -34,7 +36,7 @@ namespace WebApplication_StockDataFixx.Controllers
             return View();
         }
 
-        // lama 
+        // Method dispaly report page
         [HttpGet]
         public ActionResult ReportManagement(string type)
         {
@@ -74,7 +76,7 @@ namespace WebApplication_StockDataFixx.Controllers
 
 
 
-        // baru 
+        // Method to display partial page  
         public PartialViewResult PartialPage(string type, string selectedMonth)
         {
             object data = null;
@@ -112,7 +114,7 @@ namespace WebApplication_StockDataFixx.Controllers
             return PartialView(partialViewName, data);
         }
 
-        // lama sudah normal 
+        // Initial GetUniqueMonths Method: to filter data by coloumn LastUpload for display data //
         private List<DateTime> GetDistinctMonths()
         {
             var distinctMonths = _dbContext.ProductionItems
@@ -195,6 +197,7 @@ namespace WebApplication_StockDataFixx.Controllers
 
 
 
+        // Method to fetch data Warehouse from database 
         private List<WarehouseItem> GetWarehouseData(string isvmi, string selectedMonth)
         {
             DateTime now = DateTime.Now;
@@ -220,6 +223,8 @@ namespace WebApplication_StockDataFixx.Controllers
             return data.OrderBy(w => w.SerialNo).ToList();
         }
 
+
+        // Method to fetch data Production from Database 
         private List<ProductionItem> GetProductionData(string selectedMonth)
         {
             DateTime now = DateTime.Now;
@@ -241,7 +246,7 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
 
-
+        // Method to process download excel file 
         [HttpGet]
         public IActionResult DownloadExcel(string type, string serialNo)
         {
@@ -259,7 +264,7 @@ namespace WebApplication_StockDataFixx.Controllers
             }
         }
 
-
+        // Method to fetch data production to run proccess download excel file production 
         private List<ProductionItem> GetDownloadProd(string serialNo)
         {
             // Fetch data from the database
@@ -273,6 +278,8 @@ namespace WebApplication_StockDataFixx.Controllers
             return data.OrderBy(w => w.SerialNo).ToList();
         }
 
+
+        // Method to run proccess download excel file production
         private IActionResult DownloadProductionExcel(string serialNo)
         {
             // Fetch production data based on the serial number
@@ -543,8 +550,14 @@ namespace WebApplication_StockDataFixx.Controllers
                 int totalMUnits = _dbContext.WarehouseItems
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M" && item.Isvmi == isvmiType)
                     .Count();
+                int totalMLUnits = _dbContext.WarehouseItems
+                   .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ML" && item.Isvmi == isvmiType)
+                   .Count();
+                int totalROLLUnits = _dbContext.WarehouseItems
+                   .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ROLL" && item.Isvmi == isvmiType)
+                   .Count();
 
-                var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits };
+                var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits, totalMLUnits, totalROLLUnits };
 
                 return Json(chartData);
             }
@@ -647,7 +660,15 @@ namespace WebApplication_StockDataFixx.Controllers
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M")
                     .Count();
 
-                var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits };
+                int totalMLUnits = _dbContext.ProductionItems
+                   .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ML")
+                   .Count();
+
+                int totalROLLUnits = _dbContext.ProductionItems
+                   .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ROLL")
+                   .Count();
+
+                var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits, totalMLUnits, totalROLLUnits };
 
                 return Json(chartData);
             }
