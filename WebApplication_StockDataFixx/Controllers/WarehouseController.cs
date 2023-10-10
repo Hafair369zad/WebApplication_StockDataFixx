@@ -41,6 +41,8 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
 
+        // =============================================================================================== READ DATA =============================================================================================== //
+
         // Method to display based on access plant, storage type dll..
         [HttpGet]
         public ActionResult ReportWarehouse(string serialNo, string selectedType, string selectedMonth)
@@ -76,7 +78,7 @@ namespace WebApplication_StockDataFixx.Controllers
                 if (string.IsNullOrEmpty(selectedMonth) || selectedMonth == "Latest Update")
                 {
                     // Filter data based on the latest upload month and year
-                    var latestUploadDate = data.Max(item => item.LastUpload);
+                    var latestUploadDate = data.Max(item => item.LastUpload.Date);
                     data = data.Where(wi => wi.LastUpload.Year == latestUploadDate.Year && wi.LastUpload.Month == latestUploadDate.Month && wi.AccessPlant == accessPlant)
                                .ToList();
                 }
@@ -97,7 +99,7 @@ namespace WebApplication_StockDataFixx.Controllers
                 }
             }
             else
-                {
+            {
                 // Handle the case where there are no elements in the filtered data
             }
 
@@ -108,17 +110,17 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
 
-            // Jika Menggunakan Kolom Last Upload 
-            private IEnumerable<DateTime> GetUniqueMonths(string accessPlant, string selectedType)
-            {
-                var uniqueMonths = _dbContext.WarehouseItems
-                    .Where(w => w.AccessPlant == accessPlant && (selectedType == "VMI" ? w.Isvmi == "VMI" : w.Isvmi == "NonVMI"))
-                    .Select(w => w.LastUpload)
-                    .Distinct()
-                    .ToList();
+        // Jika Menggunakan Kolom Last Upload 
+        private IEnumerable<DateTime> GetUniqueMonths(string accessPlant, string selectedType)
+        {
+            var uniqueMonths = _dbContext.WarehouseItems
+                .Where(w => w.AccessPlant == accessPlant && (selectedType == "VMI" ? w.Isvmi == "VMI" : w.Isvmi == "NonVMI"))
+                .Select(w => w.LastUpload.Date)
+                .Distinct()
+                .ToList();
 
-                return uniqueMonths;
-            }
+            return uniqueMonths;
+        }
 
 
         // Method to Get Data from Database
@@ -145,7 +147,10 @@ namespace WebApplication_StockDataFixx.Controllers
             return data.OrderBy(w => w.SerialNo).ToList();
         }
 
+        // ============================================================================================================================================================================================================ //
 
+
+        // ================================================================================================ UPLOAD DATA =============================================================================================== //
 
         // Method to Process Upload File  
         [HttpPost]
@@ -159,30 +164,25 @@ namespace WebApplication_StockDataFixx.Controllers
 
             bool Isvmi = Request.Form["Storage_Type"] == "VMI";
 
-            List<WarehouseItem> uploadedData = ProcessExcelFile(file, Isvmi);
+            List<TempWarehouseItem> uploadedData = ProcessExcelFile(file, Isvmi);
 
-            // Save the data to the database
-            foreach (var item in uploadedData)
+            // Group uploaded data by Plant, Month, Sloc, and StockType
+            var groupedData = uploadedData.GroupBy(item => new { item.Plant, item.Month, item.Sloc, item.StockType });
+
+            foreach (var group in groupedData)
             {
-                // Check if data with the same month, Sloc, and StockType already exists in the database
-                var existingData = _dbContext.WarehouseItems
-                    .Where(w => w.Plant == item.Plant &&
-                                w.Month == item.Month &&
-                                w.Sloc == item.Sloc &&
-                                w.StockType == item.StockType)
+                // Find and remove all existing data with the same Plant, Month, Sloc, and StockType
+                var existingData = _dbContext.TempWarehouseItems
+                    .Where(w => w.Plant == group.Key.Plant &&
+                                w.Month == group.Key.Month &&
+                                w.Sloc == group.Key.Sloc &&
+                                w.StockType == group.Key.StockType)
                     .ToList();
 
-                if (existingData.Count > 0)
-                {
-                    // If data with the same month, Sloc, and StockType already exists, replace the old data with the new data
-                    foreach (var existingItem in existingData)
-                    {
-                        _dbContext.WarehouseItems.Remove(existingItem); // Remove the old data
-                    }
-                }
+                _dbContext.TempWarehouseItems.RemoveRange(existingData); // Remove all existing data
 
                 // Add the new data to the database
-                _dbContext.WarehouseItems.Add(item);
+                _dbContext.TempWarehouseItems.AddRange(group);
             }
 
             _dbContext.SaveChanges();
@@ -192,54 +192,36 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
         // Main method for processing the uploaded Excel file based on the selected storage type
-        private List<WarehouseItem> ProcessExcelFile(IFormFile file, bool Isvmi)
+        private List<TempWarehouseItem> ProcessExcelFile(IFormFile file, bool Isvmi)
         {
-            List<WarehouseItem> uploadedData = new List<WarehouseItem>();
-
-            // Get the temporary file path to save the uploaded Excel file
-            string tempPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-            if (!Directory.Exists(tempPath))
-            {
-                Directory.CreateDirectory(tempPath);
-            }
-
-            string filePath = Path.Combine(tempPath, Guid.NewGuid().ToString() + Path.GetExtension(file.FileName));
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                file.CopyTo(stream);
-            }
+            List<TempWarehouseItem> uploadedData = new List<TempWarehouseItem>();
 
             // Read data from the Excel file using UTF-8 encoding
-            using (var workbook = new XLWorkbook(filePath))
+            using (var stream = file.OpenReadStream())
             {
-                var worksheet = workbook.Worksheet(1); // Assuming data is in the first worksheet
-                var rows = worksheet.RowsUsed();
+                using (var workbook = new XLWorkbook(stream))
+                {
+                    var worksheet = workbook.Worksheet(1); // Assuming data is in the first worksheet
+                    var rows = worksheet.RowsUsed();
 
-                if (Isvmi)
-                {
-                    uploadedData = ProcessExcelFileVMI(rows);
-                }
-                else
-                {
-                    uploadedData = ProcessExcelFileNonVMI(rows);
+                    if (Isvmi)
+                    {
+                        uploadedData = ProcessExcelFileVMI(rows);
+                    }
+                    else
+                    {
+                        uploadedData = ProcessExcelFileNonVMI(rows);
+                    }
                 }
             }
-
-            // Delete the temporary file after reading the data
-            if (System.IO.File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
-            }
-
             return uploadedData;
         }
 
 
         // Method for processing the uploaded Excel file StorageType VMI 
-        private List<WarehouseItem> ProcessExcelFileVMI(IEnumerable<IXLRow> rows)
+        private List<TempWarehouseItem> ProcessExcelFileVMI(IEnumerable<IXLRow> rows)
         {
-            List<WarehouseItem> uploadedData = new List<WarehouseItem>();
+            List<TempWarehouseItem> uploadedData = new List<TempWarehouseItem>();
 
             foreach (var row in rows.Skip(1)) // Skip header row
             {
@@ -265,7 +247,7 @@ namespace WebApplication_StockDataFixx.Controllers
                         break;
                     case "RIFR":
                         Description = "PMI-REFRIGRATOR";
-                        break; 
+                        break;
                     case "RIFW":
                         Description = "PMI-IAQ";
                         break;
@@ -274,7 +256,7 @@ namespace WebApplication_StockDataFixx.Controllers
                         break;
                 }
 
-                WarehouseItem item = new WarehouseItem
+                TempWarehouseItem item = new TempWarehouseItem
                 {
                     WarehouseId = $"{row.Cell(1).Value.ToString()}{row.Cell(2).Value.ToString()}{row.Cell(3).Value.ToString()}{row.Cell(7).Value.ToString()}{row.Cell(9).Value.ToString()}",
                     Plant = row.Cell(1).Value.ToString(),
@@ -306,9 +288,9 @@ namespace WebApplication_StockDataFixx.Controllers
 
 
         // Method for processing the uploaded Excel file StorageType Non VMI 
-        private List<WarehouseItem> ProcessExcelFileNonVMI(IEnumerable<IXLRow> rows)
+        private List<TempWarehouseItem> ProcessExcelFileNonVMI(IEnumerable<IXLRow> rows)
         {
-            List<WarehouseItem> uploadedData = new List<WarehouseItem>();
+            List<TempWarehouseItem> uploadedData = new List<TempWarehouseItem>();
 
             foreach (var row in rows.Skip(1)) // Skip header row
             {
@@ -343,7 +325,7 @@ namespace WebApplication_StockDataFixx.Controllers
                         break;
                 }
 
-                WarehouseItem item = new WarehouseItem
+                TempWarehouseItem item = new TempWarehouseItem
                 {
                     WarehouseId = $"{row.Cell(1).Value.ToString()}{row.Cell(2).Value.ToString()}{row.Cell(3).Value.ToString()}{row.Cell(6).Value.ToString()}",
                     Plant = row.Cell(1).Value.ToString(),
@@ -352,7 +334,7 @@ namespace WebApplication_StockDataFixx.Controllers
                     SerialNo = row.Cell(4).Value.ToString(),
                     TagNo = row.Cell(5).Value.ToString(),
                     Material = row.Cell(6).Value.ToString(),
-                    MaterialDesc = row.Cell(6).Value.ToString(),
+                    MaterialDesc = row.Cell(7).Value.ToString(),
                     ActualQty = actualQty,
                     QualInsp = row.Cell(9).Value.ToString(),
                     Blocked = row.Cell(10).Value.ToString(),
@@ -380,15 +362,17 @@ namespace WebApplication_StockDataFixx.Controllers
         public IActionResult CheckDataSaved()
         {
             // Example: Check if there is any WarehouseItem data in the database
-            bool dataSaved = _dbContext.WarehouseItems.Any();
+            bool dataSaved = _dbContext.TempWarehouseItems.Any();
 
             // Return the result in JSON format
             return Json(new { saved = dataSaved });
         }
 
+        // =========================================================================================================================================================================================================== //
 
 
 
+        // ============================================================================================== DOWNLOAD DATA ============================================================================================== //
 
         // Method Download File Excel 
         [HttpGet]
@@ -487,10 +471,10 @@ namespace WebApplication_StockDataFixx.Controllers
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFileName);
         }
 
+        // ========================================================================================================================================================================================================== //
 
 
-
-        //  ///////////// Chart Data //////////////
+        // ================================================================================================ CHART DATA =============================================================================================== //
 
         // Method to display Chart for count data Vmi or Non Vmi 
         [HttpGet]
@@ -618,9 +602,14 @@ namespace WebApplication_StockDataFixx.Controllers
             }
         }
 
+        // =============================================================================================================================================================================================== //
     }
-
 }
+
+
+
+
+
 
 
 
@@ -665,88 +654,4 @@ namespace WebApplication_StockDataFixx.Controllers
 
 
 
-// Jika menggunaka Kolom Month 
-//if (selectedMonth == "Latest Update")
-//{
-//    // Filter data based on the highest month value
-//    var highestMonth = data.Max(d => d.Month);
-//    data = data.Where(d => d.Month == highestMonth).ToList();
-//}
-//else if (!string.IsNullOrEmpty(selectedMonth))
-//{
-//    // Filter data based on the selected month
-//    data = data.Where(w => w.Month == selectedMonth).ToList();
-//}
-
-//private IEnumerable<string> GetUniqueMonths()
-//{
-//    var uniqueMonths = _dbContext.WarehouseItems
-//        .Select(w => w.Month) // Assuming "Month" is the name of the column
-//        .Distinct()
-//        .OrderByDescending(month => month)
-//        .ToList();
-
-//    return uniqueMonths;
-//}
-
-
-
-// Method baru ada poppup
-//[HttpPost]
-//public IActionResult UploadFile(IFormFile file)
-//{
-//    if (file == null || file.Length <= 0)
-//    {
-//        TempData["Message"] = "Error: File tidak ada atau kosong.";
-//        return RedirectToAction("UploadDataWarehouse");
-//    }
-
-
-//    // Check the selected storage type
-//    bool isVMIStorage = Request.Form["Storage_Type"] == "VMI";
-
-
-//            // Add the new data to the database
-//            _dbContext.WarehouseItems.Add(item);
-//        }
-
-//        _dbContext.SaveChanges();
-//    }
-
-//    // Serialize the uploadedData list to JSON before storing it in TempData
-//    string jsonUploadedData = JsonConvert.SerializeObject(uploadedData);
-
-//    // Store the JSON data in TempData
-//    TempData["UploadedData"] = jsonUploadedData;
-
-//    // Redirect to the ReportWarehouse action
-//    return RedirectToAction("ReportWarehouse");
-//}
-
-//// Corrected method to detect the file type based on content
-//private bool IsUploadedFileVMI(IFormFile file)
-//{
-//    using (var stream = file.OpenReadStream())
-//    {
-//        using (var workbook = new XLWorkbook(stream))
-//        {
-//            var worksheet = workbook.Worksheet(1); // Assuming data is in the first worksheet
-//            var rows = worksheet.RowsUsed();
-
-//            // Check if the uploaded file is VMI
-//            foreach (var row in rows.Skip(1)) // Skip header row
-//            {
-//                string stockType = row.Cell(6).Value.ToString();
-//                string vendorCode = row.Cell(7).Value.ToString();
-//                string vendorName = row.Cell(8).Value.ToString();
-
-//                if (!string.IsNullOrWhiteSpace(stockType) && !string.IsNullOrWhiteSpace(vendorCode) && !string.IsNullOrWhiteSpace(vendorName))
-//                {
-//                    return true;  // If all three fields are not empty, the file is VMI
-//                }
-//            }
-//        }
-//    }
-
-//    return false;
-//}
+// atur agar mengabaikan pilihan input pilih tipe storage pada UploadDataWarehouse.cshtml . dan untuk mendeteksi jenis tipe storage pada file excel menggunakan method IsUploadedFileVMI yang menandakan file tersebut bertipe VMI , jika tidak memenuhi method tersebut makan file tersebut bertipe NonVMI 

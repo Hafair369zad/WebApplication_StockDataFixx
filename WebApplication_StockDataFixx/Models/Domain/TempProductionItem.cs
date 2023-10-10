@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication_StockDataFixx.Models.Domain;
 
-[Table("PRODUCTION_ITEM")]
-public partial class ProductionItem
+[Table("TEMP_PRODUCTION_ITEM")]
+public partial class TempProductionItem
 {
     [Key]
     [Column("PRODUCTION_ID")]
@@ -68,10 +68,10 @@ public partial class ProductionItem
     public string AccessPlant { get; set; } = null!;
 
     [ForeignKey("AccessPlant")]
-    [InverseProperty("ProductionItems")]
+    [InverseProperty("TempProductionItems")]
     public virtual AccessPlantTb AccessPlantNavigation { get; set; } = null!;
 
     [ForeignKey("ProdId")]
-    [InverseProperty("ProductionItems")]
+    [InverseProperty("TempProductionItems")]
     public virtual ProductionTb Prod { get; set; } = null!;
 }

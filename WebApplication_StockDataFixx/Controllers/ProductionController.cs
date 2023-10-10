@@ -15,7 +15,8 @@ using NPOI.SS.UserModel;
 using ClosedXML.Excel;
 using WebApplication_StockDataFixx.Database;
 using System.Globalization;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Security.Policy;
+
 
 namespace WebApplication_StockDataFixx.Controllers
 {
@@ -46,86 +47,7 @@ namespace WebApplication_StockDataFixx.Controllers
             return View();
         }
 
-
-        // Initial UploadFile Method: To set up file uploads  //
-
-        [HttpPost]
-        public IActionResult UploadFile(IFormFile file)
-        {
-            if (file == null || file.Length <= 0)
-            {
-                TempData["Message"] = "Error: File tidak ada atau kosong.";
-                return RedirectToAction("UploadDataProduction");
-            }
-
-            List<ProductionItem> uploadedData = ProcessExcelFile(file);
-
-            // Save the data to the database
-            foreach (var item in uploadedData)
-            {
-                // Cek apakah data dengan bulan dan plant yang sama sudah ada di database
-                var existingData = _dbContext.ProductionItems
-                    .Where(p => p.Month == item.Month &&
-                           p.Plant == item.Plant)
-                    .ToList();
-
-                if (existingData.Count > 0)
-                {
-                    // Jika data dengan bulan yang sama sudah ada, ganti data lama dengan data baru
-                    foreach (var existingItem in existingData)
-                    {
-                        _dbContext.ProductionItems.Remove(existingItem); // Hapus data lama
-                    }
-                }
-
-                // Tambahkan data baru ke dalam database
-                _dbContext.ProductionItems.Add(item);
-            }
-
-            _dbContext.SaveChanges();
-
-            // Redirect to the ReportProduction action
-            return RedirectToAction("ReportProduction");
-        }
-        // The end of the UploadFile method //
-
-
-
-        //[HttpGet]
-        //public ActionResult ReportProduction(string serialNo, string selectedMonth)
-        //{
-        //    List<ProductionItem> uploadedDataList = null!;
-
-        //    // Retrieve the AccessPlant value from the session
-        //    string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
-
-        //    // Fetch all data from the database
-        //    uploadedDataList = GetDataFromDatabase(serialNo, accessPlant);
-
-        //    // Get unique months from the uploaded data
-        //    IEnumerable<string> uniqueMonths = GetUniqueMonths(uploadedDataList);
-
-
-        //    // Pass the unique months and selected month to the view
-        //    ViewBag.UniqueMonths = uniqueMonths;
-        //    ViewBag.SelectedMonth = selectedMonth;
-
-        //    if (string.IsNullOrEmpty(selectedMonth) || selectedMonth == "Latest Update")
-        //    {
-        //        // Determine the latest month based on the "Month" column
-        //        var latestMonth = uploadedDataList.Max(d => d.Month);
-        //        uploadedDataList = uploadedDataList.Where(d => d.Month == latestMonth).ToList();
-        //    }
-        //    else
-        //    {
-        //        // Fetch data from the database based on the selected month
-        //        uploadedDataList = uploadedDataList.Where(w => w.Month == selectedMonth).ToList();
-        //    }
-
-        //    return View(uploadedDataList);
-        //}
-
-
+        // ================================================================================================= READ DATA ===================================================================================================== //
 
         // Initial Report Production Method: to display data on the report page //
         [HttpGet]
@@ -156,7 +78,6 @@ namespace WebApplication_StockDataFixx.Controllers
             return View(uploadedDataList);
         }
 
-
         // Initial GetDataFromDatabase Method: to fetch data form database //
         private List<ProductionItem> GetDataFromDatabase(string accessPlant)
         {
@@ -170,7 +91,7 @@ namespace WebApplication_StockDataFixx.Controllers
             }
 
             // Temukan bulan dan tahun terbaru pada field "LastUpload"
-            var latestUploadDate = data.Max(item => item.LastUpload);
+            var latestUploadDate = data.Max(item => item.LastUpload.Date);
 
             // Filter data untuk hanya data terbaru berdasarkan bulan dan tahun
             var latestProductionItems = data
@@ -219,6 +140,122 @@ namespace WebApplication_StockDataFixx.Controllers
             return uniqueMonths;
         }
 
+        // ================================================================================================================================================================================================================ //
+
+
+
+        // ================================================================================================= UPLOAD DATA ================================================================================================== //
+
+        // Initial UploadFile Method: To set up file uploads  /
+        [HttpPost]
+        public IActionResult UploadFile(IFormFile file)
+        {
+            if (file == null || file.Length <= 0)
+            {
+                TempData["Message"] = "Error: File tidak ada atau kosong.";
+                return RedirectToAction("UploadDataProduction");
+            }
+
+            List<TempProductionItem> uploadedData = ProcessExcelFile(file);
+
+            // Group uploaded data by Month and Plant
+            var groupedData = uploadedData.GroupBy(item => new { item.Month, item.Plant });
+
+            foreach (var group in groupedData)
+            {
+                // Find and remove all existing data with the same Month and Plant
+                var existingData = _dbContext.TempProductionItems
+                    .Where(p => p.Month == group.Key.Month &&
+                           p.Plant == group.Key.Plant)
+                    .ToList();
+
+                _dbContext.TempProductionItems.RemoveRange(existingData); // Remove all existing data
+
+                // Add the new data to the database
+                _dbContext.TempProductionItems.AddRange(group);
+
+            }
+
+            _dbContext.SaveChanges();
+
+            // Redirect to the ReportProduction action
+            return RedirectToAction("ReportProduction");
+        }
+
+        //// Initial ProcessExcelFile method : to read Excel input data per row
+        private List<TempProductionItem> ProcessExcelFile(IFormFile file)
+        {
+            List<TempProductionItem> uploadedData = new List<TempProductionItem>();
+
+            using (var stream = file.OpenReadStream())
+            {
+                // Baca data dari stream file Excel dengan menggunakan encoding UTF-8
+                using (var workbook = new XLWorkbook(stream))
+                {
+                    var worksheet = workbook.Worksheet(1); // Assuming data is in the first worksheet
+                    var rows = worksheet.RowsUsed();
+
+                    foreach (var row in rows.Skip(1)) // Skip header row
+                    {
+                        int actualQty;
+                        var actualQtyCell = row.Cell(8);
+                        if (actualQtyCell.TryGetValue(out actualQty))
+                        {
+                            // If Unrestr field contains a numeric value, set ActualQty to 0
+                            actualQty = 0;
+                        }
+
+                        string plant = row.Cell(1).Value.ToString();
+                        string Description = "";
+
+                        // Tambahkan logika kondisional di sini
+                        switch (plant)
+                        {
+                            case "RIFA":
+                                Description = "PMI-AUDIO";
+                                break;
+                            case "RIFC":
+                                Description = "PMI-AIR CONDITIONER (AC)";
+                                break;
+                            case "RIFR":
+                                Description = "PMI-REFRIGRATOR";
+                                break;
+                            case "RIFW":
+                                Description = "PMI-IAQ";
+                                break;
+                            default:
+                                Description = "Default Description"; // Deskripsi default jika tidak ada kondisi yang cocok
+                                break;
+                        }
+
+                        TempProductionItem item = new TempProductionItem
+                        {
+                            ProductionId = $"{row.Cell(1).Value.ToString()}{row.Cell(2).Value.ToString()}{row.Cell(3).Value.ToString()}{row.Cell(6).Value.ToString()}",
+                            Plant = row.Cell(1).Value.ToString(),
+                            Sloc = row.Cell(2).Value.ToString(),
+                            Month = row.Cell(3).Value.ToString(),
+                            SerialNo = row.Cell(4).Value.ToString(),
+                            TagNo = row.Cell(5).Value.ToString(),
+                            Material = row.Cell(6).Value.ToString(),
+                            MaterialDesc = row.Cell(7).Value.ToString(),
+                            ActualQty = actualQty,
+                            QualInsp = row.Cell(9).Value.ToString(),
+                            Blocked = row.Cell(10).Value.ToString(),
+                            Unit = row.Cell(11).Value.ToString(),
+                            IssuePlanner = row.Cell(12).Value.ToString(),
+                            Description = Description,
+                            ProdId = $"PROD-{row.Cell(1).Value.ToString()}-{row.Cell(2).Value.ToString()}",
+                            AccessPlant = $"PROD-{row.Cell(1).Value.ToString()}"
+                        };
+
+                        uploadedData.Add(item);
+                    }
+                }
+            }
+
+            return uploadedData;
+        }
+
         // Initial CheckDataSaved method : Action method to handle the request for checking the status of saved data
         [HttpGet]
         public IActionResult CheckDataSaved()
@@ -229,7 +266,12 @@ namespace WebApplication_StockDataFixx.Controllers
             // Return the result in JSON format
             return Json(new { saved = dataSaved });
         }
-        // End of the CheckDataSaved method/
+
+        // ============================================================================================================================================================================================================== //
+
+
+
+        // ================================================================================================ DOWNLOAD DATA =============================================================================================== //
 
         // Iinitial DownloadExcel method : to Process Download file Excel 
         [HttpGet]
@@ -251,8 +293,8 @@ namespace WebApplication_StockDataFixx.Controllers
             worksheet.Cell(1, 4).Value = "Serial No";
             worksheet.Cell(1, 5).Value = "Tag No";
             worksheet.Cell(1, 6).Value = "Material";
-            worksheet.Cell(1, 7).Value = "Material Desc";
-            worksheet.Cell(1, 8).Value = "Actual Qty";
+            worksheet.Cell(1, 7).Value = "Descr";
+            worksheet.Cell(1, 8).Value = "Unrestr";
             worksheet.Cell(1, 9).Value = "QualInsp";
             worksheet.Cell(1, 10).Value = "Blocked";
             worksheet.Cell(1, 11).Value = "Unit";
@@ -299,14 +341,13 @@ namespace WebApplication_StockDataFixx.Controllers
             return data.OrderBy(w => w.SerialNo).ToList();
         }
 
-        // End of the DownloadExcel method/
+        // ============================================================================================================================================================================================================== //
 
 
 
-        //  ///////////// Chart Data //////////////
+        // ================================================================================================== CHART DATA ================================================================================================ //
 
         // Iinitial GetChartData method : to dislay count data production based on AccesPlant and Selectedmonth //
-
         [HttpGet]
         public IActionResult GetChartData(string selectedMonth)
         {
@@ -327,13 +368,12 @@ namespace WebApplication_StockDataFixx.Controllers
 
             int totalAllProductionItems = _dbContext.ProductionItems.Count();
 
-            var chartData = new[] {totalProductionItems, totalAllProductionItems };
+            var chartData = new[] { totalProductionItems, totalAllProductionItems };
 
             return Json(chartData);
         }
 
         // Iinitial GetChart2Data method : to dislay ActualQty production based on AccesPlant and Selectedmonth //
-
         [HttpGet]
         public IActionResult GetChart2Data(string selectedMonth)
         {
@@ -356,12 +396,10 @@ namespace WebApplication_StockDataFixx.Controllers
             int AllActualQty = _dbContext.ProductionItems
                .Sum(item => item.ActualQty);
 
-            var chartData = new[] {monthlyActualQty, AllActualQty };
+            var chartData = new[] { monthlyActualQty, AllActualQty };
 
             return Json(chartData);
         }
-
-
 
         // Iinitial GetChar3tData method : to dislay count Unit(UoM) production based on AccesPlant and Selectedmonth //
         [HttpGet]
@@ -422,6 +460,6 @@ namespace WebApplication_StockDataFixx.Controllers
             }
         }
 
-        //  ///////////// Close Chart Data //////////////
+        // ============================================================================================================================================================================================================ //
     }
 }

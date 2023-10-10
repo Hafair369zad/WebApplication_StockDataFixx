@@ -1,22 +1,4 @@
-﻿html {
-    font-size: 14px;
-}
-
-@media (min-width: 768px) {
-    html {
-        font-size: 14px;
-    }
-}
-
-html {
-    position: relative;
-    min-height: 100%;
-}
-
-body {
-    margin-bottom: 60px;
-}
-
+﻿
 /*Table */
 table {
     border-collapse: collapse;
@@ -84,10 +66,13 @@ tr:nth-child(even) td {
             margin-right: 1rem;
         }
 }
+/*End Table */
 
-/*Conten*/
 
-/*End Content*/
+
+
+
+
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
 
 :root {
@@ -102,221 +87,11 @@ tr:nth-child(even) td {
     --z-fixed: 100
 }
 
-*, ::before, ::after {
-    box-sizing: border-box
-}
 
-body {
-    position: relative;
-    margin: var(--header-height) 0 0 0;
-    padding: 0 1rem;
-    font-family: var(--body-font);
-    font-size: var(--normal-font-size);
-    transition: .5s
-}
-
-a {
-    text-decoration: none;
-    color: darkgray;
-}
-
-.header {
-    width: 100%;
-    height: var(--header-height);
-    position: fixed;
-    top: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 1rem;
-    background-color: var(--blue-color);
-    z-index: var(--z-fixed);
-    transition: .5s
-}
-
-.header_toggle {
-    color: var(--first-color);
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: white;
-}
-
-.header_img {
-    width: 35px;
-    height: 35px;
-    display: flex;
-    justify-content: center;
-    border-radius: 50%;
-    overflow: hidden
-}
-
-    .header_img img {
-        width: 40px
-    }
-
-.l-navbar {
-    position: fixed;
-    top: 0;
-    left: -100%; /* Change this value to -100% to hide the navbar by default */
-    width: var(--nav-width);
-    height: 100vh;
-    background-color: var(--first-color);
-    padding: .5rem 1rem 0 0;
-    transition: .5s;
-    z-index: var(--z-fixed);
-}
-
-.l-navbar-active {
-    left: 0; /* Show the navbar when the class is active */
-}
-.hamburger {
-    display: block;
-    cursor: pointer;
-    padding: 10px;
-    position: relative;
-    transition: left 0.5s;
-    margin-left: 0px;
-}
-
-.hamburger-container {
-    position: relative;
-    transition: left 0.5s;
-}
-
-.l-navbar-active + .hamburger-container {
-    left: 200px; /* Move the container to the right by 200px */
-    transition: left 0.5s;
-}
-
-.line {
-    width: 25px;
-    height: 3px;
-    background-color: white;
-    margin: 6px 0;
-}
+/*Card Headbar Add Data*/
 
 
-/*.header-bar p{
-    font-size: 18px;
-    color: white;
-    line-height: 70px;
-    text-align: center;
-    background: #063146;
-    user-select: none;
-}*/
-.nav {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    overflow: hidden
-}
-
-.nav_logo{
-    display: grid;
-    grid-template-columns: max-content max-content;
-    align-items: center;
-    column-gap: 1rem;
-    padding: .5rem 0 .5rem 1.5rem;
-    text-decoration: none;
-}
-.nav_link {
-    display: grid;
-    grid-template-columns: max-content max-content;
-    align-items: center;
-    column-gap: 1rem;
-    padding: .5rem 0 .5rem 1.5rem;
-    text-decoration: none;
-}
-
-.nav_logo {
-    margin-bottom: 2rem
-}
-
-.nav_logo-icon {
-    font-size: 1.25rem;
-    color: var(--white-color)
-}
-
-.nav_logo-name {
-    color: var(--white-color);
-    font-weight: 700
-}
-
-.nav-logout {
-    position: relative;
-    color: var(--first-color-light);
-    margin-bottom: 1.5rem;
-    transition: .3s;
-    text-decoration: none;
-}
-.nav-logout:hover {
-    color: var(--white-color)
-}
-
-.nav_link {
-    position: relative;
-    color: var(--first-color-light);
-    margin-bottom: 1.5rem;
-    transition: .3s; 
-    text-decoration: none;
-}
-
-    .nav_link:hover {
-        color: var(--white-color)
-    }
-
-.nav_icon {
-    font-size: 1.25rem
-}
-
-.nav-icon:active {
-    color: var(--white-color);
-}
-
-.show {
-    left: 0
-}
-
-.cont-body {
-    margin-left: -0%;
-}
-
-.content-container {
-    transition: margin-left 0.5s;
-}
-
-.l-navbar-active + .content-container {
-    margin-left: var(--nav-width);
-    transition: margin-left 0.5s;
-}
-
-
-
-/*.body-pd {
-    padding-left: calc(var(--nav-width) + 1rem)
-}*/
-
-.active {
-    color: var(--white-color);
-}
-
-    .active::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        width: 2px;
-        height: 32px;
-        background-color: var(--white-color)
-    }
-
-.height-100 {
-    height: 100vh
-}
-
-/*Card Sidebar*/
-
+/*All card*/
 .card {
     border-radius: 100px;
     border: 5px;
@@ -363,7 +138,12 @@ a {
     margin-top: 20px;
     font-weight: 700;
 }
+/*End Card Headbar Add Data*/
 
+
+
+
+/*Card Add Data*/
 .upload-form {
     width: 800px;
     height: 550px;
@@ -373,8 +153,10 @@ a {
 .header-upload p {
     margin: 0;
 }
+/*End Card Add Data*/
 
 
+/*Inputan Dropzone*/
 .drop-zone {
     border: 2px dashed #1D5D9B;
     border-radius: 20px;
@@ -407,7 +189,12 @@ a {
     margin-bottom: 15px;
 }
 
+/*End Inputan Dropzone*/
 
+
+
+
+/*Popup After Upload File*/
 .popup {
     display: none;
     position: fixed;
@@ -442,8 +229,11 @@ a {
     border-radius: 5px;
     color: whitesmoke;
 }
+/*End After Upload File*/
 
 
+
+/*Radio Button Pilih Tipe Storage*/
 /* Untuk radio button yang belum dipilih */
 input[type="radio"] {
     -webkit-appearance: none; /* Menghilangkan tampilan default radio button */
@@ -475,57 +265,10 @@ input[type="radio"] {
     font-weight: 800;
     color: #1D5D9B;
 }
+/* End Radio Button Pilih Tipe Storage*/
 
 
-
-
-
-.profile {
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-.profile-image {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-   
-}
-.profile h3{
-    margin-top: 15px;
-    margin-bottom: 25px;
-    font-size: 15px;
-}
-.profile img{
-    margin-top: 15px;
-}
-
-.title-header h3 {
-  color: white;
-  font-size: 18px;
-  margin-top: 5px;
-}
-
-@media screen and (max-width: 640px) {
-    .profile-image {
-        display: none;
-    }
-}
-
-
-.nav-bottom-brand {
-    margin-left: 25px;
-    margin-bottom: 55px;
-}
-.nav-bottom-brand h3 {
-    font-size: 20px;
-    color: white;
-    font-weight: 500;
-    font-family: "Arial Black";
-}
-
-
+/*Dropdopwn Select List halaman Report*/
 .select-month {
     display: inline-block;
     margin-left: 10px;
@@ -574,7 +317,10 @@ input[type="radio"] {
     .select-month select:focus {
         box-shadow: 0 0 3px #007bff;
     }
+/* End Dropdopwn Select List halaman Report*/
 
+
+/*header form upload*/
 .header-upload p {
     position: absolute;
     top: 0;
@@ -588,6 +334,7 @@ input[type="radio"] {
     font-size: 18px;
     font-weight: 800;
 }
+
 
 
 .btn-upload {
@@ -605,10 +352,10 @@ input[type="radio"] {
     margin: 15px;
 }
 
-.over-img {
-    justify-content: center;
-}
+/*End header form upload*/
 
+
+/*Button Pilih File*/
 .btn-zone {
     margin-top: 10px;
     justify-content: center;
@@ -641,7 +388,12 @@ input[type="radio"] {
             color: #fff;
             border: 1px solid #1D5D9B;
         }
+/*End Button Pilih File*/
 
+
+
+
+/*Description Ketentuan File*/
 .li-file ul {
     list-style-type: none; 
     padding: 0;
@@ -655,7 +407,11 @@ input[type="radio"] {
     font-size: 17px;
     color: #1D5D9B;
 }
+/*End Description Ketentuan File*/
 
+
+
+/*Chart card Grafik Dashboard*/
 .chart-card {
     width: 320px;
     height: 345px;
@@ -666,15 +422,22 @@ input[type="radio"] {
 .card-body {
     margin-bottom: -100px;
 }
+/*End Chart card Grafik Dashboard*/
 
+
+/*input download serial number*/ 
 .input-rounded{
     padding: 8px 20px;
     border-radius: 15px;
     color: #001C30;
     border-color: #001C30;
 }
+/*input download serial number*/
 
 
+
+
+/*Keterangan Pilihan Tipe Bulan*/
 .selected-type-box,
 .selected-month-box {
     display: inline-block;
@@ -703,7 +466,11 @@ input[type="radio"] {
     margin-top: 20px;
     margin-bottom: -10px;
 }
+/*End Keterangan Pilihan Tipe Bulan*/
 
+
+
+/*Title Chart Dashboard Management*/
 .TitleChart {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     margin-top: 70px;
@@ -715,6 +482,8 @@ input[type="radio"] {
     color: whitesmoke;
     font-size: 18px;
 }
+/*End Title Chart Dashboard Management*/
+
 
 /* CSS untuk membuat chart responsif pada breakpoint sm */
 @media (max-width: 768px) {
@@ -745,7 +514,7 @@ input[type="radio"] {
 
 
 /*Layout*/
-.headerLogo {
+/*.headerLogo {
     font-style: oblique;
     font-weight: 800;
     padding: 10px;
@@ -756,4 +525,342 @@ input[type="radio"] {
     margin-bottom: 10px;
     color: white;
     font-size: 20px;
+}*/
+
+
+
+
+/*loading popup*/
+#loading-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+.loading-content {
+    text-align: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.custom-loader {
+    width: 8vmax;
+    height: 8vmax;
+    border-right: 8px solid #6cafef;
+    border-radius: 100%;
+    animation: spinRight 800ms linear infinite;
+    position: relative;
+}
+
+    .custom-loader:before,
+    .custom-loader:after {
+        content: '';
+        width: 6vmax;
+        height: 6vmax;
+        display: block;
+        position: absolute;
+        top: calc(50% - 3vmax);
+        left: calc(50% - 3vmax);
+        border-left: 8px solid #1D5D9B;
+        border-radius: 100%;
+        animation: spinLeft 800ms linear infinite;
+    }
+
+    .custom-loader:after {
+        width: 4vmax;
+        height: 4vmax;
+        top: calc(50% - 2vmax);
+        left: calc(50% - 2vmax);
+        border: 0;
+        border-right: 8px solid #6cafef;
+        animation: none;
+    }
+
+@keyframes spinLeft {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(720deg);
+    }
+}
+
+@keyframes spinRight {
+    from {
+        transform: rotate(360deg);
+    }
+
+    to {
+        transform: rotate(0deg);
+    }
+}
+/*End loading popup*/
+
+
+
+/*Fitur Datatables Search*/ 
+.dataTables_filter {
+    float: right; /* Posisikan input ke kanan */
+    margin-bottom: 60px; /* Jarak dari tabel */
+    margin-top: -45px;
+    margin-right: 10px;
+}
+
+    /* Gaya input pencarian */
+    .dataTables_filter input {
+        border: 10px solid #1D5D9B;
+        border-radius: 25px;
+        padding: 10px 20px; /* Tambahkan ruang di dalam input */
+        width: 250px;
+        background-color: #1D5D9B; /* Latar belakang putih */
+        color: #333; /* Warna teks */
+        transition: all 0.3s ease; /* Animasi perubahan warna dan border */
+        font-size: 16px; /* Ukuran font */
+    }
+
+    .dataTables_filter label {
+        color: #1D5D9B;
+
+    }
+
+        /* Gaya input pencarian saat fokus */
+        .dataTables_filter input:focus {
+            outline: none;
+            border-color: #1D5D9B;
+            box-shadow: 0 0 8px rgba(29, 93, 155, 0.7);
+        }
+
+        /* Gaya placeholder di dalam input */
+        .dataTables_filter input::placeholder {
+            color: #1D5D9B; /* Warna placeholder */
+        }
+
+    /* Tombol cari (Opsional) */
+    .dataTables_filter button {
+        background-color: #1D5D9B;
+        color: #1D5D9B;
+        border: none;
+        border-radius: 25px;
+        padding: 10px 20px;
+        margin-left: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .dataTables_filter button:hover {
+            background-color: #15467D; /* Warna saat tombol dihover */
+        }
+
+/*End Fitur Datatables Search*/ 
+
+
+
+
+
+
+
+/*////////////////////////////////////////////////////////////baru/////////////////////////////////////////////////////////////////////////////////////*/
+
+
+/*Layout*/
+body {
+    background: #f5f6fa;
+    font-family: 'Inter';
+}
+
+
+ .d-flex.justify-content-between {
+    left: auto;
+  }
+.wrapper .sidebar {
+    background: #1861AC;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 215px;
+    height: 100%;
+    padding: 20px 0;
+    transition: all 0.5s ease;
+}
+
+    .wrapper .sidebar .profile {
+        margin-bottom: 50px;
+        /*text-align: center;*/
+    }
+
+        .wrapper .sidebar .profile img {
+            display: block;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            /*margin: 0 initial;*/
+            margin-left: 20px;
+            margin-top: 30px;
+            margin-bottom: -40px;
+        }
+
+        .wrapper .sidebar .profile h5 {
+            color: #fff;
+            margin-top: -50px;
+            margin-left: 95px;
+            font-size: 15px;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+
+        .wrapper .sidebar .profile p {
+            color: #fff0ff;
+            font-size: 12px;
+            margin-left: 95px;
+            margin-top: -20px;
+        }
+
+    .wrapper .sidebar ul li a {
+        display: block;
+        padding: 10px 12px;
+        border-bottom: 1px solid #10558d;
+        color: #fff;
+        font-size: 12px;
+        position: relative;
+        text-decoration: none;
+        margin-left: -30px;
+    }
+
+        .wrapper .sidebar ul li a .icon {
+            color: #fff;
+            width: 30px;
+            font-size: 15px;
+            display: inline-block;
+        }
+
+
+
+        .wrapper .sidebar ul li a:hover,
+        .wrapper .sidebar ul li a.active {
+            color: #fff;
+            background: #174779;
+            border-right: 2px solid rgb(5, 68, 104);
+        }
+
+            .wrapper .sidebar ul li a:hover .icon,
+            .wrapper .sidebar ul li a.active .icon {
+                color: #fff;
+            }
+
+            .wrapper .sidebar ul li a:hover:before,
+            .wrapper .sidebar ul li a.active:before {
+                display: block;
+            }
+
+.wrapper .section {
+    /* width: calc(100%);*/
+    padding-right: -225px;
+    margin-left: 215px;
+    transition: all 0.5s ease;
+}
+
+    .wrapper .section .top_navbar {
+        background: #33363F;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        padding: 0 30px;
+        position: fixed; /* Tambahkan properti ini */
+        top: 0; /* Posisikan navbar di bagian atas */
+        width: 100%; /* Lebar navbar 100% dari lebar tampilan */
+        z-index: 1;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .wrapper .section .top_navbar .hamburger a {
+            font-size: 28px;
+            color: #D9D9D9;
+        }
+
+            .wrapper .section .top_navbar .hamburger a:hover {
+                color: #fff;
+            }
+
+            .wrapper .section .top_navbar .nav-logout a {
+                color: #D9D9D9;
+                text-decoration: none;
+            }
+
+                .wrapper .section .top_navbar .nav-logout a:hover {
+                    color: #fff;
+                }
+
+        .wrapper .section .content {
+            margin-top: 100px;
+            margin-left: 20px;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            /*background: #fff;*/
+            padding-right: -225px;
+            line-height: 28px;
+        }
+
+body.active .wrapper .sidebar {
+    left: -215px;
+}
+
+body.active .wrapper .section {
+    margin-left: 0;
+    width: 100%;
+}
+    body .wrapper .section .top_navbar .nav-logout {
+        margin-right: 210px;
+    }
+body.active .wrapper .section .top_navbar .nav-logout {
+    margin-right: 0px;
+}
+
+
+.headerLogo {
+    padding-right: -14px;
+    background-color: #000;
+    margin-top: -20px;
+    font-size: 20px;
+    justify-content: space-between;
+}
+
+    .headerLogo img {
+        margin-top: -10px;
+        margin-bottom: -10px;
+        margin-left: 30px;
+        width: 130px;
+        height: 75px;
+    }
+
+
+
+/*Footer Panasonic*/
+.wrapper .sidebar .nav-bottom-brand {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin-left: 35px;
+    margin-bottom: 10px;
+}
+
+    .wrapper .sidebar .nav-bottom-brand h3 {
+        font-size: 25px;
+        color: white;
+        font-weight: 500;
+        font-family: "Arial Black";
+    }
+
+
+/* END Layout*/
+

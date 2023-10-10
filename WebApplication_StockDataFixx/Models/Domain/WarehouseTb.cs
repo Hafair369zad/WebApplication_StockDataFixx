@@ -28,5 +28,8 @@ public partial class WarehouseTb
     public virtual ICollection<AccessTb> AccessTbs { get; set; } = new List<AccessTb>();
 
     [InverseProperty("Wrh")]
+    public virtual ICollection<TempWarehouseItem> TempWarehouseItems { get; set; } = new List<TempWarehouseItem>();
+
+    [InverseProperty("Wrh")]
     public virtual ICollection<WarehouseItem> WarehouseItems { get; set; } = new List<WarehouseItem>();
 }

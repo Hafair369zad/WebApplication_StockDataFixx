@@ -66,7 +66,7 @@ public partial class WarehouseItem
     public DateTime LastUpload { get; set; }
 
     [Column("LAST_INPUT", TypeName = "datetime")]
-    public DateTime LastInput { get; set; }
+    public DateTime? LastInput { get; set; }
 
     [Column("DESCRIPTION")]
     public string Description { get; set; } = null!;

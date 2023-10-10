@@ -2,6 +2,10 @@
     ViewData["Title"] = "Production";
     Layout = "~/Views/Shared/_LayoutProduction.cshtml";
 }
+@*Populoader*@
+<div id="loading-popup" class="loading-popup">
+    <div class="custom-loader"></div>
+</div>
 
 <div class="container">
     <div class="row align-items-center justify-content-between mb-3">
@@ -89,17 +93,6 @@
                 console.error('Error fetching chart data:', error);
             });
     }
-
-    //function fetchChart2Data() {
-    //    fetch(`/Production/GetChart2Data?selectedMonth=${selectedMonth}&accessPlant=${accessPlant}`)
-    //        .then(response => response.json())
-    //        .then(data => {
-    //            updateChart2(data);
-    //        })
-    //        .catch(error => {
-    //            console.error('Error fetching chart data:', error);
-    //        });
-    //}
 
 
     // Function to fetch chart data from the server for the third chart
@@ -240,11 +233,44 @@
         const activeItem = document.querySelector(`[data-month='${month}']`);
         activeItem.classList.add('active');
     }
+
+
+    //Popup Loader
+    function showLoadingPopup() {
+        document.getElementById("loading-popup").style.display = "flex";
+    }
+
+    // Function to hide the loading popup
+    function hideLoadingPopup() {
+        document.getElementById("loading-popup").style.display = "none";
+    }
+
+    // Function to check the network status
+    function checkNetworkStatus() {
+        var online = navigator.onLine;
+
+        if (online) {
+            // Connection is restored, hide the loading popup
+            hideLoadingPopup();
+        } else {
+            // Connection is lost, show the loading popup
+            showLoadingPopup();
+        }
+    }
+
+    // Add an event listener to check network status on page load
+    window.addEventListener('load', checkNetworkStatus);
+
+    // Add an event listener to check network status when the connection changes
+    window.addEventListener('online', checkNetworkStatus);
+    window.addEventListener('offline', checkNetworkStatus);
 </script>
 
 
 
+@*perbaiki kalimat berikut agar mudah dipahami : 
 
-
+atur ketika masuk pertama kali ke DashboardProduction, card masih menempilkan kosong atau belum menampilkan chart, baru chart bisa tampil ketika sudah memilih menu dropdown bulan. saya ingin mangatur ketika masuk pertama kali ke halaman DashboardProduction pertama kali langsung menampilkan chart bulan saat ini secara real time , dan menu dropdown bulan saat ini secara real time aktif dan masih bisa menampilkan chart bulan lainnya ketika memilih menu dropdown bulan lainnya  : 
+*@
 
 

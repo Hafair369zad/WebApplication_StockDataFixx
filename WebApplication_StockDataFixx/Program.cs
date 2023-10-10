@@ -7,6 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using Microsoft.AspNetCore.Http.Features;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,21 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<PMIDbContext>(options =>
     options.UseSqlServer(builder.Configuration
     .GetConnectionString("DefaultConnection")));
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 104857600; // Ukuran maksimum 100 MB (dalam byte)
+});
+builder.Services.AddControllers()
+        .AddNewtonsoftJson(options =>
+        {
+            options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; // Mengabaikan nilai null
+            options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore; // Mengabaikan nilai default
+            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore; // Mengabaikan loop referensi
+            options.SerializerSettings.ContractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy() // Menggunakan gaya camelCase untuk nama properti
+            };
+        });
 
 
 builder.Services.AddSession();
@@ -25,7 +43,7 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    
     app.UseHsts();
 }
 
@@ -34,10 +52,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseSession(new SessionOptions
-{
-    IdleTimeout = TimeSpan.FromMinutes(30)
-});
+app.UseSession(
+    //new SessionOptions
+//{
+//    IdleTimeout = TimeSpan.FromMinutes(30)
+//}
+);
 
 app.UseAuthorization();
 

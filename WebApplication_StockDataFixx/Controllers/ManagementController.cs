@@ -53,29 +53,6 @@ namespace WebApplication_StockDataFixx.Controllers
             return View();
         }
 
-
-        // baru 
-        //[HttpGet]
-        //public ActionResult ReportManagement(string type)
-        //{
-        //    // Get distinct months from the data and create a list of month names
-        //    var distinctMonths = GetDistinctMonths();
-        //    List<SelectListItem> monthList = distinctMonths.Select(m => new SelectListItem
-        //    {
-        //        Text = m.ToString("MMMM yyyy"),
-        //        Value = m.ToString("yyyy-MM")
-        //    }).ToList();
-
-        //    ViewBag.MonthList = monthList;
-
-        //    // Simpan daftar bulan dalam input tersembunyi
-        //    ViewBag.MonthOptions = Newtonsoft.Json.JsonConvert.SerializeObject(monthList);
-
-        //    return View();
-        //}
-
-
-
         // Method to display partial page  
         public PartialViewResult PartialPage(string type, string selectedMonth)
         {
@@ -118,15 +95,14 @@ namespace WebApplication_StockDataFixx.Controllers
         private List<DateTime> GetDistinctMonths()
         {
             var distinctMonths = _dbContext.ProductionItems
-                .Select(item => item.LastUpload)
-                .Concat(_dbContext.WarehouseItems.Select(item => item.LastUpload))
+                .Select(item => item.LastUpload.Date)
+                .Concat(_dbContext.WarehouseItems.Select(item => item.LastUpload.Date))
                 .Distinct()
                 .OrderByDescending(date => date)
                 .ToList();
 
             return distinctMonths;
         }
-
 
 
         // baru sudah norml tapi error sedikit 
@@ -246,6 +222,8 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
 
+        // ==================================================================================================== DOWNLOAD DATA =========================================================================================== //
+
         // Method to process download excel file 
         [HttpGet]
         public IActionResult DownloadExcel(string type, string serialNo)
@@ -333,10 +311,7 @@ namespace WebApplication_StockDataFixx.Controllers
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFileName);
         }
 
-
-
-
-        private List<WarehouseItem> GetDownloadWrh(string serialNo , string isvmi)
+        private List<WarehouseItem> GetDownloadWrh(string serialNo, string isvmi)
         {
             // Fetch data from the database
             var data = _dbContext.WarehouseItems.AsQueryable();
@@ -353,8 +328,6 @@ namespace WebApplication_StockDataFixx.Controllers
 
             return data.OrderBy(w => w.SerialNo).ToList();
         }
-
-
 
         private IActionResult DownloadWarehouseExcel(string type, string serialNo)
         {
@@ -446,12 +419,11 @@ namespace WebApplication_StockDataFixx.Controllers
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFileName);
         }
 
+        // ============================================================================================================================================================================================================== //
 
 
-        
 
-
-        //  ///////////// Chart Data //////////////
+        // ================================================================================================ CHART DATA WAREHOUSE ======================================================================================== //
 
         [HttpGet]
         public IActionResult GetChartDataWrh(string selectedMonth)
@@ -567,8 +539,10 @@ namespace WebApplication_StockDataFixx.Controllers
             }
         }
 
+        // ============================================================================================================================================================================================================== //
 
-        //  ///////////// Chart Data Production //////////////
+
+        // =============================================================================================== CHART DATA PRODUCTION ======================================================================================== //
 
         [HttpGet]
         public IActionResult GetChartDataProd(string selectedMonth)
@@ -678,101 +652,103 @@ namespace WebApplication_StockDataFixx.Controllers
             }
         }
 
+        // ============================================================================================================================================================================================================== //
+
     }
 }
 
 
 
 
-       // lama 
-        //public PartialViewResult PartialPage(string type, string month)
-        //{
-        //    object data = null;
-        //    string partialViewName = null;
+// lama 
+//public PartialViewResult PartialPage(string type, string month)
+//{
+//    object data = null;
+//    string partialViewName = null;
 
-        //    if (type == "Warehouse_VMI")
-        //    {
-        //        data = GetWarehouseData("VMI", month);
-        //        partialViewName = "_WarehouseVMIPartial";
-        //    }
-        //    else if (type == "Warehouse_NVMI")
-        //    {
-        //        data = GetWarehouseData("NonVMI", month);
-        //        partialViewName = "_WarehouseNonVMIPartial";
-        //    }
-        //    else if (type == "Production")
-        //    {
-        //        data = GetProductionData(month);
-        //        partialViewName = "_ProductionPartial";
-        //    }
+//    if (type == "Warehouse_VMI")
+//    {
+//        data = GetWarehouseData("VMI", month);
+//        partialViewName = "_WarehouseVMIPartial";
+//    }
+//    else if (type == "Warehouse_NVMI")
+//    {
+//        data = GetWarehouseData("NonVMI", month);
+//        partialViewName = "_WarehouseNonVMIPartial";
+//    }
+//    else if (type == "Production")
+//    {
+//        data = GetProductionData(month);
+//        partialViewName = "_ProductionPartial";
+//    }
 
-        //    ViewBag.SelectedType = type;
+//    ViewBag.SelectedType = type;
 
-        //    // Get distinct months from the data and create a list of month names
-        //    var distinctMonths = GetDistinctMonths();
-        //    List<SelectListItem> monthList = distinctMonths.Select(m => new SelectListItem
-        //    {
-        //        Text = m.ToString("MMMM yyyy"),
-        //        Value = m.ToString("yyyy-MM")
-        //    }).ToList();
+//    // Get distinct months from the data and create a list of month names
+//    var distinctMonths = GetDistinctMonths();
+//    List<SelectListItem> monthList = distinctMonths.Select(m => new SelectListItem
+//    {
+//        Text = m.ToString("MMMM yyyy"),
+//        Value = m.ToString("yyyy-MM")
+//    }).ToList();
 
-        //    ViewBag.MonthList = monthList;
+//    ViewBag.MonthList = monthList;
 
-        //    return PartialView(partialViewName, data);
-        //}
+//    return PartialView(partialViewName, data);
+//}
 
-        //private List<DateTime> GetDistinctMonths()
-        //{
-        //    var distinctMonths = _dbContext.ProductionItems
-        //        .Select(item => item.LastUpload)
-        //        .Concat(_dbContext.WarehouseItems.Select(item => item.LastUpload))
-        //        .Distinct()
-        //        .OrderByDescending(date => date)
-        //        .ToList();
+//private List<DateTime> GetDistinctMonths()
+//{
+//    var distinctMonths = _dbContext.ProductionItems
+//        .Select(item => item.LastUpload)
+//        .Concat(_dbContext.WarehouseItems.Select(item => item.LastUpload))
+//        .Distinct()
+//        .OrderByDescending(date => date)
+//        .ToList();
 
-        //    return distinctMonths;
-        //}
+//    return distinctMonths;
+//}
 
 
-        //private List<WarehouseItem> GetWarehouseData(string isvmi, string month)
-        //{
-        //    DateTime now = DateTime.Now;
-        //    DateTime lastMonth = now.AddMonths(-1);
+//private List<WarehouseItem> GetWarehouseData(string isvmi, string month)
+//{
+//    DateTime now = DateTime.Now;
+//    DateTime lastMonth = now.AddMonths(-1);
 
-        //    IQueryable<WarehouseItem> data = _dbContext.WarehouseItems;
+//    IQueryable<WarehouseItem> data = _dbContext.WarehouseItems;
 
-        //    if (!string.IsNullOrEmpty(isvmi))
-        //    {
-        //        data = data.Where(item => item.Isvmi == isvmi);
-        //    }
+//    if (!string.IsNullOrEmpty(isvmi))
+//    {
+//        data = data.Where(item => item.Isvmi == isvmi);
+//    }
 
-        //    if (month == "thisMonth")
-        //    {
-        //        data = data.Where(item => item.LastUpload.Month == now.Month && item.LastUpload.Year == now.Year);
-        //    }
-        //    else if (month == "lastMonth")
-        //    {
-        //        data = data.Where(item => item.LastUpload.Month == lastMonth.Month && item.LastUpload.Year == lastMonth.Year);
-        //    }
+//    if (month == "thisMonth")
+//    {
+//        data = data.Where(item => item.LastUpload.Month == now.Month && item.LastUpload.Year == now.Year);
+//    }
+//    else if (month == "lastMonth")
+//    {
+//        data = data.Where(item => item.LastUpload.Month == lastMonth.Month && item.LastUpload.Year == lastMonth.Year);
+//    }
 
-        //    return data.OrderBy(w => w.SerialNo).ToList();
-        //}
+//    return data.OrderBy(w => w.SerialNo).ToList();
+//}
 
-        //private List<ProductionItem> GetProductionData(string month)
-        //{
-        //    DateTime now = DateTime.Now;
-        //    DateTime lastMonth = now.AddMonths(-1);
+//private List<ProductionItem> GetProductionData(string month)
+//{
+//    DateTime now = DateTime.Now;
+//    DateTime lastMonth = now.AddMonths(-1);
 
-        //    IQueryable<ProductionItem> data = _dbContext.ProductionItems;
+//    IQueryable<ProductionItem> data = _dbContext.ProductionItems;
 
-        //    if (month == "thisMonth")
-        //    {
-        //        data = data.Where(item => item.LastUpload.Month == now.Month && item.LastUpload.Year == now.Year);
-        //    }
-        //    else if (month == "lastMonth")
-        //    {
-        //        data = data.Where(item => item.LastUpload.Month == lastMonth.Month && item.LastUpload.Year == lastMonth.Year);
-        //    }
+//    if (month == "thisMonth")
+//    {
+//        data = data.Where(item => item.LastUpload.Month == now.Month && item.LastUpload.Year == now.Year);
+//    }
+//    else if (month == "lastMonth")
+//    {
+//        data = data.Where(item => item.LastUpload.Month == lastMonth.Month && item.LastUpload.Year == lastMonth.Year);
+//    }
 
-        //    return data.OrderBy(w => w.SerialNo).ToList();
-        //}
+//    return data.OrderBy(w => w.SerialNo).ToList();
+//}

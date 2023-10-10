@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication_StockDataFixx.Models.Domain;
 
-[Table("PRODUCTION_ITEM")]
-public partial class ProductionItem
+[Table("TEMP_WAREHOUSE_ITEM")]
+public partial class TempWarehouseItem
 {
     [Key]
-    [Column("PRODUCTION_ID")]
+    [Column("WAREHOUSE_ID")]
     [StringLength(225)]
-    public string ProductionId { get; set; } = null!;
+    public string WarehouseId { get; set; } = null!;
 
     [Column("PLANT")]
     public string Plant { get; set; } = null!;
@@ -28,6 +28,15 @@ public partial class ProductionItem
 
     [Column("TAG_NO")]
     public string TagNo { get; set; } = null!;
+
+    [Column("STOCK_TYPE")]
+    public string StockType { get; set; } = null!;
+
+    [Column("VENDOR_CODE")]
+    public string VendorCode { get; set; } = null!;
+
+    [Column("VENDOR_NAME")]
+    public string VendorName { get; set; } = null!;
 
     [Column("MATERIAL")]
     public string Material { get; set; } = null!;
@@ -50,6 +59,9 @@ public partial class ProductionItem
     [Column("ISSUE_PLANNER")]
     public string IssuePlanner { get; set; } = null!;
 
+    [Column("ISVMI")]
+    public string Isvmi { get; set; } = null!;
+
     [Column("LAST_UPLOAD", TypeName = "datetime")]
     public DateTime LastUpload { get; set; }
 
@@ -59,19 +71,19 @@ public partial class ProductionItem
     [Column("DESCRIPTION")]
     public string Description { get; set; } = null!;
 
-    [Column("PROD_ID")]
+    [Column("WRH_ID")]
     [StringLength(15)]
-    public string ProdId { get; set; } = null!;
+    public string WrhId { get; set; } = null!;
 
     [Column("ACCESS_PLANT")]
     [StringLength(10)]
     public string AccessPlant { get; set; } = null!;
 
     [ForeignKey("AccessPlant")]
-    [InverseProperty("ProductionItems")]
+    [InverseProperty("TempWarehouseItems")]
     public virtual AccessPlantTb AccessPlantNavigation { get; set; } = null!;
 
-    [ForeignKey("ProdId")]
-    [InverseProperty("ProductionItems")]
-    public virtual ProductionTb Prod { get; set; } = null!;
+    [ForeignKey("WrhId")]
+    [InverseProperty("TempWarehouseItems")]
+    public virtual WarehouseTb Wrh { get; set; } = null!;
 }

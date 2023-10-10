@@ -10,7 +10,10 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </head>
 <body>
-
+    @*Populoader*@
+    <div id="loading-popup" class="loading-popup">
+        <div class="custom-loader"></div>
+    </div>
     <div class="container-fluid p-0">
         <div class="row" style="margin-top: -70px;">
             <div class="col-md-12 mb-10">
@@ -24,7 +27,7 @@
                                 @using Microsoft.AspNetCore.Http;
                                 <h4 class="text-dash"><strong>Halo @CurrentUsername !! </strong></h4>
                                 <p style="color: #001C30; font-weight: 500; font-size: 20px; margin-top: 60px;">
-                                    Enhance Production Management with<br>Real-Time <strong style="font-weight: 800;">Stock Data Insights</strong>
+                                    "Anda dapat memantau dan mengendalikan<strong style="font-weight: 800;"> stok Anda secara real-time</strong><br />dengan kemudahan yang kami sediakan."
                                 </p>
                             </div>
                         </div>
@@ -239,7 +242,35 @@
             submitFormAndShowPopup(); // Panggil fungsi untuk submit form dan tampilkan popup
         });
 
+        //Popup Loader
+        function showLoadingPopup() {
+            document.getElementById("loading-popup").style.display = "flex";
+        }
 
+        // Function to hide the loading popup
+        function hideLoadingPopup() {
+            document.getElementById("loading-popup").style.display = "none";
+        }
+
+        // Function to check the network status
+        function checkNetworkStatus() {
+            var online = navigator.onLine;
+
+            if (online) {
+                // Connection is restored, hide the loading popup
+                hideLoadingPopup();
+            } else {
+                // Connection is lost, show the loading popup
+                showLoadingPopup();
+            }
+        }
+
+        // Add an event listener to check network status on page load
+        window.addEventListener('load', checkNetworkStatus);
+
+        // Add an event listener to check network status when the connection changes
+        window.addEventListener('online', checkNetworkStatus);
+        window.addEventListener('offline', checkNetworkStatus);
     </script>
 
 

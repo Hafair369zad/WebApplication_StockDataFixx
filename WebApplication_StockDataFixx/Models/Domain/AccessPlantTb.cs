@@ -21,6 +21,12 @@ public partial class AccessPlantTb
     public virtual ICollection<ProductionItem> ProductionItems { get; set; } = new List<ProductionItem>();
 
     [InverseProperty("AccessPlantNavigation")]
+    public virtual ICollection<TempProductionItem> TempProductionItems { get; set; } = new List<TempProductionItem>();
+
+    [InverseProperty("AccessPlantNavigation")]
+    public virtual ICollection<TempWarehouseItem> TempWarehouseItems { get; set; } = new List<TempWarehouseItem>();
+
+    [InverseProperty("AccessPlantNavigation")]
     public virtual ICollection<UserTb> UserTbs { get; set; } = new List<UserTb>();
 
     [InverseProperty("AccessPlantNavigation")]

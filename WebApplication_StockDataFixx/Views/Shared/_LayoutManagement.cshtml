@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" />
     <script src="~/js/report.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
     
         <!-- Tambahkan referensi ke file CSS DataTables -->
@@ -37,22 +39,6 @@
 
 
     <script>
-        // Function to set active class for navigation links based on current page
-        $(document).ready(function () {
-            var currentPath = window.location.pathname.toLowerCase();
-            var navLinks = document.getElementsByClassName("nav_link");
-            for (var i = 0; i < navLinks.length; i++) {
-                var link = navLinks[i].getAttribute("href").toLowerCase();
-                if (currentPath.includes(link)) {
-                    navLinks[i].classList.add("active");
-                }
-            }
-            $('#hamburger').click(function () {
-                // Toggle the class on the navigation bar to show/hide it
-                $('.l-navbar').toggleClass('l-navbar-active');
-            });
-        });
-
         function confirmLogout() {
             // Menampilkan pop-up konfirmasi
             if (window.confirm("Apakah Anda yakin ingin logout?")) {
@@ -64,7 +50,76 @@
         }
     </script>
 </head>
-<body id="body-pd">
+
+@*baru*@
+<body>
+    <div class="wrapper">
+        <div class="section">
+            <div class="top_navbar">
+                <div class="hamburger">
+                    <a href="#">
+                        <i class="fas fa-bars"></i>
+                    </a>
+                </div>
+                <div class="nav-logout">
+                    <a href="javascript:void(0);" onclick="confirmLogout();">
+                        <i class='bx bx-log-out nav_icon'></i>
+                        <span class="nav_name">Logout</span>
+                    </a>
+                </div>
+            </div>
+            <div class="content">
+                @RenderBody()
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="headerLogo">
+                <a asp-controller="Management" asp-action="DashboardManagement">
+                    <img src="/images/img/image228.svg" />
+                </a>
+            </div>
+            <div class="profile">
+                <img src="/images/img/gambarView.png">
+                @using Microsoft.AspNetCore.Http;
+                <h5>@CurrentUsername</h5>
+                <p>M10071 (ISC-PMI)</p>
+            </div>
+            <ul id="nav_accordion">
+                <li>
+                    <a asp-area="" asp-controller="Management" asp-action="DashboardManagement">
+                        <span class="icon"><i class="fas fa-th-list"></i></span>
+                        <span class="item">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-area="" asp-controller="Management" asp-action="ReportManagement">
+                        <span class="icon"><i class="fas fa-file"></i></span>
+                        <span class="item">Report</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="nav-bottom-brand">
+                <h3>Panasonic</h3>
+            </div>
+        </div>
+    </div>
+
+    @*<footer class="border-top footer text-muted">
+    <div class="container">
+    &copy; 2023 - WebApplication_StandardInventDays - <a asp-area="" asp-page="/Privacy">Privacy</a>
+    </div>
+    </footer>*@
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>
+
+
+@*lama*@
+@*<body id="body-pd">
    <header class="header" id="header">
         <div class="hamburger-container">
             <div class="hamburger" id="hamburger">
@@ -79,7 +134,7 @@
                 <i class='bx bx-log-out nav_icon'></i>
                 <span class="nav_name">Logout</span>
             </a>
-        </div>  
+        </div>
     </header>
     <div class="l-navbar" id="nav-bar">
         <div class="headerLogo">
@@ -106,10 +161,9 @@
                             <img src="~/images/img/Frame_6.png" width="120px" height="120px">
                         }
 
-                        
+
                         @using Microsoft.AspNetCore.Http;
                         <h3>@CurrentUsername</h3>
-                        @*<h3>@ViewData["Title"]</h3>*@
                     </div>
                     <a class="nav_link" asp-area="" asp-controller="Management" asp-action="DashboardManagement">
                         <i class='bx bx-grid-alt nav_icon'></i>
@@ -119,9 +173,9 @@
                         <i class='bx bxs-report nav_icon'></i>
                         <span class="nav_name @(ViewContext.RouteData.Values["Action"].ToString().ToLower() == "ReportManagement" ? "active" : "")">Report</span>
                     </a>
-                
+
                 </div>
-               
+
             </div>
             <div class="nav-bottom-brand">
                 <h3>Panasonic</h3>
@@ -137,8 +191,8 @@
                 </main>
             </div>
         </div>
-    </div>
-    @*div class="height-100 bg-light">
+    </div>*@
+@*div class="height-100 bg-light">
         <div class="container">
             <main role="main" class="container-main" >
                 @RenderBody()
@@ -146,8 +200,6 @@
         </div>
     </div>*@
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+@*<script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html>
+    @await RenderSectionAsync("Scripts", required: false)*@

@@ -29,4 +29,7 @@ public partial class ProductionTb
 
     [InverseProperty("Prod")]
     public virtual ICollection<ProductionItem> ProductionItems { get; set; } = new List<ProductionItem>();
+
+    [InverseProperty("Prod")]
+    public virtual ICollection<TempProductionItem> TempProductionItems { get; set; } = new List<TempProductionItem>();
 }
