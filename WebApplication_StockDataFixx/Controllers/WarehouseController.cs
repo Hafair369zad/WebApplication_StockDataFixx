@@ -187,17 +187,9 @@ namespace WebApplication_StockDataFixx.Controllers
 
             _dbContext.SaveChanges();
 
-            // Serialize the uploadedData list to JSON before storing it in TempData
-            string jsonUploadedData = JsonConvert.SerializeObject(uploadedData);
-
-            // Store the JSON data in TempData
-            TempData["UploadedData"] = jsonUploadedData;
-
             // Redirect to the ReportWarehouse action
             return RedirectToAction("ReportWarehouse");
         }
-
-
 
         // Main method for processing the uploaded Excel file based on the selected storage type
         private List<WarehouseItem> ProcessExcelFile(IFormFile file, bool Isvmi)
@@ -632,9 +624,6 @@ namespace WebApplication_StockDataFixx.Controllers
 
 
 
-
-
-
 //  Method jangan dihapus dulu yakk // 
 
 //private bool IsUploadedFileNonVMI(IEnumerable<IXLRow> rows)
@@ -712,53 +701,10 @@ namespace WebApplication_StockDataFixx.Controllers
 //        return RedirectToAction("UploadDataWarehouse");
 //    }
 
-//    bool Isvmi = IsUploadedFileVMI(file); // Detect file type based on content
 
 //    // Check the selected storage type
 //    bool isVMIStorage = Request.Form["Storage_Type"] == "VMI";
 
-//    if (Isvmi && isVMIStorage)
-//    {
-//        TempData["Message"] = "FileUploaded"; // Display "FileUploaded" popup
-//    }
-//    else if (Isvmi && !isVMIStorage)
-//    {
-//        TempData["Message"] = "Mismatch Type Storage"; // Display "Mismatch Type Storage" popup
-//        return RedirectToAction("UploadDataWarehouse"); // Redirect back to the upload page
-//    }
-//    else if (!Isvmi && !isVMIStorage)
-//    {
-//        TempData["Message"] = "FileUploaded"; // Display "FileUploaded" popup
-//    }
-//    else // !Isvmi && isVMIStorage
-//    {
-//        TempData["Message"] = "Mismatch Type Storage"; // Display "Mismatch Type Storage" popup
-//        return RedirectToAction("UploadDataWarehouse"); // Redirect back to the upload page
-//    }
-
-//    List<WarehouseItem> uploadedData = ProcessExcelFile(file, Isvmi);
-
-//    // Save the data to the database only if the selected storage type matches
-//    if (Isvmi && isVMIStorage || !Isvmi && !isVMIStorage)
-//    {
-//        foreach (var item in uploadedData)
-//        {
-//            // Check if data with the same month, Sloc, and StockType already exists in the database
-//            var existingData = _dbContext.WarehouseItems
-//                .Where(w => w.Plant == item.Plant &&
-//                            w.Month == item.Month &&
-//                            w.Sloc == item.Sloc &&
-//                            w.StockType == item.StockType)
-//                .ToList();
-
-//            if (existingData.Count > 0)
-//            {
-//                // If data with the same month, Sloc, and StockType already exists, replace the old data with the new data
-//                foreach (var existingItem in existingData)
-//                {
-//                    _dbContext.WarehouseItems.Remove(existingItem); // Remove the old data
-//                }
-//            }
 
 //            // Add the new data to the database
 //            _dbContext.WarehouseItems.Add(item);

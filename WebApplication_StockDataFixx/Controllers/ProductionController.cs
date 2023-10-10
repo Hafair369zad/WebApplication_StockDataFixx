@@ -84,17 +84,9 @@ namespace WebApplication_StockDataFixx.Controllers
 
             _dbContext.SaveChanges();
 
-            // Serialize the uploadedData list to JSON before storing it in TempData
-            string jsonUploadedData = JsonConvert.SerializeObject(uploadedData);
-
-            // Store the JSON data in TempData
-            TempData["UploadedData"] = jsonUploadedData;
-
             // Redirect to the ReportProduction action
             return RedirectToAction("ReportProduction");
         }
-
-
         // The end of the UploadFile method //
 
 
@@ -227,43 +219,6 @@ namespace WebApplication_StockDataFixx.Controllers
             return uniqueMonths;
         }
 
-
-
-        // Initial GetUniqueMonths Method: to filter data by coloumn Month for display data //
-        //private IEnumerable<string> GetUniqueMonths()
-        //{
-        //    var uniqueMonths = _dbContext.ProductionItems
-        //        .Select(w => w.Month)
-        //        .Distinct()
-        //        .OrderByDescending(m => m)
-        //        .ToList();
-
-        //    return uniqueMonths;
-        //}
-        // End of the GetUniqueMonths method/
-
-
-        // Initial GetDataFromDatabase Method: to fetch data form database //
-        //private List<ProductionItem> GetDataFromDatabase(string serialNo, string accessPlant)
-        //{
-        //    var data = _dbContext.ProductionItems.AsQueryable();
-
-        //    if (!string.IsNullOrEmpty(serialNo))
-        //    {
-        //        data = data.Where(w => w.SerialNo == serialNo);
-        //    }
-
-        //    if (!string.IsNullOrEmpty(accessPlant))
-        //    {
-        //        data = data.Where(w => w.AccessPlant == accessPlant);
-        //    }
-
-        //    return data.OrderBy(w => w.SerialNo).ToList();
-        //}
-        // End of the GetDataFromDatabase method/
-
-
-
         // Initial CheckDataSaved method : Action method to handle the request for checking the status of saved data
         [HttpGet]
         public IActionResult CheckDataSaved()
@@ -275,104 +230,6 @@ namespace WebApplication_StockDataFixx.Controllers
             return Json(new { saved = dataSaved });
         }
         // End of the CheckDataSaved method/
-
-
-
-
-        // Initial ProcessExcelFile method : to read Excel input data per row
-        private List<ProductionItem> ProcessExcelFile(IFormFile file)
-        {
-            List<ProductionItem> uploadedData = new List<ProductionItem>();
-
-            // Mendapatkan path file temporary untuk menyimpan file Excel yang diupload
-            string tempPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-            if (!Directory.Exists(tempPath))
-            {
-                Directory.CreateDirectory(tempPath);
-            }
-
-            string filePath = Path.Combine(tempPath, Guid.NewGuid().ToString() + Path.GetExtension(file.FileName));
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                file.CopyTo(stream);
-            }
-
-            // Baca data dari file Excel dengan menggunakan encoding UTF-8
-            using (var workbook = new XLWorkbook(filePath))
-            {
-                var worksheet = workbook.Worksheet(1); // Assuming data is in the first worksheet
-                var rows = worksheet.RowsUsed();
-
-                foreach (var row in rows.Skip(1)) // Skip header row
-                {
-
-                    int actualQty;
-                    var actualQtyCell = row.Cell(8);
-                    if (actualQtyCell.TryGetValue(out actualQty))
-                    {
-                        // If Unrestr field contains a numeric value, set ActualQty to 0
-                        actualQty = 0;
-                    }
-
-                    string plant = row.Cell(1).Value.ToString();
-                    string Description = "";
-
-                    // Tambahkan logika kondisional di sini
-                    switch (plant)
-                    {
-                        case "RIFA":
-                            Description = "PMI-AUDIO";
-                            break;
-                        case "RIFC":
-                            Description = "PMI-AIR CONDITIONER (AC)";
-                            break;
-                        case "RIFR":
-                            Description = "PMI-REFRIGRATOR";
-                            break;
-                        case "RIFW":
-                            Description = "PMI-IAQ";
-                            break;
-                        default:
-                            Description = "Default Description"; // Deskripsi default jika tidak ada kondisi yang cocok
-                            break;
-                    }
-
-                    ProductionItem item = new ProductionItem
-                    {
-                        ProductionId = $"{row.Cell(1).Value.ToString()}{row.Cell(2).Value.ToString()}{row.Cell(3).Value.ToString()}{row.Cell(6).Value.ToString()}",
-                        Plant = row.Cell(1).Value.ToString(),
-                        Sloc = row.Cell(2).Value.ToString(),
-                        Month = row.Cell(3).Value.ToString(),
-                        SerialNo = row.Cell(4).Value.ToString(),
-                        TagNo = row.Cell(5).Value.ToString(),
-                        Material = row.Cell(6).Value.ToString(),
-                        MaterialDesc = row.Cell(7).Value.ToString(),
-                        ActualQty = actualQty,
-                        QualInsp = row.Cell(9).Value.ToString(),
-                        Blocked = row.Cell(10).Value.ToString(),
-                        Unit = row.Cell(11).Value.ToString(),
-                        IssuePlanner = row.Cell(12).Value.ToString(),
-                        Description = Description,
-                        ProdId = $"PROD-{row.Cell(1).Value.ToString()}-{row.Cell(2).Value.ToString()}",
-                        AccessPlant = $"PROD-{row.Cell(1).Value.ToString()}"
-                    };
-
-                    uploadedData.Add(item);
-                }
-            }
-
-            // Hapus file temporary setelah selesai membaca data
-            if (System.IO.File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
-            }
-
-            return uploadedData;
-        }
-        // End of the ProcessExcelFile method/
-
-
 
         // Iinitial DownloadExcel method : to Process Download file Excel 
         [HttpGet]
@@ -429,8 +286,6 @@ namespace WebApplication_StockDataFixx.Controllers
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFileName);
         }
 
-
-
         private List<ProductionItem> GetDataFromDatabaseDown(string serialNo)
         {
             // Fetch data from the database
@@ -445,12 +300,6 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
         // End of the DownloadExcel method/
-
-
-
-
-
-
 
 
 
