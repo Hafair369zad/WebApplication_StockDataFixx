@@ -97,24 +97,39 @@
 
     <br />
 
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-12">
-                <div class="card text-center w-100" style="margin-left: -20px; height: 170px; background-color: dimgray;">
-                    <h1 class="m-0">Download File</h1>
-                    <div class="card-body d-flex justify-content-center align-items-center" style="margin-top: -90px;">
-                        <div class="btn-dow">
-                            <input type="text" class="input-rounded" id="serialNumberInput" placeholder="Enter Serial Number">
-                            <button class="btn btn-primary" onclick="validateSerialNumber()">Download file .xls</button>
-                        </div>
-                    </div>
+    <div class="download-float-button">
+        <button id="open-popup">Download <i class="fas fa-download"></i></button>
+        <div id="popup" class="popup popup-dow">
+            <div class="popup-content popup-content-dow ">
+                <div class="popup-header popup-header-dow">
+                    <h3>Dowonload File Excel</h3>
+                    <a id="close-popup-dow" class="btn close-popup-dow">&times;</a>
+                </div>
+                <div class="popup-body popup-body-dow">
+                    <input type="text" class="input-rounded" id="serialNoInput" placeholder="Enter Serial Number">
+                    <button class="btn btn-dow" id="download-button" onclick="validateSerialNumber()">Download file .xls</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <br />
-    <div style="margin-bottom: 50px;"></div>
+    <div style="margin-bottom: 70px;"></div>
+
+    <script>
+        // POPUP
+        // Function to open the popup
+        document.getElementById('open-popup').addEventListener('click', function () {
+            document.getElementById('popup').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block'; // Menampilkan overlay
+        });
+
+        // Function to close the popup and hide the overlay
+        document.getElementById('close-popup-dow').addEventListener('click', function () {
+            document.getElementById('popup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none'; // Menyembunyikan overlay
+        });
+
+    </script>
 
     <script type="text/javascript">
 

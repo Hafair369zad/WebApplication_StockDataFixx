@@ -40,9 +40,12 @@ namespace WebApplication_StockDataFixx.Controllers
             return View();
         }
 
-
+       
         // =============================================================================================== READ DATA =============================================================================================== //
-
+        
+        
+        
+        // Main Method Report 
         // Method to display based on access plant, storage type dll..
         [HttpGet]
         public ActionResult ReportWarehouse(string serialNo, string selectedType, string selectedMonth)
@@ -109,8 +112,73 @@ namespace WebApplication_StockDataFixx.Controllers
             return View(data);
         }
 
+        // Temp Method Report 
+        [HttpGet]
+        public ActionResult ReportTempWarehouse(string serialNo, string selectedType, string selectedMonth)
+        {
+            List<TempWarehouseItem> data;
 
-        // Jika Menggunakan Kolom Last Upload 
+            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
+            // Fetch data based on the selectedType (VMI or NonVMI) and selectedMonth
+            if (selectedType == "VMI")
+            {
+                data = GetDataFromDatabaseTemp(serialNo, Isvmi: true, accessPlant);
+            }
+            else if (selectedType == "NON_VMI")
+            {
+                data = GetDataFromDatabaseTemp(serialNo, Isvmi: false, accessPlant);
+            }
+            else
+            {
+                data = GetDataFromDatabaseTemp(serialNo, Isvmi: null, accessPlant); // Fetch all data
+            }
+
+            if (!string.IsNullOrEmpty(accessPlant))
+            {
+                // Filter data based on the AccessPlant value
+                data = data.Where(w => w.AccessPlant == accessPlant).ToList();
+            }
+
+            // Check if there are any elements in the filtered data
+            if (data.Any())
+            {
+                // Jika selectedMonth tidak ada atau kosong, ambil data terbaru seperti di ReportProduction
+                if (string.IsNullOrEmpty(selectedMonth) || selectedMonth == "Latest Update")
+                {
+                    // Filter data based on the latest upload month and year
+                    var latestUploadDate = data.Max(item => item.LastUpload.Date);
+                    data = data.Where(wi => wi.LastUpload.Year == latestUploadDate.Year && wi.LastUpload.Month == latestUploadDate.Month && wi.AccessPlant == accessPlant)
+                               .ToList();
+                }
+                else
+                {
+                    // Ambil data berdasarkan bulan dan tahun yang dipilih pada selectedMonth
+                    if (DateTime.TryParseExact(selectedMonth, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedMonth))
+                    {
+                        data = data.Where(w => w.LastUpload.Year == parsedMonth.Year && w.LastUpload.Month == parsedMonth.Month && w.AccessPlant == accessPlant)
+                                   .ToList();
+                    }
+                    else
+                    {
+                        // Handle kesalahan jika selectedMonth tidak valid
+                        // Misalnya, lempar pengecualian atau kembalikan data kosong, sesuai dengan kebutuhan Anda.
+                        throw new ArgumentException("selectedMonth is not in the correct format.");
+                    }
+                }
+            }
+            else
+            {
+                // Handle the case where there are no elements in the filtered data
+            }
+
+            ViewBag.SerialNo = serialNo;
+            ViewBag.LastUpload = GetUniqueMonthsTemp(accessPlant, selectedType);
+
+            return View(data);
+        }
+
+        // Jika Menggunakan Kolom Last Upload Main
         private IEnumerable<DateTime> GetUniqueMonths(string accessPlant, string selectedType)
         {
             var uniqueMonths = _dbContext.WarehouseItems
@@ -122,8 +190,19 @@ namespace WebApplication_StockDataFixx.Controllers
             return uniqueMonths;
         }
 
+        // Jika Menggunakan Kolom Last Upload Temp
+        private IEnumerable<DateTime> GetUniqueMonthsTemp(string accessPlant, string selectedType)
+        {
+            var uniqueMonths = _dbContext.TempWarehouseItems
+                .Where(w => w.AccessPlant == accessPlant && (selectedType == "VMI" ? w.Isvmi == "VMI" : w.Isvmi == "NonVMI"))
+                .Select(w => w.LastUpload.Date)
+                .Distinct()
+                .ToList();
 
-        // Method to Get Data from Database
+            return uniqueMonths;
+        }
+
+        // Method to Get Data from Database Main
         private List<WarehouseItem> GetDataFromDatabase(string serialNo, bool? Isvmi, string accessPlant)
         {
             // Fetch data from the warehouse database (adjust this based on your actual database context)
@@ -147,6 +226,30 @@ namespace WebApplication_StockDataFixx.Controllers
             return data.OrderBy(w => w.SerialNo).ToList();
         }
 
+
+        // Method to Get Data from Database Temp
+        private List<TempWarehouseItem> GetDataFromDatabaseTemp(string serialNo, bool? Isvmi, string accessPlant)
+        {
+            // Fetch data from the warehouse database (adjust this based on your actual database context)
+            var data = _dbContext.TempWarehouseItems.AsQueryable();
+
+            if (!string.IsNullOrEmpty(serialNo))
+            {
+                data = data.Where(w => w.SerialNo == serialNo);
+            }
+
+            if (Isvmi.HasValue)
+            {
+                data = data.Where(w => w.Isvmi == (Isvmi.Value ? "VMI" : "NonVMI"));
+            }
+
+            if (!string.IsNullOrEmpty(accessPlant))
+            {
+                data = data.Where(w => w.AccessPlant == accessPlant);
+            }
+
+            return data.OrderBy(w => w.SerialNo).ToList();
+        }
         // ============================================================================================================================================================================================================ //
 
 
@@ -188,7 +291,7 @@ namespace WebApplication_StockDataFixx.Controllers
             _dbContext.SaveChanges();
 
             // Redirect to the ReportWarehouse action
-            return RedirectToAction("ReportWarehouse");
+            return RedirectToAction("ReportTempWarehouse");
         }
 
         // Main method for processing the uploaded Excel file based on the selected storage type

@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/_LayoutProduction.cshtml";
 }
 
-@model List<WebApplication_StockDataFixx.Models.Domain.ProductionItem>
+@model List<WebApplication_StockDataFixx.Models.Domain.TempProductionItem>
 
 
 <html>
@@ -40,7 +40,7 @@
         function filterDataByMonth() {
             var selectedMonth = document.getElementById("selectedMonth").value;
 
-            var url = "/Production/ReportProduction";
+            var url = "/Production/ReportTempProduction";
 
             // Pass the selected month as a query parameter
             url += "?selectedMonth=" + encodeURIComponent(selectedMonth);

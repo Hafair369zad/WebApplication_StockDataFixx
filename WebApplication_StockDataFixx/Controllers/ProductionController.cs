@@ -49,6 +49,8 @@ namespace WebApplication_StockDataFixx.Controllers
 
         // ================================================================================================= READ DATA ===================================================================================================== //
 
+
+        // ================================================================================================= MAIN ========================================================================================================== //
         // Initial Report Production Method: to display data on the report page //
         [HttpGet]
         public ActionResult ReportProduction(string selectedMonth)
@@ -141,8 +143,101 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
         // ================================================================================================================================================================================================================ //
+        
+        
+        
+        // ==================================================================================================== TEMP ====================================================================================================== //
+        // Initial Report Production Method: to display data on the report page //
+        [HttpGet]
+        public ActionResult ReportTempProduction(string selectedMonth)
+        {
+            List<TempProductionItem> uploadedDataList = null!;
+
+            // Retrieve the AccessPlant value from the session
+            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
+            if (selectedMonth == "Latest Update" || string.IsNullOrWhiteSpace(selectedMonth))
+            {
+                // If "Latest Update" or no month selected, fetch data from the database without month filter
+                uploadedDataList = GetDataFromDatabaseTemp(accessPlant);
+            }
+            else
+            {
+                // Fetch data from the database based on the selected month
+                uploadedDataList = GetDataFromDatabaseByMonthTemp(selectedMonth, accessPlant);
+            }
+
+            // Get unique months from the uploaded data
+            IEnumerable<DateTime> uniqueMonths = GetUniqueMonthsTemp(accessPlant);
+
+            // Pass the unique months to the view
+            ViewBag.UniqueMonths = uniqueMonths;
+
+            return View(uploadedDataList);
+        }
+
+        // Initial GetDataFromDatabase Method: to fetch data form database //
+        private List<TempProductionItem> GetDataFromDatabaseTemp(string accessPlant)
+        {
+            // Dapatkan data ProductionItems
+            var data = _dbContext.TempProductionItems.ToList();
+
+            if (data.Count == 0)
+            {
+                // Jika data kosong, kembalikan daftar kosong
+                return new List<TempProductionItem>();
+            }
+
+            // Temukan bulan dan tahun terbaru pada field "LastUpload"
+            var latestUploadDate = data.Max(item => item.LastUpload.Date);
+
+            // Filter data untuk hanya data terbaru berdasarkan bulan dan tahun
+            var latestProductionItemsTemp = data
+                .Where(pi => pi.LastUpload.Year == latestUploadDate.Year && pi.LastUpload.Month == latestUploadDate.Month && pi.AccessPlant == accessPlant)
+                .ToList();
+
+            return latestProductionItemsTemp;
+        }
+
+        // Method get data from database by per Month
+        private List<TempProductionItem> GetDataFromDatabaseByMonthTemp(string selectedMonth, string accessPlant)
+        {
+            if (selectedMonth == "Latest Update" || string.IsNullOrWhiteSpace(selectedMonth))
+            {
+                return GetDataFromDatabaseTemp(accessPlant);
+            }
+
+            DateTime parsedMonth;
+
+            if (DateTime.TryParseExact(selectedMonth, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedMonth))
+            {
+                var data = _dbContext.TempProductionItems
+                    .Where(w => w.LastUpload.Month == parsedMonth.Month && w.LastUpload.Year == parsedMonth.Year && w.AccessPlant == accessPlant)
+                    .ToList();
+
+                return data;
+            }
+            else
+            {
+                // Handle kesalahan jika selectedMonth tidak valid
+                // Misalnya, lempar pengecualian atau kembalikan data kosong, sesuai dengan kebutuhan Anda.
+                throw new ArgumentException("selectedMonth is not in the correct format.");
+            }
+        }
 
 
+        // Initial GetUniqueMonths Method: to filter data by coloumn LastUpload for display data //
+        private IEnumerable<DateTime> GetUniqueMonthsTemp(string accessPlant)
+        {
+            var uniqueMonths = _dbContext.TempProductionItems
+                .Where(w => w.AccessPlant == accessPlant)
+                .Select(w => w.LastUpload.Date)
+                .Distinct()
+                .ToList();
+
+            return uniqueMonths;
+        }
+        // ================================================================================================================================================================================================================ //
 
         // ================================================================================================= UPLOAD DATA ================================================================================================== //
 
@@ -179,7 +274,7 @@ namespace WebApplication_StockDataFixx.Controllers
             _dbContext.SaveChanges();
 
             // Redirect to the ReportProduction action
-            return RedirectToAction("ReportProduction");
+            return RedirectToAction("ReportTempProduction");
         }
 
         //// Initial ProcessExcelFile method : to read Excel input data per row

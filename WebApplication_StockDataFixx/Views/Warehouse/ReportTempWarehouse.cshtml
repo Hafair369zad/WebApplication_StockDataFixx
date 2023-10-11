@@ -1,9 +1,9 @@
-﻿@{
-    ViewBag.Title = "Production";
-    Layout = "~/Views/Shared/_LayoutProduction.cshtml";
+﻿
+@{
+    ViewBag.Title = "Warehouse";
+    Layout = "~/Views/Shared/_LayoutWarehouse.cshtml";
 }
-
-@model List<WebApplication_StockDataFixx.Models.Domain.ProductionItem>
+@model List<WebApplication_StockDataFixx.Models.Domain.TempWarehouseItem>
 
 
 <html>
@@ -16,18 +16,36 @@
     <title>@ViewBag.Title</title>
 
     <script type="text/javascript">
+
+        var lastChangeSource = ""; // Initialize the lastChangeSource variable
+
         var js = jQuery.noConflict(true);
         js(document).ready(function () {
             js('#data-table').DataTable({
-                // "paging": false // Disable pagination
+                // "paging": false // ngilangi fitur pagination
             });
 
             js('.dataTables_filter input').attr('placeholder', 'Cari...');
             js('.dataTables_filter label').prepend('<i class="fa fa-search"></i> '); // Menggunakan font-awesome ikon
 
+            var selectedTypeParam = new URLSearchParams(window.location.search).get('selectedType');
             var selectedMonthParam = new URLSearchParams(window.location.search).get('selectedMonth');
 
-            // Set the selected month based on the URL parameter
+            // Set opsi dropdown sesuai dengan nilai selectedTypeParam
+            if (selectedTypeParam === "VMI") {
+                document.getElementById("selectedType").value = "VMI";
+                updateReportTitle("VMI");
+            } else if (selectedTypeParam === "NON_VMI") {
+                document.getElementById("selectedType").value = "NON_VMI";
+                updateReportTitle("NON_VMI");
+            } else {
+                document.getElementById("selectedType").value = "Update Terbaru";
+            }
+
+            var selectedType = document.getElementById("selectedType").value;
+            var selectedTypeBox = document.getElementById("selectedTypeBox");
+            selectedTypeBox.textContent = selectedType;
+
             if (selectedMonthParam) {
                 document.getElementById("selectedMonth").value = selectedMonthParam;
             }
@@ -39,22 +57,71 @@
 
         function filterDataByMonth() {
             var selectedMonth = document.getElementById("selectedMonth").value;
+            var selectedType = document.getElementById("selectedType").value;
 
-            var url = "/Production/ReportProduction";
+            var url = "/Warehouse/ReportTempWarehouse";
 
-            // Pass the selected month as a query parameter
-            url += "?selectedMonth=" + encodeURIComponent(selectedMonth);
+            if (selectedType === "Pilih_Tipe") {
+                lastChangeSource = "month";
+                url += "?selectedMonth=" + encodeURIComponent(selectedMonth);
+            } else {
+                lastChangeSource = "type";
+                url += "?selectedMonth=" + encodeURIComponent(selectedMonth) + "&selectedType=" + encodeURIComponent(selectedType);
+            }
 
-            // Redirect to the generated URL
             window.location.href = url;
         }
+
+        function changeTypeDropdown(selectedType) {
+            lastChangeSource = "type";
+            document.getElementById("selectedType").value = selectedType;
+            filterDataByMonth();
+        }
+
+        function updateReportTitle(selectedType) {
+            var titleElement = document.getElementById("reportTitle");
+            if (titleElement) {
+                if (selectedType === "VMI") {
+                    titleElement.textContent = "Report Data @ViewBag.Title VMI";
+                } else if (selectedType === "NON_VMI") {
+                    titleElement.textContent = "Report Data @ViewBag.Title Non VMI";
+                } else {
+                    titleElement.textContent = "Report Data @ViewBag.Title Update Terbaru";
+                }
+            }
+        }
+
+        // ...
+        function filterData() {
+            // Get the selected type from the dropdown
+            var selectedType = document.getElementById("selectedType").value;
+
+            // Get the AccessPlant value from the ViewBag
+            var accessPlantValue = "@(ViewBag.AccessPlant)";
+
+            // Redirect to the ReportWarehouse action with the selected type and AccessPlant as query parameters
+            window.location.href = "/Warehouse/ReportTempWarehouse?selectedType=" + encodeURIComponent(selectedType) + "&accessPlant=" + encodeURIComponent(accessPlantValue);
+        }
+        // ...
+
 
         function downloadExcel() {
             // Dapatkan nilai input nomor seri
             var serialNoInput = document.getElementById("serialNoInput").value;
 
-            // Redirect to the Production/DownloadExcel action with the serial number as a query parameter
-            window.location.href = "/Production/DownloadExcel?serialNo=" + encodeURIComponent(serialNoInput);
+            // Redirect to the Warehouse/DownloadExcel action with the serial number as a query parameter
+            window.location.href = "/Warehouse/DownloadExcel?serialNo=" + encodeURIComponent(serialNoInput);
+        }
+
+        function updateReportTitle(selectedType) {
+            var titleElement = document.getElementById("reportTitle");
+            if (titleElement) {
+                if (selectedType === "VMI") {
+                    titleElement.textContent = "Report Data @ViewBag.Title VMI";
+                } else if (selectedType === "NON_VMI") {
+                    titleElement.textContent = "Report Data @ViewBag.Title Non VMI";
+                }
+            }
         }
 
         function validateSerialNumber() {
@@ -66,6 +133,7 @@
                 downloadExcel();
             }
         }
+
 
 
         //Popup Loader
@@ -104,45 +172,81 @@
 
     @*Populoader*@
     <div id="loading-popup" class="loading-popup">
-            <div class="custom-loader"></div>
+        <div class="custom-loader"></div>
     </div>
+
 
 
     <div class="container-fluid p-0">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h1 class="h3 mb-0"><strong>Report Data @ViewBag.Title</strong></h1>
+            <h1 id="reportTitle" class="h3 mb-0"><strong>Report Data @ViewBag.Title</strong></h1>
+
 
             <div class="select-month" style="margin-left: 10px;">
                 <label style="margin-right: 5px;">Pilih Bulan :</label>
+                
+
+                @*jika menggunakan kolom Month*@
+                @*<select id="selectedMonth" onchange="filterDataByMonth()">
+                    <option value="Latest Update">Update Terbaru</option>
+                    @foreach (var month in ViewBag.LastUpload)
+                    {
+                        <option value="@month">@month</option>
+                    }
+                </select>*@
+
+
+                @*jika menggunakan kolom last Upload*@
                 <select id="selectedMonth" onchange="filterDataByMonth()">
                     <option value="Latest Update">Bulan ini (sedang berlangsung)</option>
-                    @foreach (var month in ViewBag.UniqueMonths)
+                    @foreach (var month in ViewBag.LastUpload)
                     {
                         <option value="@month.ToString("yyyy-MM")">@month.ToString("MMMM yyyy")</option>
                     }
                 </select>
+
             </div>
+
+            <div class="select-month" style="margin-left: 10px;">
+                <label style="margin-right: 5px;">Pilih Tipe :</label>
+                <select id="selectedType" onchange="filterData()">
+                    <option value="Pilih_Tipe">ALL</option>
+                    <option value="VMI">VMI</option>
+                    <option value="NON_VMI">NON VMI</option>
+                </select>
+            </div>
+
         </div>
     </div>
 
-    <br>
+    <br />
 
-    <div class="row  mb-10" style="margin-top:60px;">
 
-        <div class="row d-flex align-items-start">
-            <div class="col">
-                <div class="selected-month-box" style="margin-left: 10px; width: 300px; margin-bottom: 15px;">
-                    <strong>Pilihan Bulan : </strong>
-                    <span id="selectedMonthBox"></span>
+    <!-- Tampilkan kotak tampilan bulan yang dipilih -->
+    
+
+    <div class="row  mb-10" style="margin-top:70px;">
+        
+            <div class="row d-flex align-items-start">
+                <div class="col">
+                <div class="selected-type-box" style="margin-left: 10px; width: 300px; margin-bottom: 10px;">
+                    <strong>Pilihan Tipe : </strong>
+                        <span id="selectedTypeBox"></span>
+                    </div>
+
+                <div class="selected-month-box" style="margin-left: 10px; width: 300px; margin-bottom: 10px;">
+                        <strong>Pilihan Bulan : </strong>
+                        <span id="selectedMonthBox"></span>
+                    </div>
                 </div>
             </div>
-        </div>
-
-
+        
 
 
 
         <div class="col-md-12">
+            @*<div class="card w-100 h-100">*@
+            @*  <div class="card-body">*@
             <table class="display" width="100%" height="100%" id="data-table">
                 <thead>
                     <tr>
@@ -152,7 +256,10 @@
                         <th>Material Description</th>
                         <th>Actual Qty</th>
                         <th>Unit</th>
-                        <th>Sloc</th>
+                        <th>StockType</th>
+                        <th>Vendor Code</th>
+                        <th>Vendor Name</th>
+                        <th>Issue Planner</th>
                     </tr>
                 </thead>
                 <tfoot>
@@ -163,14 +270,17 @@
                         <th>Material Description</th>
                         <th>Actual Qty</th>
                         <th>Unit</th>
-                        <th>Sloc</th>
+                        <th>Stock Type</th>
+                        <th>Vendor Code</th>
+                        <th>Vendor Name</th>
+                        <th>Issue Planner</th>
                     </tr>
                 </tfoot>
                 <tbody>
-                        @if (Model != null && Model.Count > 0)
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        foreach (var item in Model)
                         {
-                            foreach (var item in Model)
-                            {
                             <tr>
                                 <td>@item.SerialNo</td>
                                 <td>@item.TagNo</td>
@@ -178,19 +288,14 @@
                                 <td>@item.MaterialDesc</td>
                                 <th>@(item.ActualQty.ToString())</th>
                                 <td>@item.Unit</td>
-                                <td>@item.Sloc</td>
+                                <td>@item.StockType</td>
+                                <td>@(item.VendorCode != "-" ? item.VendorCode : "-")</td>
+                                <td>@(item.VendorName != "-" ? item.VendorName : "-")</td>
+                                <td>@item.IssuePlanner</td>
                             </tr>
-                            }
                         }
-                        @* else
-                    {
-                    <tr>
-                    @for (int Count = 0; Count < 9; Count++)
-                    {
-                    <td>No data available</td>
                     }
-                    </tr>*@
-
+                  
                 </tbody>
             </table>
         </div>
@@ -231,7 +336,11 @@
         });
 
     </script>
-
+ 
 </body>
 </html>
+
+
+
+
 
