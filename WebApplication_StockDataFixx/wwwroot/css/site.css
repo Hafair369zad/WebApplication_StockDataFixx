@@ -92,6 +92,17 @@ tr:nth-child(even) td {
 
 
 /*All card*/
+.head-Add {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+head-AddImg{
+    margin-left: -700px;
+}
+
 .card {
     border-radius: 100px;
     border: 5px;
@@ -99,14 +110,8 @@ tr:nth-child(even) td {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
     background-color: #FFE0E0;
-    position: absolute;
-    width: 200px;
-    height: 280px;
-    left: 10px;
-    top: 50px;
-    
 }
-.card-sidebar img {
+/*.card-sidebar img {
     display: block;
     margin-top: 15px;
     margin-left: auto;
@@ -137,23 +142,13 @@ tr:nth-child(even) td {
     color: #1D5D9B;
     margin-top: 20px;
     font-weight: 700;
-}
+}*/
 /*End Card Headbar Add Data*/
 
 
 
 
-/*Card Add Data*/
-.upload-form {
-    width: 800px;
-    height: 550px;
-    margin: 20px;
-}
 
-.header-upload p {
-    margin: 0;
-}
-/*End Card Add Data*/
 
 
 /*Inputan Dropzone*/
@@ -419,10 +414,13 @@ input[type="radio"] {
     margin-right: 3px;
 }
 
-.card-body {
+/*.card-body {
     margin-bottom: -100px;
-}
+}*/
 /*End Chart card Grafik Dashboard*/
+
+
+
 
 
 /*input download serial number*/
@@ -435,7 +433,7 @@ input[type="radio"] {
 }
 
     .download-float-button button {
-        background-color: #1D5D9B;
+        background: linear-gradient(to bottom, #1861AC, #0A4F89, #083F6D, #062E52);
         color: #fff;
         border: none;
         border-radius: 5px;
@@ -457,6 +455,7 @@ input[type="radio"] {
             cursor: pointer;
             box-shadow: 0px 5px 7px rgba(0, 0, 0, 0.5);
         }
+
 
 /* Styling for the popup */
 .popup .popup-dow {
@@ -558,7 +557,129 @@ button#download-button {
 }*/
 
 
-/*input download serial number*/
+@media (max-width: 768px) {
+    .download-float-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+    }
+
+        .download-float-button button {
+            background: linear-gradient(to bottom, #1861AC, #0A4F89, #083F6D, #062E52);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            width: 100px;
+            height: 30px;
+            font-size: 10px;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+        }
+
+            .download-float-button button:hover {
+                background-color: #1D5D9B;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                width: 101px;
+                height: 31px;
+                font-size: 10px;
+                cursor: pointer;
+                box-shadow: 0px 5px 7px rgba(0, 0, 0, 0.5);
+            }
+
+    .popup .popup-dow {
+        display: none;
+        position: fixed;
+        top: 50%; 
+        left: 50%; 
+        transform: translate(-50%, -50%); 
+        width: 500px;
+        height: 250px;
+        border-radius: 10px;
+        background-color: #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+
+    .popup-content-dow {
+        padding: 20px;
+    }
+
+    .popup-header-dow {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+
+        .popup-header-dow h3 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+    .popup-body-dow {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 10px;
+    }
+
+    .input-rounded {
+        padding: 8px 20px;
+        border-radius: 10px;
+        color: #001C30;
+        border-color: #001C30;
+        margin-bottom: 80px;
+        margin-top: 20px;
+        padding: 5px;
+        width: 100%;
+        font-size: 15px;
+        background-color: #f0f0f0;
+    }
+
+        .input-rounded::placeholder {
+            color: darkblue;
+            font-weight: 700;
+            opacity: 0.4;
+        }
+
+    button#download-button {
+        background-color: #1D5D9B;
+        color: #fff;
+        border: none;
+        width: 230px;
+        cursor: pointer;
+        box-shadow: none;
+        bottom: 5px;
+    }
+
+        button#download-button:hover {
+            background-color: #1D5D9B;
+            color: #fff;
+            border: none;
+            width: 231px;
+            cursor: pointer;
+            box-shadow: none;
+        }
+
+    /* Styling for close button */
+    #close-popup-dow {
+        padding: 5px;
+        margin-right: 0px;
+        background: none;
+        border: none;
+        font-size: 30px;
+        color: #000;
+        cursor: pointer;
+    }
+}
+
+
+
+/*End input download serial number*/
 
 
 
@@ -809,7 +930,7 @@ body {
     left: auto;
   }
 .wrapper .sidebar {
-    background: #1861AC;
+    background: linear-gradient(to bottom, #1861AC, #0A4F89, #083F6D, #062E52);
     position: fixed;
     top: 0;
     left: 0;
@@ -873,14 +994,14 @@ body {
 
         .wrapper .sidebar ul li a:hover,
         .wrapper .sidebar ul li a.active {
-            color: #fff;
-            background: #174779;
+            color: #1D5D9B;
+            background: #D1D1EE;
             border-right: 2px solid rgb(5, 68, 104);
         }
 
             .wrapper .sidebar ul li a:hover .icon,
             .wrapper .sidebar ul li a.active .icon {
-                color: #fff;
+                color: #1D5D9B;
             }
 
             .wrapper .sidebar ul li a:hover:before,
@@ -990,3 +1111,53 @@ body.active .wrapper .section .top_navbar .nav-logout {
 
 /* END Layout*/
 
+/*Card*/
+.card-cr {
+    /*margin: 10px;*/
+    background: white;
+    border: 1px solid;
+    border-color: #dddddd; /* Warna border */
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Efek shadow */
+}
+   
+    .card-cr .sect-1 {
+        justify-content: space-between;
+    }
+
+    .card-cr .sect-2 {
+        margin-top: -510px;
+        margin-bottom: 20px;
+    }
+
+        .card-cr .sect-2 .storage {
+            margin-top: 80px;
+        }
+
+
+/*.card-cr .row {
+    margin-top: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+}*/
+
+/*Card Add Data*/
+/*.upload-form {
+    width: 800px;
+    height: 550px;
+    margin: 20px;
+}*/
+
+.header-upload p {
+    margin: 0;
+}
+/*End Card Add Data*/
+
+
+
+
+
+
+
+/*End Card*/
