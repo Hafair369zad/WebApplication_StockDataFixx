@@ -95,12 +95,41 @@ tr:nth-child(even) td {
 .head-Add {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+}
+
+@media (max-width: 767px) {
+    .head-Add {
+        flex-direction: column;
+    }
+    .head-AddImg {
+        display: none;
+    }
+    .head-Add p {
+        font-size: 15px;
+    }
+
 }
 
 
-head-AddImg{
-    margin-left: -700px;
+    .head-Add p {
+        margin-top: 70px;
+        margin-left: 20px;
+        align-items: center;
+        font-weight: 500;
+        font-size: 19px;
+    }
+
+.head-Add h4 {
+    margin-top: 20px;
+    margin-left: 20px;
+    font-weight: 800;
+}
+
+
+.head-AddImg {
+    margin-left: -120px;
+    width: 300px;
+    height: 280px;
 }
 
 .card {
@@ -111,7 +140,56 @@ head-AddImg{
     transition: 0.3s;
     background-color: #FFE0E0;
 }
-/*.card-sidebar img {
+
+.sect-1 {
+    margin-left: 20px;
+    margin-top: 20px;
+    margin-right: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+.sect-2 {
+    margin-left: 20px;
+    margin-top: 30px;
+    margin-bottom: 50px;
+    margin-right: 20px;
+
+}
+
+@media (max-width: 464px) {
+    .sect-1 {
+        flex-direction: column;
+    }
+        .sect-1 .btn-upload {
+            margin-top: 10px;
+        }
+}
+
+/*header form upload*/
+        .sect-1 .header-upload p {
+
+            color: #1D5D9B;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+
+
+.btn-upload {
+    padding: 8px 13px;
+    background-color: #1D5D9B;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+
+}
+
+/*End header form upload*/
+
+    /*.card-sidebar img {
     display: block;
     margin-top: 15px;
     margin-left: auto;
@@ -121,9 +199,11 @@ head-AddImg{
 
 
 @media (max-width: 767px) {
-    .card-img-top {
-        display: none;
-    }
+    .head-Add {
+    display: flex;
+    justify-content: space-between;
+}
+
 }
 
 .card:hover {
@@ -143,27 +223,20 @@ head-AddImg{
     margin-top: 20px;
     font-weight: 700;
 }*/
-/*End Card Headbar Add Data*/
-
-
-
-
-
-
-
-/*Inputan Dropzone*/
-.drop-zone {
-    border: 2px dashed #1D5D9B;
-    border-radius: 20px;
-    width: 350px;
-    height: 250px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #D1D1EE;
-    margin-top: 90px;
-    margin-bottom: 10px;
-}
+    /*End Card Headbar Add Data*/
+    /*Inputan Dropzone*/
+    .drop-zone {
+        border: 2px dashed #1D5D9B;
+        border-radius: 20px;
+        width: 350px;
+        height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #D1D1EE;
+        margin-top: 90px;
+        margin-bottom: 10px;
+    }
 
     .drop-zone p {
         margin: 0;
@@ -182,6 +255,10 @@ head-AddImg{
     }
 .form-group {
     margin-bottom: 15px;
+}
+
+.ProdKet{
+    margin-top: 100px;
 }
 
 /*End Inputan Dropzone*/
@@ -315,39 +392,7 @@ input[type="radio"] {
 /* End Dropdopwn Select List halaman Report*/
 
 
-/*header form upload*/
-.header-upload p {
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin: 10px;
-    display: inline; /* Mengatur elemen menjadi inline */
-    margin: 0;
-    margin-left: 20px;
-    margin-top: 20px;
-    color: #1D5D9B;
-    font-size: 18px;
-    font-weight: 800;
-}
 
-
-
-.btn-upload {
-    padding: 8px 13px;
-    background-color: #1D5D9B;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    color: white;
-    font-weight: 700;
-    font-size: 14px;
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 15px;
-}
-
-/*End header form upload*/
 
 
 /*Button Pilih File*/
@@ -356,6 +401,27 @@ input[type="radio"] {
     justify-content: center;
     margin-left: 80px;
 }
+
+.storage {
+    margin-top: 80px;
+}
+
+
+@media (max-width: 464px) {
+    .storage {
+        margin-top: 50px;
+    }
+}
+
+.file-label {
+    color: #1D5D9B; /* Ubah warna teks ke biru */
+    font-size: 16px; /* Ubah ukuran font menjadi 16px */
+    margin-top: 30px;
+    margin-left: 75px;
+    font-family: 'Inter';
+    font-weight: 700;
+}
+
     .btn-zone label {
         width: 80px;
         height: 35px;

@@ -4,53 +4,60 @@
     var CurrentUsername = Context.Session.GetString("CurrentUsername");
 }
 
-<html>
-<head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-</head>
-<body>
 
-    @*Populoader*@
-    <div id="loading-popup" class="loading-popup">
-        <div class="custom-loader"></div>
-    </div>
 
-    <div class="container-fluid p-0">
-        <div class="row" style="margin-top: -70px;">
-            <div class="col-md-12 mb-10">
-                <div class="card flex-fill w-100 mb-10" style="border-radius: 10px;background: #FFF;">
-                    <div class="card-dash">
-                        <div class="card-body py-3">
-                            <div class="chart chart-sm">
-                                <!-- <canvas id="chartjs-dashboard-line"></canvas> -->
-                                <img src="~/images/img/Frame_3_1.png"
-                                     style="width: 320px;margin-left: 260px; position: absolute; right: -1px">
-                                @using Microsoft.AspNetCore.Http;
-                                <h4 class="text-dash"><strong>Halo @CurrentUsername !! </strong></h4>
-                                <p style="color: #001C30; font-weight: 500; font-size: 20px; margin-top: 60px;">
-                                    Enhance Production Management with<br>Real-Time <strong style="font-weight: 800;">Stock Data Insights</strong>
-                                </p>
-                            </div>
+@*Populoader*@
+<div id="loading-popup" class="loading-popup">
+    <div class="custom-loader"></div>
+</div>
+
+<div class="container-fluid p-0">
+    <div class="sect0">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="d-flex justify-content-between head-Add">
+                        <div class="col-10">
+                            @using Microsoft.AspNetCore.Http;
+                            <h4><strong>Halo @CurrentUsername !! </strong></h4>
+                            <p>
+                                "Anda dapat memantau dan mengendalikan<strong style="font-weight: 800;"> stok Anda secara real-time</strong><br />dengan kemudahan yang kami sediakan."
+                            </p>
+                        </div>
+                        <div class="col-2">
+                            <img class="head-AddImg" src="~/images/img/Frame_3_1.png">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <br />
+</div>
+<br />
 
     <div class="container-fluid p-0">
         <div class="card flex-fill w-100 h-100 mb-10">
-            <div class="card-cr">
-                <div class="upload-form">
-                    <form id="myForm" asp-controller="Production" asp-action="UploadFile" enctype="multipart/form-data" method="post">
-                        <div class="header-upload">
-                            <p>UPLOAD FILE .XLS</p>
+            <div class="">
+                <form id="myForm" asp-controller="Production" asp-action="UploadFile" enctype="multipart/form-data" method="post">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="d-flex justify-content-between sect-1">
+                                <div class="header-upload">
+                                    <p>UPLOAD FILE .XLS</p>
+                                </div>
+                                <div class="button-form">
+                                    <button type="submit" class="btn-upload">Upload</button>
+                                </div>
+                            </div>
                         </div>
-                        <button type="submit" class="btn-upload">Upload</button>
+                    </div>
+
+
+                    <div class="sect-2">
                         <div class="row">
-                            <div class="col-12 col-md-8">
+                            <div class="col-md-6">
+
                                 <div class="form-group">
                                     <!-- Hidden input file element -->
                                     <input type="file" class="form-control-file" id="file" accept=".xls, .xlsx, .csv" style="display: none;" name="file">
@@ -66,33 +73,48 @@
                                         <button class="btn col-3" id="resetBtn" type="button" value="Reset">Hapus</button>
                                     </div>
                                 </div>
+
                             </div>
-                            @*style="margin-left: -140px; margin-top: 80px;"*@
-                            <div class="col-12 col-md-4 mt-4 mt-md-0" >
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="li-file mt-4">
-                                            <h5>Ketentuan File :</h5><br />
-                                            <p>
-                                                <ul>
-                                                    <ol>
-                                                        <li>File upload harus dalam format <strong>.XLS, .XLSX, .CSV (Microsoft Excel).</strong></li>
-                                                        <li>Pastikan mengunggah File <strong>Data Production</strong>.</li>
-                                                        <li>File harus mengandung beberapa tabel yang terpisah secara jelas.</li>
-                                                        <li>Pastikan setiap tabel memiliki judul yang jelas dan informatif.</li>
-                                                        <li>Pastikan tidak ada data yang tersembunyi atau terlindungi dengan kata sandi.</li>
-                                                    </ol>
-                                                </ul>
-                                            </p>
-                                        </div>
+
+                            <div class="col-md-6">
+
+                                <!--<div class="form-group">
+                                    <div class="storage">
+                                        <h5>Pilih Tipe Storage : </h5><br />
+                                        <input type="radio" id="radio1" name="Storage_Type" value="VMI" onclick="setStorageType('VMI')">
+                                        <label for="radio1">VMI</label>
+                                        <input type="radio" id="radio2" name="Storage_Type" value="NON-VMI" onclick="setStorageType('NonVMI')">
+                                        <label for="radio2">NON-VMI</label>
+                                    </div>
+                                </div>
+
+                                <input type="hidden" id="storageType" name="storageType" value="" />-->
+
+                                <div class="form-group ProdKet">
+                                    <div class="li-file mt-4">
+                                        <h5>Ketentuan File :</h5><br />
+                                        <p>
+                                            <ul>
+                                                <ol>
+                                                    <li>File upload harus dalam format <strong>.XLS, .XLSX, .CSV (Microsoft Excel).</strong></li>
+                                                    <li>Pastikan mengunggah File <strong>Data Production</strong>.</li>
+                                                    <li>File harus mengandung beberapa tabel yang terpisah secara jelas.</li>
+                                                    <li>Pastikan setiap tabel memiliki judul yang jelas dan informatif.</li>
+                                                    <li>Pastikan tidak ada data yang tersembunyi atau terlindungi dengan kata sandi.</li>
+                                                </ol>
+                                            </ul>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
+
+
+
 
         <script>
             const fileInput = document.getElementById('file');
@@ -236,8 +258,7 @@
     </script>
 
 
-</body>
-</html>
+
 
 
 

@@ -9,7 +9,7 @@
     <div id="loading-popup" class="loading-popup">
         <div class="custom-loader"></div>
     </div>
-@*    style="width: 320px;margin-left: 260px; position: absolute; right: -1px"*@
+    @*style="width: 320px;margin-left: 260px; position: absolute; right: -1px"*@
 
     <div class="container-fluid p-0">
         <div class="sect0">
@@ -39,18 +39,20 @@
         <div class="card flex-fill w-100 h-100 mb-10">
             <div class="">
                 <form id="myForm" asp-controller="Warehouse" asp-action="UploadFile" enctype="multipart/form-data" method="post">
-                    <div class="sect-1">
+                    
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="header-upload">
-                                    <p>UPLOAD FILE .XLS</p>
-                                </div>
-                                <div class="button-form">
-                                    <button type="submit" class="btn-upload">Upload</button>
+                            <div class="d-flex justify-content-between sect-1">
+                                    <div class="header-upload">
+                                        <p>UPLOAD FILE .XLS</p>
+                                    </div>
+                                    <div class="button-form">
+                                        <button type="submit" class="btn-upload">Upload</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                   
 
                     <div class="sect-2">
                         <div class="row">
@@ -183,7 +185,6 @@
             fileInput.addEventListener('change', function () {
                 const fileLabel = document.createElement('p');
                 fileLabel.textContent = `File name: ${fileInput.files[0].name}`;
-                fileLabel.style.marginTop = '10px';
                 fileLabel.classList.add('file-label'); // Add a class to the file label for easy identification
 
                 // Check if there's already a file label and remove it before adding the new one

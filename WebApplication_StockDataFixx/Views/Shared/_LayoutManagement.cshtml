@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Stock Taking Report";
     var CurrentUsername = Context.Session.GetString("CurrentUsername");
+    var AccessPlant = Context.Session.GetString("AccessPlant");
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -83,7 +84,7 @@
                 <img src="/images/img/gambarView.png">
                 @using Microsoft.AspNetCore.Http;
                 <h5>@CurrentUsername</h5>
-                <p>M10071 (ISC-PMI)</p>
+                <p>@AccessPlant</p>
             </div>
             <ul id="nav_accordion">
                 <li>
