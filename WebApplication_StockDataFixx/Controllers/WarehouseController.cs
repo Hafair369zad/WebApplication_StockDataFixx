@@ -580,6 +580,35 @@ namespace WebApplication_StockDataFixx.Controllers
 
         // ================================================================================================ CHART DATA =============================================================================================== //
 
+        // method progress bar count data all but not acces plant 
+    
+        [HttpGet]
+        public IActionResult GetProgressData(string selectedMonth)
+        {
+            if (string.IsNullOrEmpty(selectedMonth))
+            {
+                return BadRequest("Selected month is missing or invalid.");
+            }
+
+            if (!int.TryParse(selectedMonth, out int selectedMonthValue))
+            {
+                return BadRequest("Selected month is not a valid integer.");
+            }
+
+            int vmiCount = _dbContext.WarehouseItems
+                .Count(item => item.Isvmi == "VMI" && item.LastUpload.Month == selectedMonthValue);
+
+            int nonVmiCount = _dbContext.WarehouseItems
+                .Count(item => item.Isvmi == "NonVMI" && item.LastUpload.Month == selectedMonthValue);
+
+            int totalCount = vmiCount + nonVmiCount;
+
+            var monthlyCountProgressData = new[] { vmiCount, nonVmiCount, totalCount };
+            
+            return Json(monthlyCountProgressData);
+        }
+
+
         // Method to display Chart for count data Vmi or Non Vmi 
         [HttpGet]
         public IActionResult GetChartData(int year)

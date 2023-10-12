@@ -7,93 +7,110 @@
     <div class="custom-loader"></div>
 </div>
 
-<div class="container">
-    <div class="row align-items-center justify-content-between mb-3">
-        <div class="col">
-            <h2>Dashboard @ViewData["Title"]</h2>
-        </div>
-        <div class="col-auto">
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Select Month
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" data-month="01">January</a>
-                    <a class="dropdown-item" data-month="02">February</a>
-                    <a class="dropdown-item" data-month="03">March</a>
-                    <a class="dropdown-item" data-month="04">April</a>
-                    <a class="dropdown-item" data-month="05">May</a>
-                    <a class="dropdown-item" data-month="06">June</a>
-                    <a class="dropdown-item" data-month="07">July</a>
-                    <a class="dropdown-item" data-month="08">August</a>
-                    <a class="dropdown-item" data-month="09">September</a>
-                    <a class="dropdown-item" data-month="10">October</a>
-                    <a class="dropdown-item" data-month="11">November</a>
-                    <a class="dropdown-item" data-month="12">December</a>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+@*baru*@
+
+<div class="container-fluid p-0">
+    
+
+    @*Baris Chart Kedua*@
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="card grafik1">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3 header-chart">
+                        <div>
+                            <h5 class="card-title mb-1">Total Actual Qty</h5>
+                            <p class="card-text">Per Month</p>
+                        </div>
+                        <div class="dropdown">
+                            @*<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Select Year
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="yearDropdown">
+                            <a class="dropdown-item"  data-year="2022">2022</a>
+                            <a class="dropdown-item"  data-year="2023">2023</a>
+                            <a class="dropdown-item"  data-year="2024">2024</a>
+                            <a class="dropdown-item"  data-year="2025">2025</a>
+                            <!-- Tambahkan opsi tahun lainnya sesuai kebutuhan -->
+                            </div>*@
+                        </div>
+                    </div>
+                    <canvas id="grafik1"></canvas>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="card chart-card">
+        <div class="col-md-4">
+            <div class="card">
                 <div class="card-body">
-                    <canvas id="chart1"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="card chart-card">
-                <div class="card-body">
-                    <canvas id="chart2"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="card chart-card">
-                <div class="card-body">
-                    <p>Total Units Distribution Production</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3 header-chart">
+                        <div>
+                            <h5 class="card-title mb-1" style="color: #4EA652; font-size: 20px;">PRODUCTION</h5>
+                            <p class="card-text">Total Per UoM</p>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Select Month
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" data-month="01">January</a>
+                                <a class="dropdown-item" data-month="02">February</a>
+                                <a class="dropdown-item" data-month="03">March</a>
+                                <a class="dropdown-item" data-month="04">April</a>
+                                <a class="dropdown-item" data-month="05">May</a>
+                                <a class="dropdown-item" data-month="06">June</a>
+                                <a class="dropdown-item" data-month="07">July</a>
+                                <a class="dropdown-item" data-month="08">August</a>
+                                <a class="dropdown-item" data-month="09">September</a>
+                                <a class="dropdown-item" data-month="10">October</a>
+                                <a class="dropdown-item" data-month="11">November</a>
+                                <a class="dropdown-item" data-month="12">December</a>
+                            </div>
+                        </div>
+                    </div>
                     <canvas id="chart3"></canvas>
                 </div>
             </div>
         </div>
     </div>
+
+    @*Baris Chart Ketiga*@
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3 header-chart">
+                        <div>
+                            <h5 class="card-title mb-1">Total Count Data</h5>
+                            <p class="card-text">Per Month</p>
+                        </div>
+                        <div class="dropdown">
+                            @* <button class="btn btn-primary dropdown-toggle btn-typeChart" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            VMI
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item active" value="VMI">VMI</a>
+                            <a class="dropdown-item" value="NonVMI">NON VMI</a>
+                            </div>*@
+                        </div>
+                    </div>
+                    <canvas id="grafik2"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<div style="margin-top: 50px;"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
     //$(document).ready(function () {
     Chart.debug = true;
-
-    const chart1 = document.getElementById('chart1');
-    const chart2 = document.getElementById('chart2');
     const chart3 = document.getElementById('chart3');
     let selectedMonth = "";
-
-    // Function to fetch chart data from the server for the first two charts
-    function fetchChartData() {
-        fetch(`/Production/GetChartData?selectedMonth=${selectedMonth}`)
-            .then(response => response.json())
-            .then(data => {
-                updateChart1(data);
-            })
-            .catch(error => {
-                console.error('Error fetching chart data:', error);
-            });
-    }
-
-    function fetchChart2Data() {
-        fetch(`/Production/GetChart2Data?selectedMonth=${selectedMonth}`)
-            .then(response => response.json())
-            .then(data => {
-                updateChart2(data);
-            })
-            .catch(error => {
-                console.error('Error fetching chart data:', error);
-            });
-    }
-
 
     // Function to fetch chart data from the server for the third chart
     function fetchChart3Data() {
@@ -106,64 +123,6 @@
                 console.error('Error fetching chart 2 data:', error);
             });
     }
-
- 
-    // Function to update Chart 1 for VMI
-    function updateChart1(data) {
-        const ctx = chart1.getContext('2d');
-        if (window.chart1Instance) {
-            window.chart1Instance.destroy(); // Hancurkan objek Chart yang ada
-        }
-
-        window.chart1Instance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Total Product(Month)', 'Total All Product'],
-                datasets: [{
-                    label: `Total All Product for ${getMonthName(selectedMonth)}`,
-                    data: data, // Menggunakan data.TotalItems
-                    borderWidth: 2,
-                    backgroundColor: ['#36A2EB', '#FF6384']
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
-
-    function updateChart2(data) {
-        const ctx = chart2.getContext('2d');
-        if (window.chart2Instance) {
-            window.chart2Instance.destroy(); // Hancurkan objek Chart yang ada
-        }
-
-        window.chart2Instance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Ttl ActualQty(Month)', 'Total All ActualQty'],
-                datasets: [{
-                    label: `Total ActualQty for ${getMonthName(selectedMonth)}`,
-                    data: data, // Menggunakan data.TotalItems
-                    borderWidth: 2,
-                    backgroundColor: ['#36A2EB', '#FF6384']
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
-
-
 
     // Function to update Chart 3
     function updateChart3(data) {
@@ -203,8 +162,6 @@
         return monthNames[parseInt(month) - 1];
     }
 
-    fetchChartData();
-    fetchChart2Data();
     fetchChart3Data();
 
     const dropdownButton = document.getElementById('dropdownMenuButton');
@@ -220,8 +177,6 @@
     });
 
     function updateCharts() {
-        fetchChartData();
-        fetchChart2Data()
         fetchChart3Data();
     }
 
@@ -264,6 +219,139 @@
     // Add an event listener to check network status when the connection changes
     window.addEventListener('online', checkNetworkStatus);
     window.addEventListener('offline', checkNetworkStatus);
+
+
+    // Grafik Chart
+
+    // Grafik Chart 1 Total Actual Qty
+    var dataBar = {
+        labels: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
+        datasets: [
+            {
+                label: "PRODUCTION",
+                backgroundColor: "#4EA652",
+                data: [] // Data VMI akan diisi dari hasil controller
+            },
+            {
+                label: "PRODUCTION ALL PLANT",
+                backgroundColor: "rgba(0, 0, 0, 1)",
+                data: [] // Data VMI akan diisi dari hasil controller
+            }
+            //{
+            //    label: "PRODUCTION ALL",
+            //    type: "line",
+            //    borderColor: "rgba(0, 0, 0, 1)",
+            //    borderWidth: 1,
+            //    data: [] // Data Total ActualQty akan diisi dari hasil controller
+            //}
+        ]
+    };
+
+    // Opsi konfigurasi grafik
+    var options = {
+        scales: {
+            x: {
+                beginAtZero: true
+            },
+            y: {
+                beginAtZero: true
+            }
+        }
+    };
+
+    // Ambil data dari controller
+    $.get("/Production/GetChart2Data?year=2023", function (data) {
+        // Mengisi data grafik dengan hasil dari controller
+        dataBar.datasets[0].data = data.map(item => item[0]); // Data VMI
+        dataBar.datasets[1].data = data.map(item => item[1]); // Data Non VMI
+
+        // Buat grafik dengan data yang telah diisi
+        var ctxBar = document.getElementById("grafik1").getContext("2d");
+        var myChartBar = new Chart(ctxBar, {
+            type: "bar",
+            data: dataBar,
+            options: options
+        });
+    });
+
+
+    // Grafik Chart 2 Total Count Data
+    var dataBar2 = {
+        labels: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
+        datasets: [
+            {
+                label: "PRODUCTION",
+                backgroundColor: "#4EA652",
+                data: [] // Data VMI akan diisi dari hasil controller
+            },
+            {
+                label: "PRODUCTION ALL PLANT",
+                backgroundColor: "rgba(0, 0, 0, 1)",
+                data: [] // Data VMI akan diisi dari hasil controller
+            }
+            //{
+            //    label: "PRODUCTION ALL",
+            //    type: "line",
+            //    borderColor: "rgba(0, 0, 0, 1)",
+            //    borderWidth: 1,
+            //    data: [] // Data Total ActualQty akan diisi dari hasil controller
+            //}
+        ]
+    };
+
+    // Opsi konfigurasi grafik
+    var options = {
+        scales: {
+            x: {
+                beginAtZero: true
+            },
+            y: {
+                beginAtZero: true
+            }
+        }
+    };
+
+    // Ambil data dari controller
+    $.get("/Production/GetChartData?year=2023", function (data) {
+        // Mengisi data grafik dengan hasil dari controller
+        dataBar2.datasets[0].data = data.map(item => item[0]); // Data VMI
+        dataBar2.datasets[1].data = data.map(item => item[1]); // Data Non VMI
+
+        // Buat grafik dengan data yang telah diisi
+        var ctxBar2 = document.getElementById("grafik2").getContext("2d");
+        var myChartBar2 = new Chart(ctxBar2, {
+            type: "bar",
+            data: dataBar2,
+            options: options
+        });
+    });
+
+
+    // Dropwon Chart
+    $(document).ready(function () {
+        // Ketika item dropdown dipilih
+        $(".dropdown-item").click(function () {
+            // Hapus kelas active dari semua item dropdown
+            $(".dropdown-item").removeClass("active");
+
+            // Tambahkan kelas active ke item yang dipilih
+            $(this).addClass("active");
+
+            // Ambil nilai (value) dari item yang dipilih
+            var selectedValue = $(this).attr("value");
+
+            // Ganti teks pada tombol dropdown dengan nilai yang dipilih
+            $(".btn-typeChart").text(selectedValue);
+
+            // Anda juga dapat melakukan tindakan lain sesuai kebutuhan di sini
+
+            // Contoh: Cetak nilai yang dipilih ke konsol
+            console.log("Anda memilih: " + selectedValue);
+        });
+    });
+        // End Dropdown Chart
+
+
 </script>
 
 

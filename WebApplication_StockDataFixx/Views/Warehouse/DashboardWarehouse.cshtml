@@ -16,7 +16,7 @@
             <div class="col-md-4">
                 <div class="card half-color-card">
                     <div class="top-background green-background">
-                        <h5 class="card-title">12.345</h5>
+                        <h5 class="card-title" data-category="VMI">0</h5>
                         <h5 class="card-title">VMI</h5>
                     </div>
                     <div class="white-background">
@@ -31,7 +31,7 @@
             <div class="col-md-4">
                 <div class="card half-color-card">
                     <div class="top-background red-background">
-                        <h5 class="card-title">12.345</h5>
+                        <h5 class="card-title" data-category="NONVMI">0</h5>
                         <h5 class="card-title">NVMI</h5>
                     </div>
                     <div class="white-background">
@@ -46,7 +46,7 @@
             <div class="col-md-4">
                 <div class="card half-color-card">
                     <div class="top-background purple-background">
-                        <h5 class="card-title">24.690</h5>
+                        <h5 class="card-title" data-category="ALL">0</h5>
                         <h5 class="card-title">ALL</h5>
                     </div>
                     <div class="white-background">
@@ -345,25 +345,46 @@
 
     // GRAFIK   BARU
     // Progress Bar Chart Atas
-    // Mengambil elemen-elemen progress bar berdasarkan class mereka
-    var progressBarVMI = document.querySelector(".progress-barVMI");
-    var progressBarNONVMI = document.querySelector(".progress-barNONVMI");
-    var progressBarALL = document.querySelector(".progress-barALL");
+     // Mengambil elemen-elemen progress bar berdasarkan class mereka
+    //var progressBarVMI = document.querySelector(".progress-barVMI");
+    //var progressBarNONVMI = document.querySelector(".progress-barNONVMI");
+    //var progressBarALL = document.querySelector(".progress-barALL");
 
-    // Mengatur nilai progress bar untuk masing-masing elemen
-    var progressValueVMI = 32; // Nilai untuk progress bar IMP
-    var progressValueNONVMI = 65; // Nilai untuk progress bar LOC
-    var progressValueALL = 80; // Nilai untuk progress bar ALL
+    //fetch('/Warehouse/GetProgressData?selectedMonth=yourSelectedMonthValue')
+    //    .then(response => response.json())
+    //    .then(data => {
+    //        // Data yang diterima dari server
+    //        var vmiCount = data[0];
+    //        var nonVmiCount = data[1];
+    //        var totalCount = data[2];
 
-    // Mengatur nilai atribut aria-valuenow dan lebar progress bar
-    progressBarVMI.style.width = progressValueVMI + "%";
-    progressBarVMI.setAttribute("aria-valuenow", progressValueVMI);
+    //        // Mengatur nilai progress bar untuk masing-masing elemen
+    //        var progressValueVMI = (vmiCount / totalCount) * 100;
+    //        var progressValueNONVMI = (nonVmiCount / totalCount) * 100;
+    //        var progressValueALL = (totalCount / totalCount) * 100;
 
-    progressBarNONVMI.style.width = progressValueNONVMI + "%";
-    progressBarNONVMI.setAttribute("aria-valuenow", progressValueNONVMI);
+    //        // Mengatur nilai atribut aria-valuenow dan lebar progress bar
+    //        progressBarVMI.style.width = progressValueVMI + "%";
+    //        progressBarVMI.setAttribute("aria-valuenow", progressValueVMI);
 
-    progressBarALL.style.width = progressValueALL + "%";
-    progressBarALL.setAttribute("aria-valuenow", progressValueALL);
+    //        progressBarNONVMI.style.width = progressValueNONVMI + "%";
+    //        progressBarNONVMI.setAttribute("aria-valuenow", progressValueNONVMI);
+
+    //        progressBarALL.style.width = progressValueALL + "%";
+    //        progressBarALL.setAttribute("aria-valuenow", progressValueALL);
+
+    //        // Mengganti teks pada elemen h5 dengan jumlah data
+    //        var cardTitleVMI = document.querySelector(".card-title[data-category='VMI']");
+    //        var cardTitleNONVMI = document.querySelector(".card-title[data-category='NONVMI']");
+    //        var cardTitleALL = document.querySelector(".card-title[data-category='ALL']");
+
+    //        cardTitleVMI.textContent = vmiCount;
+    //        cardTitleNONVMI.textContent = nonVmiCount;
+    //        cardTitleALL.textContent = totalCount;
+    //    })
+    //    .catch(error => {
+    //        console.error("Error fetching progress data: " + error);
+    //    });
 
     // End Progress Bar Chart Atas
 

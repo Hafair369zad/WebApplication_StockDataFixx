@@ -443,58 +443,118 @@ namespace WebApplication_StockDataFixx.Controllers
         // ================================================================================================== CHART DATA ================================================================================================ //
 
         // Iinitial GetChartData method : to dislay count data production based on AccesPlant and Selectedmonth //
+        
+        
+        //[HttpGet]
+        //public IActionResult GetChartData(string selectedMonth)
+        //{
+        //    if (string.IsNullOrEmpty(selectedMonth))
+        //    {
+        //        return BadRequest("Selected month is missing or invalid.");
+        //    }
+
+        //    if (!int.TryParse(selectedMonth, out int selectedMonthValue))
+        //    {
+        //        return BadRequest("Selected month is not a valid integer.");
+        //    }
+        //    string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
+        //    int totalProductionItems = _dbContext.ProductionItems
+        //        .Where(item => item.LastUpload.Month == selectedMonthValue && item.AccessPlant == accessPlant)
+        //        .Count();
+
+        //    int totalAllProductionItems = _dbContext.ProductionItems.Count();
+
+        //    var chartData = new[] { totalProductionItems, totalAllProductionItems };
+
+        //    return Json(chartData);
+        //}
+
+        //// Iinitial GetChart2Data method : to dislay ActualQty production based on AccesPlant and Selectedmonth //
+        //[HttpGet]
+        //public IActionResult GetChart2Data(string selectedMonth)
+        //{
+        //    if (string.IsNullOrEmpty(selectedMonth))
+        //    {
+        //        return BadRequest("Selected month is missing or invalid.");
+        //    }
+
+        //    if (!int.TryParse(selectedMonth, out int selectedMonthValue))
+        //    {
+        //        return BadRequest("Selected month is not a valid integer.");
+        //    }
+
+        //    string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
+        //    int monthlyActualQty = _dbContext.ProductionItems
+        //       .Where(item => item.LastUpload.Month == selectedMonthValue && item.AccessPlant == accessPlant)
+        //       .Sum(item => item.ActualQty);
+
+        //    int AllActualQty = _dbContext.ProductionItems
+        //       .Sum(item => item.ActualQty);
+
+        //    var chartData = new[] { monthlyActualQty, AllActualQty };
+
+        //    return Json(chartData);
+        //}
+
+
+        // baru 
         [HttpGet]
-        public IActionResult GetChartData(string selectedMonth)
+        public IActionResult GetChartData(int year)
         {
-            if (string.IsNullOrEmpty(selectedMonth))
+            if (year <= 0)
             {
-                return BadRequest("Selected month is missing or invalid.");
+                return BadRequest("Invalid year.");
             }
 
-            if (!int.TryParse(selectedMonth, out int selectedMonthValue))
-            {
-                return BadRequest("Selected month is not a valid integer.");
-            }
             string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
-            int totalProductionItems = _dbContext.ProductionItems
-                .Where(item => item.LastUpload.Month == selectedMonthValue && item.AccessPlant == accessPlant)
-                .Count();
+            var monthlyCountData = new List<int[]>();
 
-            int totalAllProductionItems = _dbContext.ProductionItems.Count();
+            for (int month = 1; month <= 12; month++)
+            {
 
-            var chartData = new[] { totalProductionItems, totalAllProductionItems };
+                int totalProductionItems = _dbContext.ProductionItems
+                    .Where(item =>item.LastUpload.Year == year && item.LastUpload.Month == month && item.AccessPlant == accessPlant)
+                    .Count();
+                int totalAllProductionItems = _dbContext.ProductionItems
+                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
+                    .Count();
 
-            return Json(chartData);
+                monthlyCountData.Add(new[] { totalProductionItems, totalAllProductionItems });
+            }
+            return Json(monthlyCountData);
         }
 
-        // Iinitial GetChart2Data method : to dislay ActualQty production based on AccesPlant and Selectedmonth //
         [HttpGet]
-        public IActionResult GetChart2Data(string selectedMonth)
+        public IActionResult GetChart2Data(int year)
         {
-            if (string.IsNullOrEmpty(selectedMonth))
+            if (year <= 0)
             {
-                return BadRequest("Selected month is missing or invalid.");
-            }
-
-            if (!int.TryParse(selectedMonth, out int selectedMonthValue))
-            {
-                return BadRequest("Selected month is not a valid integer.");
+                return BadRequest("Invalid year.");
             }
 
             string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
-            int monthlyActualQty = _dbContext.ProductionItems
-               .Where(item => item.LastUpload.Month == selectedMonthValue && item.AccessPlant == accessPlant)
-               .Sum(item => item.ActualQty);
+            var monthlyActualQtyData = new List<int[]>();
 
-            int AllActualQty = _dbContext.ProductionItems
-               .Sum(item => item.ActualQty);
+            for (int month = 1; month <= 12; month++)
+            {
+                int monthlyActualQty = _dbContext.ProductionItems
+                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month && item.AccessPlant == accessPlant)
+                    .Sum(item => item.ActualQty);
 
-            var chartData = new[] { monthlyActualQty, AllActualQty };
+                int AllActualQty = _dbContext.ProductionItems
+                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
+                    .Sum(item => item.ActualQty);
 
-            return Json(chartData);
+                monthlyActualQtyData.Add(new[] { monthlyActualQty, AllActualQty });
+            }
+
+            return Json(monthlyActualQtyData);
         }
+
 
         // Iinitial GetChar3tData method : to dislay count Unit(UoM) production based on AccesPlant and Selectedmonth //
         [HttpGet]
