@@ -3,76 +3,184 @@
     Layout = "~/Views/Shared/_LayoutWarehouse.cshtml";
 }
 
-<div class="container">
-    <div class="row align-items-center justify-content-between mb-3">
-        <div class="col">
-            <h2>Dashboard @ViewData["Title"]</h2>
-        </div>
-        <div class="col-auto">
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Select Month
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" data-month="01">January</a>
-                    <a class="dropdown-item" data-month="02">February</a>
-                    <a class="dropdown-item" data-month="03">March</a>
-                    <a class="dropdown-item" data-month="04">April</a>
-                    <a class="dropdown-item" data-month="05">May</a>
-                    <a class="dropdown-item" data-month="06">June</a>
-                    <a class="dropdown-item" data-month="07">July</a>
-                    <a class="dropdown-item" data-month="08">August</a>
-                    <a class="dropdown-item" data-month="09">September</a>
-                    <a class="dropdown-item" data-month="10">October</a>
-                    <a class="dropdown-item" data-month="11">November</a>
-                    <a class="dropdown-item" data-month="12">December</a>
+
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<div class="container-fluid p-0">
+    @*Baris Chart Pertama*@
+    <div class="chartFirst">
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card half-color-card">
+                    <div class="top-background green-background">
+                        <h5 class="card-title">12.345</h5>
+                        <h5 class="card-title">VMI</h5>
+                    </div>
+                    <div class="white-background">
+                        <div class="label-left">0</div>
+                        <div class="progress">
+                            <div class="progress-bar progress-barVMI" role="progressbar" style="width: 0%; background-color: #4EA652;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="label-right">100</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card half-color-card">
+                    <div class="top-background red-background">
+                        <h5 class="card-title">12.345</h5>
+                        <h5 class="card-title">NVMI</h5>
+                    </div>
+                    <div class="white-background">
+                        <div class="label-left">0</div>
+                        <div class="progress">
+                            <div class="progress-bar progress-barNONVMI" role="progressbar" style="width: 0%; background-color: #A64E4E;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="label-right">100</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card half-color-card">
+                    <div class="top-background purple-background">
+                        <h5 class="card-title">24.690</h5>
+                        <h5 class="card-title">ALL</h5>
+                    </div>
+                    <div class="white-background">
+                        <div class="label-left">0</div>
+                        <div class="progress">
+                            <div class="progress-bar progress-barALL" role="progressbar" style="width: 0%; background-color:rgba(0, 0, 0, 0.5);" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="label-right">100</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="card chart-card">
+
+    @*Baris Chart Kedua*@
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="card grafik1">
                 <div class="card-body">
-                    <canvas id="chart1"></canvas>
+                    <div class="d-flex justify-content-between align-items-center mb-3 header-chart">
+                        <div>
+                            <h5 class="card-title mb-1">Total Actual Qty</h5>
+                            <p class="card-text">Per Month</p>
+                        </div>
+                        <div class="dropdown">
+                            @*<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Select Year
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="yearDropdown">
+                                <a class="dropdown-item"  data-year="2022">2022</a>
+                                <a class="dropdown-item"  data-year="2023">2023</a>
+                                <a class="dropdown-item"  data-year="2024">2024</a>
+                                <a class="dropdown-item"  data-year="2025">2025</a>
+                                <!-- Tambahkan opsi tahun lainnya sesuai kebutuhan -->
+                            </div>*@
+                        </div>
+                    </div>
+                    <canvas id="grafik1"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-sm-4">
-            <div class="card chart-card">
+        <div class="col-md-4">
+            <div class="card">
                 <div class="card-body">
-                    <canvas id="chart2"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="card chart-card">
-                <div class="card-body">
-                    <p>Total UoM VMI</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3 header-chart">
+                        <div>
+                            <h5 class="card-title mb-1" style="color: #4EA652;">VMI</h5>
+                            <p class="card-text">Total Per UoM</p>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Select Month
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" data-month="01">January</a>
+                                <a class="dropdown-item" data-month="02">February</a>
+                                <a class="dropdown-item" data-month="03">March</a>
+                                <a class="dropdown-item" data-month="04">April</a>
+                                <a class="dropdown-item" data-month="05">May</a>
+                                <a class="dropdown-item" data-month="06">June</a>
+                                <a class="dropdown-item" data-month="07">July</a>
+                                <a class="dropdown-item" data-month="08">August</a>
+                                <a class="dropdown-item" data-month="09">September</a>
+                                <a class="dropdown-item" data-month="10">October</a>
+                                <a class="dropdown-item" data-month="11">November</a>
+                                <a class="dropdown-item" data-month="12">December</a>
+                            </div>
+                        </div>
+                    </div>
                     <canvas id="chart3"></canvas>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row" style="margin-top: 120px;">
-        <div class="col-sm-4">
-            <div class="card chart-card">
+
+    @*Baris Chart Ketiga*@
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
                 <div class="card-body">
-                    <p>Total UoM Non VMI</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3 header-chart">
+                        <div>
+                            <h5 class="card-title mb-1" style="color: #A64E4E;">Non VMI</h5>
+                            <p class="card-text">Total Per UoM</p>
+                        </div>
+                        <div class="dropdown">
+                            @*<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Select Month
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" data-month="01">January</a>
+                                <a class="dropdown-item" data-month="02">February</a>
+                                <a class="dropdown-item" data-month="03">March</a>
+                                <a class="dropdown-item" data-month="04">April</a>
+                                <a class="dropdown-item" data-month="05">May</a>
+                                <a class="dropdown-item" data-month="06">June</a>
+                                <a class="dropdown-item" data-month="07">July</a>
+                                <a class="dropdown-item" data-month="08">August</a>
+                                <a class="dropdown-item" data-month="09">September</a>
+                                <a class="dropdown-item" data-month="10">October</a>
+                                <a class="dropdown-item" data-month="11">November</a>
+                                <a class="dropdown-item" data-month="12">December</a>
+                            </div>*@
+                        </div>
+                    </div>
                     <canvas id="chart4"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3 header-chart">
+                        <div>
+                            <h5 class="card-title mb-1">Total Count Data</h5>
+                            <p class="card-text">Per Month</p>
+                        </div>
+                        <div class="dropdown">
+                           @* <button class="btn btn-primary dropdown-toggle btn-typeChart" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                VMI
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item active" value="VMI">VMI</a>
+                                <a class="dropdown-item" value="NonVMI">NON VMI</a>
+                            </div>*@
+                        </div>
+                    </div>
+                    <canvas id="grafik2"></canvas>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
-@*baru*@
-
-
-
-
-
+<div style="margin-top: 50px;"></div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -80,32 +188,9 @@
 <script>
     Chart.debug = true;
 
-    const chart1 = document.getElementById('chart1');
-    const chart2 = document.getElementById('chart2');
     const chart3 = document.getElementById('chart3');
     const chart4 = document.getElementById('chart4');
     let selectedMonth = "";
-
-    function fetchChartData() {
-        fetch(`/Warehouse/GetChartData?selectedMonth=${selectedMonth}`)
-            .then(response => response.json())
-            .then(data => {
-                updateChart1(data);
-            })
-            .catch(error => {
-                console.error('Error fetching chart data:', error);
-            });
-    }
-    function fetchChart2Data() {
-        fetch(`/Warehouse/GetChart2Data?selectedMonth=${selectedMonth}`)
-            .then(response => response.json())
-            .then(data => {
-                updateChart2(data);
-            })
-            .catch(error => {
-                console.error('Error fetching chart data:', error);
-            });
-    }
 
 
     function fetchChart3Data() {
@@ -127,64 +212,6 @@
             .catch(error => {
                 console.error('Error fetching chart 4 data:', error);
             });
-    }
-
-
-    function updateChart1(data) {
-        const ctx = chart1.getContext('2d');
-        if (window.chart1Instance) {
-            window.chart1Instance.destroy(); // Hancurkan objek Chart yang ada
-        }
-
-        window.chart1Instance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['VMI', 'NonVMI'],
-                datasets: [{
-                    label: ` Total Count Data for ${getMonthName(selectedMonth)}`,
-                    data: data,
-                    borderWidth: 2,
-                    backgroundColor: ['#36A2EB', '#FF6384']
-                }]
-
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
-
-
-
-    function updateChart2(data) {
-        const ctx = chart2.getContext('2d');
-        if (window.chart2Instance) {
-            window.chart2Instance.destroy(); // Hancurkan objek Chart yang ada
-        }
-
-        window.chart2Instance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['VMI', 'Non VMI'],
-                datasets: [{
-                    label: `Total ActualQty for ${getMonthName(selectedMonth)}`,
-                    data: data, // Data sudah langsung berisi array [vmiActualQty, nonVmiActualQty]
-                    borderWidth: 2,
-                    backgroundColor: ['#2E8B57', '#FFD700']
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
     }
 
 
@@ -249,14 +276,10 @@
         });
     }
 
-    fetchChartData();
-    fetchChart2Data();
     fetchChart3Data();
     fetchChart4Data();
 
     function updateCharts() {
-        fetchChartData();
-        fetchChart2Data();
         fetchChart3Data();
         fetchChart4Data();
     }
@@ -318,6 +341,200 @@
     // Add an event listener to check network status when the connection changes
     window.addEventListener('online', checkNetworkStatus);
     window.addEventListener('offline', checkNetworkStatus);
+
+
+    // GRAFIK   BARU
+    // Progress Bar Chart Atas
+    // Mengambil elemen-elemen progress bar berdasarkan class mereka
+    var progressBarVMI = document.querySelector(".progress-barVMI");
+    var progressBarNONVMI = document.querySelector(".progress-barNONVMI");
+    var progressBarALL = document.querySelector(".progress-barALL");
+
+    // Mengatur nilai progress bar untuk masing-masing elemen
+    var progressValueVMI = 32; // Nilai untuk progress bar IMP
+    var progressValueNONVMI = 65; // Nilai untuk progress bar LOC
+    var progressValueALL = 80; // Nilai untuk progress bar ALL
+
+    // Mengatur nilai atribut aria-valuenow dan lebar progress bar
+    progressBarVMI.style.width = progressValueVMI + "%";
+    progressBarVMI.setAttribute("aria-valuenow", progressValueVMI);
+
+    progressBarNONVMI.style.width = progressValueNONVMI + "%";
+    progressBarNONVMI.setAttribute("aria-valuenow", progressValueNONVMI);
+
+    progressBarALL.style.width = progressValueALL + "%";
+    progressBarALL.setAttribute("aria-valuenow", progressValueALL);
+
+    // End Progress Bar Chart Atas
+
+
+
+    // Grafik Chart 
+
+        // Grafik Chart 1 Total Actual Qty
+        var dataBar = {
+            labels: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
+            datasets: [
+                {
+                    label: "VMI",
+                    backgroundColor: "#4EA652",
+                    data: [] // Data VMI akan diisi dari hasil controller
+                },
+                {
+                    label: "NON VMI",
+                    backgroundColor: "#A50808",
+                    data: [] // Data Non VMI akan diisi dari hasil controller
+                },
+                {
+                    label: "ALL",
+                    type: "line",
+                    borderColor: "rgba(0, 0, 0, 1)",
+                    borderWidth: 1,
+                    data: [] // Data Total ActualQty akan diisi dari hasil controller
+                }
+            ]
+        };
+
+        // Opsi konfigurasi grafik
+        var options = {
+            scales: {
+                x: {
+                    beginAtZero: true
+                },
+                y: {
+                    beginAtZero: true
+                }
+            }
+        };
+
+        // Ambil data dari controller
+        $.get("/Warehouse/GetChart2Data?year=2023", function (data) {
+            // Mengisi data grafik dengan hasil dari controller
+            dataBar.datasets[0].data = data.map(item => item[0]); // Data VMI
+            dataBar.datasets[1].data = data.map(item => item[1]); // Data Non VMI
+            dataBar.datasets[2].data = data.map(item => item[2]); // Data Total ActualQty
+
+            // Buat grafik dengan data yang telah diisi
+            var ctxBar = document.getElementById("grafik1").getContext("2d");
+            var myChartBar = new Chart(ctxBar, {
+                type: "bar",
+                data: dataBar,
+                options: options
+            });
+        });
+
+
+        // Grafik Chart 2 Total Count Data
+        var dataBar2 = {
+            labels: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
+            datasets: [
+                {
+                    label: "VMI",
+                    backgroundColor: "#4EA652",
+                    data: [] // Data VMI akan diisi dari hasil controller
+                },
+                {
+                    label: "NON VMI",
+                    backgroundColor: "#A50808",
+                    data: [] // Data Non VMI akan diisi dari hasil controller
+                },
+                {
+                    label: "ALL",
+                    type: "line",
+                    borderColor: "rgba(0, 0, 0, 1)",
+                    borderWidth: 1,
+                    data: [] // Data Total ActualQty akan diisi dari hasil controller
+                }
+            ]
+        };
+
+        // Opsi konfigurasi grafik
+        var options = {
+            scales: {
+                x: {
+                    beginAtZero: true
+                },
+                y: {
+                    beginAtZero: true
+                }
+            }
+        };
+
+        // Ambil data dari controller
+        $.get("/Warehouse/GetChartData?year=2023", function (data) {
+            // Mengisi data grafik dengan hasil dari controller
+            dataBar2.datasets[0].data = data.map(item => item[0]); // Data VMI
+            dataBar2.datasets[1].data = data.map(item => item[1]); // Data Non VMI
+            dataBar2.datasets[2].data = data.map(item => item[2]); // Data Total ActualQty
+
+            // Buat grafik dengan data yang telah diisi
+            var ctxBar2 = document.getElementById("grafik2").getContext("2d");
+            var myChartBar2 = new Chart(ctxBar2, {
+                type: "bar",
+                data: dataBar2,
+                options: options
+            });
+        });
+
+
+    // Dropwon Chart
+    $(document).ready(function () {
+        // Ketika item dropdown dipilih
+        $(".dropdown-item").click(function () {
+            // Hapus kelas active dari semua item dropdown
+            $(".dropdown-item").removeClass("active");
+
+            // Tambahkan kelas active ke item yang dipilih
+            $(this).addClass("active");
+
+            // Ambil nilai (value) dari item yang dipilih
+            var selectedValue = $(this).attr("value");
+
+            // Ganti teks pada tombol dropdown dengan nilai yang dipilih
+            $(".btn-typeChart").text(selectedValue);
+
+            // Anda juga dapat melakukan tindakan lain sesuai kebutuhan di sini
+
+            // Contoh: Cetak nilai yang dipilih ke konsol
+            console.log("Anda memilih: " + selectedValue);
+        });
+    });
+    // End Dropdown Chart
+
+
+    
+
+
+    // Donut Chart Bawah
+    const progressCircles = document.querySelectorAll('.progress-circle');
+
+    // Contoh data dari sumber data (bisa diganti dengan data dari database/API)
+    const dataFromDatabase = [
+        { value: 40, color: '#3498db' },
+        { value: 65, color: '#e74c3c' },
+        { value: 20, color: '#27ae60' },
+        { value: 75, color: '#27ae60' },
+    ];
+
+    function updateProgress() {
+        dataFromDatabase.forEach((data, index) => {
+            const circle = progressCircles[index];
+            const currentValue = parseInt(circle.querySelector('.progress-label').textContent);
+            const targetValue = data.value;
+
+            if (currentValue < targetValue) {
+                circle.querySelector('.progress-label').textContent = `${currentValue + 1}%`;
+                circle.style.transform = `rotate(${(currentValue + 1) * 3.6}deg)`;
+            }
+        });
+    }
+
+    // Memulai animasi otomatis saat halaman dimuat
+    setInterval(updateProgress, 50);
+
+    // End Donut Chart Bawah
+
+
 </script>
 
 @*Populoader*@

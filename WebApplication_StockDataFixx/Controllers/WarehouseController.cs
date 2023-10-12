@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
 using NPOI.SS.Formula.Functions;
 using DocumentFormat.OpenXml.Vml.Spreadsheet;
+using DocumentFormat.OpenXml.Bibliography;
 
 namespace WebApplication_StockDataFixx.Controllers
 {
@@ -581,59 +582,62 @@ namespace WebApplication_StockDataFixx.Controllers
 
         // Method to display Chart for count data Vmi or Non Vmi 
         [HttpGet]
-        public IActionResult GetChartData(string selectedMonth)
+        public IActionResult GetChartData(int year)
         {
-            if (string.IsNullOrEmpty(selectedMonth))
+            if (year <= 0)
             {
-                return BadRequest("Selected month is missing or invalid.");
-            }
-
-            if (!int.TryParse(selectedMonth, out int selectedMonthValue))
-            {
-                return BadRequest("Selected month is not a valid integer.");
+                return BadRequest("Invalid year.");
             }
 
             string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
-            int vmiCount = _dbContext.WarehouseItems.Count(item => item.Isvmi == "VMI" && item.LastUpload.Month == selectedMonthValue && item.AccessPlant == accessPlant);
-            int nonVmiCount = _dbContext.WarehouseItems.Count(item => item.Isvmi == "NonVMI" && item.LastUpload.Month == selectedMonthValue && item.AccessPlant == accessPlant);
+            var monthlyCountData = new List<int[]>();
 
-            var chartData = new[] { vmiCount, nonVmiCount };
+            for (int month = 1; month <= 12; month++)
+            {
 
-            return Json(chartData);
+                int vmiCount = _dbContext.WarehouseItems
+                    .Count(item => item.Isvmi == "VMI" && item.LastUpload.Year == year && item.LastUpload.Month == month && item.AccessPlant == accessPlant);
+
+                int nonVmiCount = _dbContext.WarehouseItems
+                    .Count(item => item.Isvmi == "NonVMI" && item.LastUpload.Year == year && item.LastUpload.Month == month && item.AccessPlant == accessPlant);
+
+                int totalCount = vmiCount + nonVmiCount;
+
+                monthlyCountData.Add(new[] { vmiCount, nonVmiCount, totalCount });
+            }
+            return Json(monthlyCountData);
         }
 
-
-        // Method to display Chart for count ActualQty Vmi or Non Vmi 
         [HttpGet]
-        public IActionResult GetChart2Data(string selectedMonth)
+        public IActionResult GetChart2Data(int year)
         {
-            if (string.IsNullOrEmpty(selectedMonth))
+            if (year <= 0)
             {
-                return BadRequest("Selected month is missing or invalid.");
-            }
-
-            if (!int.TryParse(selectedMonth, out int selectedMonthValue))
-            {
-                return BadRequest("Selected month is not a valid integer.");
+                return BadRequest("Invalid year.");
             }
 
             string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
-            int vmiActualQty = _dbContext.WarehouseItems
-                .Where(item => item.Isvmi == "VMI" && item.LastUpload.Month == selectedMonthValue && item.AccessPlant == accessPlant)
-                .Sum(item => item.ActualQty);
+            var monthlyData = new List<int[]>();
 
-            int nonVmiActualQty = _dbContext.WarehouseItems
-                .Where(item => item.Isvmi == "NonVMI" && item.LastUpload.Month == selectedMonthValue && item.AccessPlant == accessPlant)
-                .Sum(item => item.ActualQty);
+            for (int month = 1; month <= 12; month++)
+            {
+                int vmiActualQty = _dbContext.WarehouseItems
+                    .Where(item => item.Isvmi == "VMI" && item.LastUpload.Year == year && item.LastUpload.Month == month && item.AccessPlant == accessPlant)
+                    .Sum(item => item.ActualQty);
 
-            var chartData = new[] { vmiActualQty, nonVmiActualQty };
+                int nonVmiActualQty = _dbContext.WarehouseItems
+                    .Where(item => item.Isvmi == "NonVMI" && item.LastUpload.Year == year && item.LastUpload.Month == month && item.AccessPlant == accessPlant)
+                    .Sum(item => item.ActualQty);
 
-            return Json(chartData);
+                int totalActualQty = vmiActualQty + nonVmiActualQty;
+
+                monthlyData.Add(new[] { vmiActualQty, nonVmiActualQty, totalActualQty });
+            }
+
+            return Json(monthlyData);
         }
-
-
 
         // Method to display Chart for count Unit (UoM) Vmi or Non Vmi 
         [HttpGet]

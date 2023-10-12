@@ -1227,3 +1227,199 @@ body.active .wrapper .section .top_navbar .nav-logout {
 
 
 /*End Card*/
+
+
+
+/*Header Chard Chart*/
+.half-color-card {
+    display: flex;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.top-background {
+    color: white;
+    flex: 1;
+    padding: 1.5rem; /* Atur padding sesuai kebutuhan */
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    align-items: center; /* Mengatur elemen secara vertikal tengah */
+    justify-content: space-between;
+}
+
+.card-title {
+    margin: 0;
+}
+
+.white-background {
+    background-color: white;
+    flex: 1;
+    padding: 1.5rem; /* Atur padding sesuai kebutuhan */
+    border-radius: 10px;
+    position: relative;
+}
+
+
+
+.green-background,
+.progress-barVMI {
+    background-color: #4EA652;
+}
+.red-background,
+.progress-barNONVMI {
+    background-color: #A64E4E;
+}
+
+.purple-background,
+.progress-barALL {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.progress-bar {
+    height: 15px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 25px;
+    right: 20px;
+    margin-top: 0px;
+    margin-bottom: 5px;
+    max-width: calc(100% - 45px); /* Mengatur maksimum lebar progress bar */
+    overflow: hidden; /* Mengatasi overflow */
+}
+
+
+.label-left {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    margin-top: 17px;
+    transform: translateY(-50%);
+    font-size: 13px;
+}
+
+.label-right {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    margin-top: 17px;
+    transform: translateY(-50%);
+    font-size: 13px;
+}
+
+
+
+.header-chart h5 {
+    font-weight: 800;
+    margin-bottom: -5px;
+    font-size: 25px;
+}
+
+.header-chart p {
+    font-weight: 500;
+    margin-top: -10px;
+    margin-left: 2px;
+    font-size: 15px;
+}
+
+#chart4,
+#chart3 {
+    margin-top: 45px;
+}
+
+/*@media (max-width: 464px) {
+    .grafik1 {
+        margin-bottom: 60px;
+    }
+}*/
+
+
+
+
+/*button pilih type*/
+.btn-typeChart {
+    background-color: #1D5D9B;
+    padding: 6px 6px;
+}
+
+    .btn-typeChart:hover {
+        background-color: #33363F;
+    }
+
+
+.chartFirst .card-title {
+    font-size: 40px;
+    font-weight: 700;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+/*donut chart*/
+/* CSS untuk progress bar pertama (circle-1) */
+.circle-1 {
+    border-color: #3498db;
+}
+
+    .circle-1 .progress-circle {
+        border-color: #3498db;
+    }
+
+/* CSS untuk progress bar kedua (circle-2) */
+.circle-2 {
+    border-color: #e74c3c;
+}
+
+    .circle-2 .progress-circle {
+        border-color: #e74c3c;
+    }
+
+/* CSS untuk progress bar ketiga (circle-3) */
+.circle-3 {
+    border-color: #27ae60;
+}
+
+    .circle-3 .progress-circle {
+        border-color: #27ae60;
+    }
+
+/* CSS untuk progress label */
+.progress-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff; /* Warna teks putih untuk label */
+}
+
+/* CSS untuk container progress */
+.progress-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+}
+
+/* CSS untuk ring progress */
+.progress-ring {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: 10px solid #ccc; /* Warna default untuk ring */
+    border-radius: 50%;
+    position: relative;
+}
+
+/* CSS untuk lingkaran progress */
+.progress-circle {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: 10px solid transparent;
+    border-radius: 50%;
+    clip-path: polygon(50% 0%, 100% 0%, 100% 100%);
+    transform: rotate(90deg);
+    transform-origin: center;
+}
