@@ -37,7 +37,7 @@
                 updateReportTitle("VMI");
             } else if (selectedTypeParam === "NON_VMI") {
                 document.getElementById("selectedType").value = "NON_VMI";
-                updateReportTitle("NON_VMI");
+                updateReportTitle("NON VMI");
             } else {
                 document.getElementById("selectedType").value = "Update Terbaru";
             }
@@ -183,7 +183,7 @@
 
 
             <div class="select-month" style="margin-left: 10px;">
-                <label style="margin-right: 5px;">Pilih Bulan :</label>
+                <label style="margin-right: 5px;">Select Month :</label>
                 
 
                 @*jika menggunakan kolom Month*@
@@ -198,7 +198,7 @@
 
                 @*jika menggunakan kolom last Upload*@
                 <select id="selectedMonth" onchange="filterDataByMonth()">
-                    <option value="Latest Update">Bulan ini (sedang berlangsung)</option>
+                    <option value="Latest Update">Latest Uploaded Month</option>
                     @foreach (var month in ViewBag.LastUpload)
                     {
                         <option value="@month.ToString("yyyy-MM")">@month.ToString("MMMM yyyy")</option>
@@ -208,7 +208,7 @@
             </div>
 
             <div class="select-month" style="margin-left: 10px;">
-                <label style="margin-right: 5px;">Pilih Tipe :</label>
+                <label style="margin-right: 5px;">Select Warehouse :</label>
                 <select id="selectedType" onchange="filterData()">
                     <option value="Pilih_Tipe">ALL</option>
                     <option value="VMI">VMI</option>
@@ -230,13 +230,17 @@
             <div class="row d-flex align-items-start">
                 <div class="col">
                 <div class="selected-type-box" style="margin-left: 10px; width: 300px; margin-bottom: 10px;">
-                    <strong>Pilihan Tipe : </strong>
+                    @*<strong>Pilihan Tipe : </strong>*@
+                    <strong>
                         <span id="selectedTypeBox"></span>
+                    </strong>
                     </div>
 
                 <div class="selected-month-box" style="margin-left: 10px; width: 300px; margin-bottom: 10px;">
-                        <strong>Pilihan Bulan : </strong>
+                        @*<strong>Pilihan Bulan : </strong>*@
+                        <strong>
                         <span id="selectedMonthBox"></span>
+                    </strong>
                     </div>
                 </div>
             </div>
@@ -309,7 +313,7 @@
         <div id="popup" class="popup popup-dow">
             <div class="popup-content popup-content-dow ">
                 <div class="popup-header popup-header-dow">
-                    <h3>Dowonload File Excel</h3>
+                    <h3>Download File Excel</h3>
                     <a id="close-popup-dow" class="btn close-popup-dow">&times;</a>
                 </div>
                 <div class="popup-body popup-body-dow">

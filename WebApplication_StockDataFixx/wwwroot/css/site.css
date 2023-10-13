@@ -756,26 +756,26 @@ button#download-button {
     display: inline-block;
     margin: 10px;
     padding: 10px;
-    border: 1px solid #1D5D9B;
-    background-color: #1D5D9B;
-    font-size: 14px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    background-color: #fff;
+    font-size: 20px;
     width: 200px; /* Lebar kotak */
     text-align: center; /* Tengahkan teks di dalam kotak */
     box-sizing: border-box; /* Sesuaikan padding dan border ke dalam lebar kotak */
     border-radius: 10px;
     border-width: 2px;
-    border-color: #888;
+    border-color: #1D5D9B;
     box-shadow: 3px 3px 5px #888888;
 }
 
 .selected-type-box {
-    color: #fff;
+    color: #000;
     margin-top: 20px;
     margin-bottom: -10px;
 }
 
 .selected-month-box {
-    color: #fff;
+    color: #000;
     margin-top: 20px;
     margin-bottom: -10px;
 }
