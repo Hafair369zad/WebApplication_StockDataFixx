@@ -11,6 +11,7 @@ using WebApplication_StockDataFixx.Database;
 using WebApplication_StockDataFixx.Models.Domain;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using DocumentFormat.OpenXml.Office.CustomUI;
+using DocumentFormat.OpenXml.Bibliography;
 
 namespace WebApplication_StockDataFixx.Controllers
 {
@@ -425,51 +426,61 @@ namespace WebApplication_StockDataFixx.Controllers
 
         // ================================================================================================ CHART DATA WAREHOUSE ======================================================================================== //
 
+        // Count Data (grafik2Wrh)
         [HttpGet]
-        public IActionResult GetChartDataWrh(string selectedMonth)
+        public IActionResult GetChartDataWrh(int year)
         {
-            if (string.IsNullOrEmpty(selectedMonth))
+            if (year <= 0)
             {
-                return BadRequest("Selected month is missing or invalid.");
+                return BadRequest("Invalid year.");
             }
 
-            if (!int.TryParse(selectedMonth, out int selectedMonthValue))
+            var monthlyCountData = new List<int[]>();
+
+            for (int month = 1; month <= 12; month++)
             {
-                return BadRequest("Selected month is not a valid integer.");
+
+                int vmiCount = _dbContext.WarehouseItems
+                    .Count(item => item.Isvmi == "VMI" && item.LastUpload.Year == year && item.LastUpload.Month == month);
+
+                int nonVmiCount = _dbContext.WarehouseItems
+                    .Count(item => item.Isvmi == "NonVMI" && item.LastUpload.Year == year && item.LastUpload.Month == month);
+
+                int totalCount = vmiCount + nonVmiCount;
+
+                monthlyCountData.Add(new[] { vmiCount, nonVmiCount, totalCount });
             }
-
-            int vmiCount = _dbContext.WarehouseItems.Count(item => item.Isvmi == "VMI" && item.LastUpload.Month == selectedMonthValue);
-            int nonVmiCount = _dbContext.WarehouseItems.Count(item => item.Isvmi == "NonVMI" && item.LastUpload.Month == selectedMonthValue);
-
-            var chartData = new[] { vmiCount, nonVmiCount };
-
-            return Json(chartData);
+            return Json(monthlyCountData);
         }
 
+
+        // Actual Qty Data (grafik1Wrh)
         [HttpGet]
-        public IActionResult GetChart2DataWrh(string selectedMonth)
+        public IActionResult GetChart2DataWrh(int year)
         {
-            if (string.IsNullOrEmpty(selectedMonth))
+            if (year <= 0)
             {
-                return BadRequest("Selected month is missing or invalid.");
+                return BadRequest("Invalid year.");
             }
 
-            if (!int.TryParse(selectedMonth, out int selectedMonthValue))
+            var monthlyData = new List<int[]>();
+
+            for (int month = 1; month <= 12; month++)
             {
-                return BadRequest("Selected month is not a valid integer.");
+                int vmiActualQty = _dbContext.WarehouseItems
+                    .Where(item => item.Isvmi == "VMI" && item.LastUpload.Year == year && item.LastUpload.Month == month)
+                    .Sum(item => item.ActualQty);
+
+                int nonVmiActualQty = _dbContext.WarehouseItems
+                    .Where(item => item.Isvmi == "NonVMI" && item.LastUpload.Year == year && item.LastUpload.Month == month)
+                    .Sum(item => item.ActualQty);
+
+                int totalActualQty = vmiActualQty + nonVmiActualQty;
+
+                monthlyData.Add(new[] { vmiActualQty, nonVmiActualQty, totalActualQty });
             }
 
-            int vmiActualQty = _dbContext.WarehouseItems
-                .Where(item => item.Isvmi == "VMI" && item.LastUpload.Month == selectedMonthValue)
-                .Sum(item => item.ActualQty);
-
-            int nonVmiActualQty = _dbContext.WarehouseItems
-                .Where(item => item.Isvmi == "NonVMI" && item.LastUpload.Month == selectedMonthValue)
-                .Sum(item => item.ActualQty);
-
-            var chartData = new[] { vmiActualQty, nonVmiActualQty };
-
-            return Json(chartData);
+            return Json(monthlyData);
         }
 
 
@@ -544,54 +555,64 @@ namespace WebApplication_StockDataFixx.Controllers
 
         // =============================================================================================== CHART DATA PRODUCTION ======================================================================================== //
 
+        // total count data (grafik2Prod)
         [HttpGet]
-        public IActionResult GetChartDataProd(string selectedMonth)
+        public IActionResult GetChartDataProd(int year)
         {
-            if (string.IsNullOrEmpty(selectedMonth))
+            if (year <= 0)
             {
-                return BadRequest("Selected month is missing or invalid.");
+                return BadRequest("Invalid year.");
             }
 
-            if (!int.TryParse(selectedMonth, out int selectedMonthValue))
+            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
+            var monthlyCountData = new List<int[]>();
+
+            for (int month = 1; month <= 12; month++)
             {
-                return BadRequest("Selected month is not a valid integer.");
+
+                int totalProductionItems = _dbContext.ProductionItems
+                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
+                    .Count();
+                int totalAllProductionItems = _dbContext.ProductionItems
+                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
+                    .Count();
+
+                monthlyCountData.Add(new[] { totalProductionItems, totalAllProductionItems });
             }
-
-            int totalProductionItems = _dbContext.ProductionItems.Count(item => item.LastUpload.Month == selectedMonthValue);
-
-            int totalAllProductionItems = _dbContext.ProductionItems.Count();
-
-            var chartData = new[] { totalProductionItems, totalAllProductionItems };
-
-            return Json(chartData);
+            return Json(monthlyCountData);
         }
 
 
+
+        // total Actual Qty data (grafik1Prod)
         [HttpGet]
-        public IActionResult GetChart2DataProd(string selectedMonth)
+        public IActionResult GetChart2DataProd(int year)
         {
-            if (string.IsNullOrEmpty(selectedMonth))
+            if (year <= 0)
             {
-                return BadRequest("Selected month is missing or invalid.");
+                return BadRequest("Invalid year.");
             }
 
-            if (!int.TryParse(selectedMonth, out int selectedMonthValue))
+            var monthlyActualQtyData = new List<int[]>();
+
+            for (int month = 1; month <= 12; month++)
             {
-                return BadRequest("Selected month is not a valid integer.");
+                int monthlyActualQty = _dbContext.ProductionItems
+                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
+                    .Sum(item => item.ActualQty);
+
+                int AllActualQty = _dbContext.ProductionItems
+                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
+                    .Sum(item => item.ActualQty);
+
+                monthlyActualQtyData.Add(new[] { monthlyActualQty, AllActualQty });
             }
 
-            int monthlyActualQty = _dbContext.ProductionItems
-               .Where(item => item.LastUpload.Month == selectedMonthValue)
-               .Sum(item => item.ActualQty);
+            return Json(monthlyActualQtyData);
 
-            int AllActualQty = _dbContext.ProductionItems
-               .Sum(item => item.ActualQty);
-
-            //var chartData = new { TotalActualQty = monthlyActualQty };
-            var chartData = new[] { monthlyActualQty, AllActualQty };
-
-            return Json(chartData);
         }
+
 
 
 
