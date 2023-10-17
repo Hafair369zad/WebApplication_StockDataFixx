@@ -859,6 +859,68 @@ namespace WebApplication_StockDataFixx.Controllers
         //    return Json(monthlyCountData);
         //}
 
+        //[HttpGet]
+        //public IActionResult GetChartDataProd(int year)
+        //{
+        //    if (year <= 0)
+        //    {
+        //        return BadRequest("Invalid year.");
+        //    }
+
+        //    string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
+        //    var monthlyCountData = new List<double[]>();
+
+        //    for (int month = 1; month <= 12; month++)
+        //    {
+        //        IQueryable<ProductionItem> data = _dbContext.ProductionItems
+        //            .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month);
+
+        //        if (!string.IsNullOrEmpty(accessPlant))
+        //        {
+        //            if (accessPlant == "VIEW-RIFO")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFR, WRH-RIFA, WRH-RIFC, WRH-RIFL, WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "PROD-RIFA" || item.AccessPlant == "PROD-RIFC" || item.AccessPlant == "PROD-RIFL" || item.AccessPlant == "PROD-RIFR" || item.AccessPlant == "PROD-RIFW");
+        //            }
+        //            else if (accessPlant == "VIEW-RIFA")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "PROD-RIFA");
+        //            }
+        //            else if (accessPlant == "VIEW-RIFC")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "PROD-RIFC");
+        //            }
+        //            else if (accessPlant == "VIEW-RIFL")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "PROD-RIFL");
+        //            }
+        //            else if (accessPlant == "VIEW-RIFR")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "PROD-RIFR");
+        //            }
+        //            else if (accessPlant == "VIEW-RIFW")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "PROD-RIFW");
+        //            }
+        //        }
+
+        //        double totalProductionItems = data.Count();
+        //        double totalAllProductionItems = _dbContext.ProductionItems
+        //            .Count(item => item.LastUpload.Year == year && item.LastUpload.Month == month);
+
+        //        monthlyCountData.Add(new[] { totalProductionItems, totalAllProductionItems });
+        //    }
+        //    return Json(monthlyCountData);
+        //}
+
+
+
         [HttpGet]
         public IActionResult GetChartDataProd(int year)
         {
@@ -869,7 +931,7 @@ namespace WebApplication_StockDataFixx.Controllers
 
             string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
-            var monthlyCountData = new List<double[]>();
+            var monthlyCountData = new List<Dictionary<string, double>>();
 
             for (int month = 1; month <= 12; month++)
             {
@@ -910,14 +972,32 @@ namespace WebApplication_StockDataFixx.Controllers
                     }
                 }
 
-                double totalProductionItems = data.Count();
-                double totalAllProductionItems = _dbContext.ProductionItems
-                    .Count(item => item.LastUpload.Year == year && item.LastUpload.Month == month);
+                var slocList = data
+                    .Select(item => item.Sloc)
+                    .Distinct()
+                    .ToList();
 
-                monthlyCountData.Add(new[] { totalProductionItems, totalAllProductionItems });
+                var monthlyCounts = new Dictionary<string, double>();
+                double cumulativeTotal = 0;
+
+                foreach (var sloc in slocList)
+                {
+                    double count = data
+                        .Where(item => item.Sloc == sloc)
+                        .Count();
+                    cumulativeTotal += count;
+                    monthlyCounts[sloc] = cumulativeTotal;
+                }
+
+                monthlyCountData.Add(monthlyCounts);
             }
+
             return Json(monthlyCountData);
         }
+
+
+
+
 
 
 

@@ -443,8 +443,8 @@ namespace WebApplication_StockDataFixx.Controllers
         // ================================================================================================== CHART DATA ================================================================================================ //
 
         // Iinitial GetChartData method : to dislay count data production based on AccesPlant and Selectedmonth //
-        
-        
+
+
         //[HttpGet]
         //public IActionResult GetChartData(string selectedMonth)
         //{
@@ -500,6 +500,33 @@ namespace WebApplication_StockDataFixx.Controllers
 
 
         // baru 
+        //[HttpGet]
+        //public IActionResult GetChartData(int year)
+        //{
+        //    if (year <= 0)
+        //    {
+        //        return BadRequest("Invalid year.");
+        //    }
+
+        //    string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
+        //    var monthlyCountData = new List<double[]>();
+
+        //    for (int month = 1; month <= 12; month++)
+        //    {
+
+        //        double totalProductionItems = _dbContext.ProductionItems
+        //            .Where(item =>item.LastUpload.Year == year && item.LastUpload.Month == month && item.AccessPlant == accessPlant)
+        //            .Count();
+        //        double totalAllProductionItems = _dbContext.ProductionItems
+        //            .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
+        //            .Count();
+
+        //        monthlyCountData.Add(new[] { totalProductionItems, totalAllProductionItems });
+        //    }
+        //    return Json(monthlyCountData);
+        //}
+
         [HttpGet]
         public IActionResult GetChartData(int year)
         {
@@ -510,22 +537,34 @@ namespace WebApplication_StockDataFixx.Controllers
 
             string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
-            var monthlyCountData = new List<double[]>();
+            var slocList = _dbContext.ProductionItems
+                .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == 10 && item.AccessPlant == accessPlant)
+                .Select(item => item.Sloc)
+                .Distinct()
+                .ToList();
+
+            var monthlyCountData = new List<Dictionary<string, double>>();
 
             for (int month = 1; month <= 12; month++)
             {
-
-                double totalProductionItems = _dbContext.ProductionItems
-                    .Where(item =>item.LastUpload.Year == year && item.LastUpload.Month == month && item.AccessPlant == accessPlant)
-                    .Count();
-                double totalAllProductionItems = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
-                    .Count();
-
-                monthlyCountData.Add(new[] { totalProductionItems, totalAllProductionItems });
+                var monthlyCounts = new Dictionary<string, double>();
+                foreach (var sloc in slocList)
+                {
+                    double count = _dbContext.ProductionItems
+                        .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month && item.Sloc == sloc && item.AccessPlant == accessPlant)
+                        .Count();
+                    monthlyCounts[sloc] = count;
+                }
+                monthlyCountData.Add(monthlyCounts);
             }
+
             return Json(monthlyCountData);
         }
+
+
+
+
+
 
         [HttpGet]
         public IActionResult GetChart2Data(int year)

@@ -5,6 +5,12 @@
 
 
 <div class="container-fluid p-0">
+    <div class="d-flex justify-content-between">
+        <div class="card-title" style="margin-bottom: 20px; font-weight: 800;">
+            <h3>DASHBOARD STOCK TAKING</h3>
+        </div>
+        <div></div>
+    </div>
 @*<div class="container">
     <div class="row align-items-center justify-content-between mb-3">
         <div class="col">
@@ -549,55 +555,100 @@
 
 
     // Grafik Chart 2 Total Count Data
+    //var dataBar4 = {
+    //    labels: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
+    //    datasets: [
+    //        {
+    //            label: "PRODUCTION",
+    //            backgroundColor: "#4EA652",
+    //            data: [] // Data VMI akan diisi dari hasil controller
+    //        },
+    //        {
+    //            label: "PRODUCTION ALL PLANT",
+    //            backgroundColor: "rgba(0, 0, 0, 1)",
+    //            data: [] // Data VMI akan diisi dari hasil controller
+    //        }
+    //        //{
+    //        //    label: "PRODUCTION ALL",
+    //        //    type: "line",
+    //        //    borderColor: "rgba(0, 0, 0, 1)",
+    //        //    borderWidth: 1,
+    //        //    data: [] // Data Total ActualQty akan diisi dari hasil controller
+    //        //}
+    //    ]
+    //};
+
+    //// Opsi konfigurasi grafik
+    //var options = {
+    //    scales: {
+    //        x: {
+    //            beginAtZero: true
+    //        },
+    //        y: {
+    //            beginAtZero: true
+    //        }
+    //    }
+    //};
+
+    //// Ambil data dari controller
+    //$.get("/Management/GetChartDataProd?year=2023", function (data) {
+    //    // Mengisi data grafik dengan hasil dari controller
+    //    dataBar4.datasets[0].data = data.map(item => item[0]); 
+    //    dataBar4.datasets[1].data = data.map(item => item[1]); 
+
+    //    // Buat grafik dengan data yang telah diisi
+    //    var ctxBar4 = document.getElementById("grafik2Prod").getContext("2d");
+    //    var myChartBar4 = new Chart(ctxBar4, {
+    //        type: "bar",
+    //        data: dataBar4,
+    //        options: options
+    //    });
+    //});
+
+
     var dataBar4 = {
         labels: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
-        datasets: [
-            {
-                label: "PRODUCTION",
-                backgroundColor: "#4EA652",
-                data: [] // Data VMI akan diisi dari hasil controller
-            },
-            {
-                label: "PRODUCTION ALL PLANT",
-                backgroundColor: "rgba(0, 0, 0, 1)",
-                data: [] // Data VMI akan diisi dari hasil controller
-            }
-            //{
-            //    label: "PRODUCTION ALL",
-            //    type: "line",
-            //    borderColor: "rgba(0, 0, 0, 1)",
-            //    borderWidth: 1,
-            //    data: [] // Data Total ActualQty akan diisi dari hasil controller
-            //}
-        ]
+        datasets: []  // Modify the datasets array
     };
 
-    // Opsi konfigurasi grafik
-    var options = {
-        scales: {
-            x: {
-                beginAtZero: true
-            },
-            y: {
-                beginAtZero: true
-            }
+    // Update the chart data
+    $.get("/Production/GetChartDataProd?year=2023", function (data) {
+        var slocList = Object.keys(data[0]); // Get Sloc values from the first month's data
+
+        for (var i = 0; i < slocList.length; i++) {
+            var dataset = {
+                label: slocList[i],
+                backgroundColor: getRandomColor(),
+                data: data.map(item => item[slocList[i]])
+            };
+
+            dataBar4.datasets.push(dataset);
         }
-    };
 
-    // Ambil data dari controller
-    $.get("/Management/GetChartDataProd?year=2023", function (data) {
-        // Mengisi data grafik dengan hasil dari controller
-        dataBar4.datasets[0].data = data.map(item => item[0]); 
-        dataBar4.datasets[1].data = data.map(item => item[1]); 
-
-        // Buat grafik dengan data yang telah diisi
+        // Create the chart with updated data
         var ctxBar4 = document.getElementById("grafik2Prod").getContext("2d");
         var myChartBar4 = new Chart(ctxBar4, {
             type: "bar",
             data: dataBar4,
-            options: options
+            options: {
+                scales: {
+                    x: { stacked: true },
+                    y: { stacked: true }
+                }
+            }
         });
     });
+    function getRandomColor() {
+        var letters = "0123456789ABCDEF";
+        var color = "#";
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+
+
 
 
     function fetchChartData3Prod() {
