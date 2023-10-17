@@ -19,4 +19,7 @@ public partial class WarehouseItemLog
 
     [Column("LOG_TIME", TypeName = "datetime")]
     public DateTime LogTime { get; set; }
+
+    [Column("ISVMI")]
+    public string Isvmi { get; set; } = null!;
 }

@@ -292,7 +292,7 @@ namespace WebApplication_StockDataFixx.Controllers
 
                     foreach (var row in rows.Skip(1)) // Skip header row
                     {
-                        int actualQty;
+                        double actualQty;
                         var actualQtyCell = row.Cell(8);
                         if (actualQtyCell.TryGetValue(out actualQty))
                         {
@@ -510,15 +510,15 @@ namespace WebApplication_StockDataFixx.Controllers
 
             string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
-            var monthlyCountData = new List<int[]>();
+            var monthlyCountData = new List<double[]>();
 
             for (int month = 1; month <= 12; month++)
             {
 
-                int totalProductionItems = _dbContext.ProductionItems
+                double totalProductionItems = _dbContext.ProductionItems
                     .Where(item =>item.LastUpload.Year == year && item.LastUpload.Month == month && item.AccessPlant == accessPlant)
                     .Count();
-                int totalAllProductionItems = _dbContext.ProductionItems
+                double totalAllProductionItems = _dbContext.ProductionItems
                     .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
                     .Count();
 
@@ -537,15 +537,15 @@ namespace WebApplication_StockDataFixx.Controllers
 
             string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
-            var monthlyActualQtyData = new List<int[]>();
+            var monthlyActualQtyData = new List<double[]>();
 
             for (int month = 1; month <= 12; month++)
             {
-                int monthlyActualQty = _dbContext.ProductionItems
+                double monthlyActualQty = _dbContext.ProductionItems
                     .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month && item.AccessPlant == accessPlant)
                     .Sum(item => item.ActualQty);
 
-                int AllActualQty = _dbContext.ProductionItems
+                double AllActualQty = _dbContext.ProductionItems
                     .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
                     .Sum(item => item.ActualQty);
 
@@ -575,33 +575,33 @@ namespace WebApplication_StockDataFixx.Controllers
 
             try
             {
-                int totalKUnits = _dbContext.ProductionItems
+                double totalKUnits = _dbContext.ProductionItems
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "K" && item.AccessPlant == accessPlant)
                     .Count();
 
-                int totalPcsUnits = _dbContext.ProductionItems
+                double totalPcsUnits = _dbContext.ProductionItems
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "PC" && item.AccessPlant == accessPlant)
                     .Count();
 
-                int totalSetUnits = _dbContext.ProductionItems
+                double totalSetUnits = _dbContext.ProductionItems
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "SET" && item.AccessPlant == accessPlant)
                     .Count();
 
-                int totalGUnits = _dbContext.ProductionItems
+                double totalGUnits = _dbContext.ProductionItems
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "G" && item.AccessPlant == accessPlant)
                     .Count();
 
-                int totalKGUnits = _dbContext.ProductionItems
+                double totalKGUnits = _dbContext.ProductionItems
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "KG" && item.AccessPlant == accessPlant)
                     .Count();
 
-                int totalMUnits = _dbContext.ProductionItems
+                double totalMUnits = _dbContext.ProductionItems
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M" && item.AccessPlant == accessPlant)
                     .Count();
-                int totalMLUnits = _dbContext.ProductionItems
+                double totalMLUnits = _dbContext.ProductionItems
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ML" && item.AccessPlant == accessPlant)
                     .Count();
-                int totalROLLUnits = _dbContext.ProductionItems
+                double totalROLLUnits = _dbContext.ProductionItems
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ROLL" && item.AccessPlant == accessPlant)
                     .Count();
 

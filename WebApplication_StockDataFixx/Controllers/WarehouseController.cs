@@ -42,7 +42,7 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
        
-        // =============================================================================================== READ DATA =============================================================================================== //
+ // =============================================================================================== READ DATA =============================================================================================== //
         
         
         
@@ -251,6 +251,9 @@ namespace WebApplication_StockDataFixx.Controllers
 
             return data.OrderBy(w => w.SerialNo).ToList();
         }
+
+
+
         // ============================================================================================================================================================================================================ //
 
 
@@ -266,9 +269,7 @@ namespace WebApplication_StockDataFixx.Controllers
                 return RedirectToAction("UploadDataWarehouse");
             }
 
-            bool Isvmi = Request.Form["Storage_Type"] == "VMI";
-
-            List<TempWarehouseItem> uploadedData = ProcessExcelFile(file, Isvmi);
+            List<TempWarehouseItem> uploadedData = ProcessExcelFile(file);
 
             // Group uploaded data by Plant, Month, Sloc, and StockType
             var groupedData = uploadedData.GroupBy(item => new { item.Plant, item.Month, item.Sloc, item.StockType });
@@ -295,8 +296,8 @@ namespace WebApplication_StockDataFixx.Controllers
             return RedirectToAction("ReportTempWarehouse");
         }
 
-        // Main method for processing the uploaded Excel file based on the selected storage type
-        private List<TempWarehouseItem> ProcessExcelFile(IFormFile file, bool Isvmi)
+        // Main method for processing the uploaded Excel file based on its content
+        private List<TempWarehouseItem> ProcessExcelFile(IFormFile file)
         {
             List<TempWarehouseItem> uploadedData = new List<TempWarehouseItem>();
 
@@ -308,7 +309,10 @@ namespace WebApplication_StockDataFixx.Controllers
                     var worksheet = workbook.Worksheet(1); // Assuming data is in the first worksheet
                     var rows = worksheet.RowsUsed();
 
-                    if (Isvmi)
+                    // Check if the Excel file is VMI or Non-VMI based on column names
+                    bool isVMI = IsVMIExcelFile(worksheet);
+
+                    if (isVMI)
                     {
                         uploadedData = ProcessExcelFileVMI(rows);
                     }
@@ -321,6 +325,15 @@ namespace WebApplication_StockDataFixx.Controllers
             return uploadedData;
         }
 
+        // Check if the Excel file is VMI based on column names
+        private bool IsVMIExcelFile(IXLWorksheet worksheet)
+        {
+            var headerRow = worksheet.Row(1);
+            var columnNames = headerRow.Cells().Select(cell => cell.Value.ToString().Trim()).ToList();
+
+            return columnNames.Contains("VendorCode") && columnNames.Contains("VendorName") && columnNames.Contains("StockType");
+        }
+
 
         // Method for processing the uploaded Excel file StorageType VMI 
         private List<TempWarehouseItem> ProcessExcelFileVMI(IEnumerable<IXLRow> rows)
@@ -329,7 +342,7 @@ namespace WebApplication_StockDataFixx.Controllers
 
             foreach (var row in rows.Skip(1)) // Skip header row
             {
-                int actualQty;
+                double actualQty;
                 var actualQtyCell = row.Cell(11); // Corrected index for the Unrestr field
                 if (actualQtyCell.TryGetValue(out actualQty))
                 {
@@ -398,7 +411,7 @@ namespace WebApplication_StockDataFixx.Controllers
 
             foreach (var row in rows.Skip(1)) // Skip header row
             {
-                int actualQty;
+                double actualQty;
                 var actualQtyCell = row.Cell(8); // Corrected index for the Unrestr field
                 if (actualQtyCell.TryGetValue(out actualQty))
                 {
@@ -472,10 +485,12 @@ namespace WebApplication_StockDataFixx.Controllers
             return Json(new { saved = dataSaved });
         }
 
-        // =========================================================================================================================================================================================================== //
-
-
-
+        // =========================================================================================================================================================================================================== //
+        
+        
+        
+        
+        
         // ============================================================================================== DOWNLOAD DATA ============================================================================================== //
 
         // Method Download File Excel 
@@ -575,10 +590,11 @@ namespace WebApplication_StockDataFixx.Controllers
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFileName);
         }
 
-        // ========================================================================================================================================================================================================== //
+
+// ========================================================================================================================================================================================================== //
 
 
-        // ================================================================================================ CHART DATA =============================================================================================== //
+// ================================================================================================ CHART DATA =============================================================================================== //
 
         // method progress bar count data all but not acces plant 
     
@@ -595,13 +611,13 @@ namespace WebApplication_StockDataFixx.Controllers
                 return BadRequest("Selected month is not a valid integer.");
             }
 
-            int vmiCount = _dbContext.WarehouseItems
+            double vmiCount = _dbContext.WarehouseItems
                 .Count(item => item.Isvmi == "VMI" && item.LastUpload.Month == selectedMonthValue);
 
-            int nonVmiCount = _dbContext.WarehouseItems
+            double nonVmiCount = _dbContext.WarehouseItems
                 .Count(item => item.Isvmi == "NonVMI" && item.LastUpload.Month == selectedMonthValue);
 
-            int totalCount = vmiCount + nonVmiCount;
+            double totalCount = vmiCount + nonVmiCount;
 
             var monthlyCountProgressData = new[] { vmiCount, nonVmiCount, totalCount };
             
@@ -620,18 +636,18 @@ namespace WebApplication_StockDataFixx.Controllers
 
             string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
-            var monthlyCountData = new List<int[]>();
+            var monthlyCountData = new List<double[]>();
 
             for (int month = 1; month <= 12; month++)
             {
 
-                int vmiCount = _dbContext.WarehouseItems
+                double vmiCount = _dbContext.WarehouseItems
                     .Count(item => item.Isvmi == "VMI" && item.LastUpload.Year == year && item.LastUpload.Month == month && item.AccessPlant == accessPlant);
 
-                int nonVmiCount = _dbContext.WarehouseItems
+                double nonVmiCount = _dbContext.WarehouseItems
                     .Count(item => item.Isvmi == "NonVMI" && item.LastUpload.Year == year && item.LastUpload.Month == month && item.AccessPlant == accessPlant);
 
-                int totalCount = vmiCount + nonVmiCount;
+                double totalCount = vmiCount + nonVmiCount;
 
                 monthlyCountData.Add(new[] { vmiCount, nonVmiCount, totalCount });
             }
@@ -648,19 +664,19 @@ namespace WebApplication_StockDataFixx.Controllers
 
             string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
-            var monthlyData = new List<int[]>();
+            var monthlyData = new List<double[]>();
 
             for (int month = 1; month <= 12; month++)
             {
-                int vmiActualQty = _dbContext.WarehouseItems
+                double vmiActualQty = _dbContext.WarehouseItems
                     .Where(item => item.Isvmi == "VMI" && item.LastUpload.Year == year && item.LastUpload.Month == month && item.AccessPlant == accessPlant)
                     .Sum(item => item.ActualQty);
 
-                int nonVmiActualQty = _dbContext.WarehouseItems
+                double nonVmiActualQty = _dbContext.WarehouseItems
                     .Where(item => item.Isvmi == "NonVMI" && item.LastUpload.Year == year && item.LastUpload.Month == month && item.AccessPlant == accessPlant)
                     .Sum(item => item.ActualQty);
 
-                int totalActualQty = vmiActualQty + nonVmiActualQty;
+                double totalActualQty = vmiActualQty + nonVmiActualQty;
 
                 monthlyData.Add(new[] { vmiActualQty, nonVmiActualQty, totalActualQty });
             }
@@ -697,19 +713,19 @@ namespace WebApplication_StockDataFixx.Controllers
 
             try
             {
-                int totalKUnits = _dbContext.WarehouseItems
+                double totalKUnits = _dbContext.WarehouseItems
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "K" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
                     .Count();
 
-                int totalPcsUnits = _dbContext.WarehouseItems
+                double totalPcsUnits = _dbContext.WarehouseItems
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "PC" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
                     .Count();
 
-                int totalSetUnits = _dbContext.WarehouseItems
+                double totalSetUnits = _dbContext.WarehouseItems
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "SET" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
                     .Count();
 
-                int totalGUnits = _dbContext.WarehouseItems
+                double totalGUnits = _dbContext.WarehouseItems
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "G" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
                     .Count();
 
@@ -717,13 +733,13 @@ namespace WebApplication_StockDataFixx.Controllers
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "KG" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
                     .Count();
 
-                int totalMUnits = _dbContext.WarehouseItems
+                double totalMUnits = _dbContext.WarehouseItems
                     .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
                     .Count();
-                int totalMLUnits = _dbContext.WarehouseItems
+                double totalMLUnits = _dbContext.WarehouseItems
                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ML" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
                    .Count();
-                int totalROLLLUnits = _dbContext.WarehouseItems
+                double totalROLLLUnits = _dbContext.WarehouseItems
                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ROLL" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
                    .Count();
 

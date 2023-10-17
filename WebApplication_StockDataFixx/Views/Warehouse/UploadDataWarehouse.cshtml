@@ -79,13 +79,13 @@
                             <div class="col-md-6">
                             
                                 <div class="form-group">
-                                    <div class="storage">
+                                   @* <div class="storage">
                                         <h5>Pilih Tipe Storage : </h5><br />
                                         <input type="radio" id="radio1" name="Storage_Type" value="VMI" onclick="setStorageType('VMI')">
                                         <label for="radio1">VMI</label>
                                         <input type="radio" id="radio2" name="Storage_Type" value="NON-VMI" onclick="setStorageType('NonVMI')">
                                         <label for="radio2">NON-VMI</label>
-                                    </div>
+                                    </div>*@
                                 </div>
                             
                                 <input type="hidden" id="storageType" name="storageType" value="" />
@@ -282,10 +282,10 @@
         // Function lama
         function submitFormAndShowPopup() {
             const selectedStorageType = document.querySelector('input[name="Storage_Type"]:checked');
-            if (!selectedStorageType) {
-                showStorageTypeAlert();
-                return;
-            }
+            //if (!selectedStorageType) {
+            //    showStorageTypeAlert();
+            //    return;
+            //}
             document.getElementById("myForm").submit(); // Kirim form
             checkDataSaved(); // Panggil fungsi untuk cek data sudah disimpan dan tampilkan popup jika ya
         }

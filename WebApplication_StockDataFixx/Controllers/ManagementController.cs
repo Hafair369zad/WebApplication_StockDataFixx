@@ -180,6 +180,8 @@ namespace WebApplication_StockDataFixx.Controllers
             DateTime now = DateTime.Now;
             DateTime lastMonth = now.AddMonths(-1);
 
+            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
             IQueryable<WarehouseItem> data = _dbContext.WarehouseItems;
 
             if (!string.IsNullOrEmpty(isvmi))
@@ -197,6 +199,38 @@ namespace WebApplication_StockDataFixx.Controllers
                 data = data.Where(item => item.LastUpload.Month == selectedMonthDate.Month && item.LastUpload.Year == selectedMonthDate.Year);
             }
 
+            if (accessPlant == "VIEW-RIFO")
+            {
+                // Tampilkan semua data dengan accessPlant WRH-RIFR, WRH-RIFA, WRH-RIFC, WRH-RIFL, WRH-RIFW
+                data = data.Where(item => item.AccessPlant == "WRH-RIFA" || item.AccessPlant == "WRH-RIFC" || item.AccessPlant == "WRH-RIFL" || item.AccessPlant == "WRH-RIFR" || item.AccessPlant == "WRH-RIFW");
+            }
+            else if (accessPlant == "VIEW-RIFA")
+            {
+                // Tampilkan hanya data dengan accessPlant WRH-RIFW
+                data = data.Where(item => item.AccessPlant == "WRH-RIFA");
+            }
+            else if (accessPlant == "VIEW-RIFC")
+            {
+                // Tampilkan hanya data dengan accessPlant WRH-RIFW
+                data = data.Where(item => item.AccessPlant == "WRH-RIFC");
+            }
+            else if (accessPlant == "VIEW-RIFL")
+            {
+                // Tampilkan hanya data dengan accessPlant WRH-RIFW
+                data = data.Where(item => item.AccessPlant == "WRH-RIFL");
+            }
+            else if (accessPlant == "VIEW-RIFR")
+            {
+                // Tampilkan hanya data dengan accessPlant WRH-RIFW
+                data = data.Where(item => item.AccessPlant == "WRH-RIFR");
+            }
+            else if (accessPlant == "VIEW-RIFW")
+            {
+                // Tampilkan hanya data dengan accessPlant WRH-RIFW
+                data = data.Where(item => item.AccessPlant == "WRH-RIFW");
+            }
+            // Tambahkan kondisi lain sesuai dengan nilai accessPlant lainnya di sini.
+
             return data.OrderBy(w => w.SerialNo).ToList();
         }
 
@@ -206,6 +240,8 @@ namespace WebApplication_StockDataFixx.Controllers
         {
             DateTime now = DateTime.Now;
             DateTime lastMonth = now.AddMonths(-1);
+
+            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
             IQueryable<ProductionItem> data = _dbContext.ProductionItems;
 
@@ -217,6 +253,37 @@ namespace WebApplication_StockDataFixx.Controllers
             {
                 DateTime selectedMonthDate = DateTime.ParseExact(selectedMonth, "yyyy-MM", CultureInfo.InvariantCulture);
                 data = data.Where(item => item.LastUpload.Month == selectedMonthDate.Month && item.LastUpload.Year == selectedMonthDate.Year);
+            }
+
+            if (accessPlant == "VIEW-RIFO")
+            {
+                // Tampilkan semua data dengan accessPlant WRH-RIFR, WRH-RIFA, WRH-RIFC, WRH-RIFL, WRH-RIFW
+                data = data.Where(item => item.AccessPlant == "PROD-RIFA" || item.AccessPlant == "PROD-RIFC" || item.AccessPlant == "PROD-RIFL" || item.AccessPlant == "PROD-RIFR" || item.AccessPlant == "PROD-RIFW");
+            }
+            else if (accessPlant == "VIEW-RIFA")
+            {
+                // Tampilkan hanya data dengan accessPlant WRH-RIFW
+                data = data.Where(item => item.AccessPlant == "PROD-RIFA");
+            }
+            else if (accessPlant == "VIEW-RIFC")
+            {
+                // Tampilkan hanya data dengan accessPlant WRH-RIFW
+                data = data.Where(item => item.AccessPlant == "PROD-RIFC");
+            }
+            else if (accessPlant == "VIEW-RIFL")
+            {
+                // Tampilkan hanya data dengan accessPlant WRH-RIFW
+                data = data.Where(item => item.AccessPlant == "PROD-RIFL");
+            }
+            else if (accessPlant == "VIEW-RIFR")
+            {
+                // Tampilkan hanya data dengan accessPlant WRH-RIFW
+                data = data.Where(item => item.AccessPlant == "PROD-RIFR");
+            }
+            else if (accessPlant == "VIEW-RIFW")
+            {
+                // Tampilkan hanya data dengan accessPlant WRH-RIFW
+                data = data.Where(item => item.AccessPlant == "PROD-RIFW");
             }
 
             return data.OrderBy(w => w.SerialNo).ToList();
@@ -427,6 +494,32 @@ namespace WebApplication_StockDataFixx.Controllers
         // ================================================================================================ CHART DATA WAREHOUSE ======================================================================================== //
 
         // Count Data (grafik2Wrh)
+        //[HttpGet]
+        //public IActionResult GetChartDataWrh(int year)
+        //{
+        //    if (year <= 0)
+        //    {
+        //        return BadRequest("Invalid year.");
+        //    }
+
+        //    var monthlyCountData = new List<double[]>();
+
+        //    for (int month = 1; month <= 12; month++)
+        //    {
+
+        //        double vmiCount = _dbContext.WarehouseItems
+        //            .Count(item => item.Isvmi == "VMI" && item.LastUpload.Year == year && item.LastUpload.Month == month);
+
+        //        double nonVmiCount = _dbContext.WarehouseItems
+        //            .Count(item => item.Isvmi == "NonVMI" && item.LastUpload.Year == year && item.LastUpload.Month == month);
+
+        //        double totalCount = vmiCount + nonVmiCount;
+
+        //        monthlyCountData.Add(new[] { vmiCount, nonVmiCount, totalCount });
+        //    }
+        //    return Json(monthlyCountData);
+        //}
+
         [HttpGet]
         public IActionResult GetChartDataWrh(int year)
         {
@@ -435,26 +528,90 @@ namespace WebApplication_StockDataFixx.Controllers
                 return BadRequest("Invalid year.");
             }
 
-            var monthlyCountData = new List<int[]>();
+            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
+            var monthlyCountData = new List<double[]>();
 
             for (int month = 1; month <= 12; month++)
             {
+                IQueryable<WarehouseItem> data = _dbContext.WarehouseItems
+                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month);
 
-                int vmiCount = _dbContext.WarehouseItems
-                    .Count(item => item.Isvmi == "VMI" && item.LastUpload.Year == year && item.LastUpload.Month == month);
+                if (!string.IsNullOrEmpty(accessPlant))
+                {
+                    if (accessPlant == "VIEW-RIFO")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFR, WRH-RIFA, WRH-RIFC, WRH-RIFL, WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFA" || item.AccessPlant == "WRH-RIFC" || item.AccessPlant == "WRH-RIFL" || item.AccessPlant == "WRH-RIFR" || item.AccessPlant == "WRH-RIFW");
+                    }
+                    else if (accessPlant == "VIEW-RIFA")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFA");
+                    }
+                    else if (accessPlant == "VIEW-RIFC")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFC");
+                    }
+                    else if (accessPlant == "VIEW-RIFL")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFL");
+                    }
+                    else if (accessPlant == "VIEW-RIFR")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFR");
+                    }
+                    else if (accessPlant == "VIEW-RIFW")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFW");
+                    }
+                }
 
-                int nonVmiCount = _dbContext.WarehouseItems
-                    .Count(item => item.Isvmi == "NonVMI" && item.LastUpload.Year == year && item.LastUpload.Month == month);
-
-                int totalCount = vmiCount + nonVmiCount;
+                double vmiCount = data.Count(item => item.Isvmi == "VMI");
+                double nonVmiCount = data.Count(item => item.Isvmi == "NonVMI");
+                double totalCount = vmiCount + nonVmiCount;
 
                 monthlyCountData.Add(new[] { vmiCount, nonVmiCount, totalCount });
             }
+
             return Json(monthlyCountData);
         }
 
 
+
         // Actual Qty Data (grafik1Wrh)
+        //[HttpGet]
+        //public IActionResult GetChart2DataWrh(int year)
+        //{
+        //    if (year <= 0)
+        //    {
+        //        return BadRequest("Invalid year.");
+        //    }
+
+        //    var monthlyData = new List<double[]>();
+
+        //    for (int month = 1; month <= 12; month++)
+        //    {
+        //        double vmiActualQty = _dbContext.WarehouseItems
+        //            .Where(item => item.Isvmi == "VMI" && item.LastUpload.Year == year && item.LastUpload.Month == month)
+        //            .Sum(item => item.ActualQty);
+
+        //        double nonVmiActualQty = _dbContext.WarehouseItems
+        //            .Where(item => item.Isvmi == "NonVMI" && item.LastUpload.Year == year && item.LastUpload.Month == month)
+        //            .Sum(item => item.ActualQty);
+
+        //        double totalActualQty = vmiActualQty + nonVmiActualQty;
+
+        //        monthlyData.Add(new[] { vmiActualQty, nonVmiActualQty, totalActualQty });
+        //    }
+
+        //    return Json(monthlyData);
+        //}
+
         [HttpGet]
         public IActionResult GetChart2DataWrh(int year)
         {
@@ -463,19 +620,52 @@ namespace WebApplication_StockDataFixx.Controllers
                 return BadRequest("Invalid year.");
             }
 
-            var monthlyData = new List<int[]>();
+            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
+            var monthlyData = new List<double[]>();
 
             for (int month = 1; month <= 12; month++)
             {
-                int vmiActualQty = _dbContext.WarehouseItems
-                    .Where(item => item.Isvmi == "VMI" && item.LastUpload.Year == year && item.LastUpload.Month == month)
-                    .Sum(item => item.ActualQty);
+                IQueryable<WarehouseItem> data = _dbContext.WarehouseItems
+                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month);
 
-                int nonVmiActualQty = _dbContext.WarehouseItems
-                    .Where(item => item.Isvmi == "NonVMI" && item.LastUpload.Year == year && item.LastUpload.Month == month)
-                    .Sum(item => item.ActualQty);
+                if (!string.IsNullOrEmpty(accessPlant))
+                {
+                    if (accessPlant == "VIEW-RIFO")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFR, WRH-RIFA, WRH-RIFC, WRH-RIFL, WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFA" || item.AccessPlant == "WRH-RIFC" || item.AccessPlant == "WRH-RIFL" || item.AccessPlant == "WRH-RIFR" || item.AccessPlant == "WRH-RIFW");
+                    }
+                    else if (accessPlant == "VIEW-RIFA")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFA");
+                    }
+                    else if (accessPlant == "VIEW-RIFC")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFC");
+                    }
+                    else if (accessPlant == "VIEW-RIFL")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFL");
+                    }
+                    else if (accessPlant == "VIEW-RIFR")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFR");
+                    }
+                    else if (accessPlant == "VIEW-RIFW")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFW");
+                    }
+                }
 
-                int totalActualQty = vmiActualQty + nonVmiActualQty;
+                double vmiActualQty = data.Where(item => item.Isvmi == "VMI").Sum(item => item.ActualQty);
+                double nonVmiActualQty = data.Where(item => item.Isvmi == "NonVMI").Sum(item => item.ActualQty);
+                double totalActualQty = vmiActualQty + nonVmiActualQty;
 
                 monthlyData.Add(new[] { vmiActualQty, nonVmiActualQty, totalActualQty });
             }
@@ -483,6 +673,73 @@ namespace WebApplication_StockDataFixx.Controllers
             return Json(monthlyData);
         }
 
+
+
+        //[HttpGet]
+        //public IActionResult GetChart3DataWrh(string selectedMonth)
+        //{
+        //    return GetChartDataForUnitTypeWrh(selectedMonth, "VMI");
+        //}
+
+        //[HttpGet]
+        //public IActionResult GetChart4DataWrh(string selectedMonth)
+        //{
+        //    return GetChartDataForUnitTypeWrh(selectedMonth, "NonVMI");
+        //}
+
+        //private IActionResult GetChartDataForUnitTypeWrh(string selectedMonth, string isvmiType)
+        //{
+        //    if (string.IsNullOrEmpty(selectedMonth))
+        //    {
+        //        return BadRequest("Selected month is missing or invalid.");
+        //    }
+
+        //    if (!int.TryParse(selectedMonth, out int selectedMonthValue))
+        //    {
+        //        return BadRequest("Selected month is not a valid integer.");
+        //    }
+
+        //    try
+        //    {
+        //        double totalKUnits = _dbContext.WarehouseItems
+        //            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "K" && item.Isvmi == isvmiType)
+        //            .Count();
+
+        //        double totalPcsUnits = _dbContext.WarehouseItems
+        //            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "PC" && item.Isvmi == isvmiType)
+        //            .Count();
+
+        //        double totalSetUnits = _dbContext.WarehouseItems
+        //            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "SET" && item.Isvmi == isvmiType)
+        //            .Count();
+
+        //        double totalGUnits = _dbContext.WarehouseItems
+        //            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "G" && item.Isvmi == isvmiType)
+        //            .Count();
+
+        //        double totalKGUnits = _dbContext.WarehouseItems
+        //            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "KG" && item.Isvmi == isvmiType)
+        //            .Count();
+
+        //        double totalMUnits = _dbContext.WarehouseItems
+        //            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M" && item.Isvmi == isvmiType)
+        //            .Count();
+        //        double totalMLUnits = _dbContext.WarehouseItems
+        //           .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ML" && item.Isvmi == isvmiType)
+        //           .Count();
+        //        double totalROLLUnits = _dbContext.WarehouseItems
+        //           .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ROLL" && item.Isvmi == isvmiType)
+        //           .Count();
+
+        //        var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits, totalMLUnits, totalROLLUnits };
+
+        //        return Json(chartData);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while fetching chart data.");
+        //    }
+        //}
 
         [HttpGet]
         public IActionResult GetChart3DataWrh(string selectedMonth)
@@ -508,37 +765,55 @@ namespace WebApplication_StockDataFixx.Controllers
                 return BadRequest("Selected month is not a valid integer.");
             }
 
+            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
             try
             {
-                int totalKUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "K" && item.Isvmi == isvmiType)
-                    .Count();
+                IQueryable<WarehouseItem> data = _dbContext.WarehouseItems
+                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Isvmi == isvmiType);
 
-                int totalPcsUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "PC" && item.Isvmi == isvmiType)
-                    .Count();
+                if (!string.IsNullOrEmpty(accessPlant))
+                {
+                    if (accessPlant == "VIEW-RIFO")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFR, WRH-RIFA, WRH-RIFC, WRH-RIFL, WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFA" || item.AccessPlant == "WRH-RIFC" || item.AccessPlant == "WRH-RIFL" || item.AccessPlant == "WRH-RIFR" || item.AccessPlant == "WRH-RIFW");
+                    }
+                    else if (accessPlant == "VIEW-RIFA")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFA");
+                    }
+                    else if (accessPlant == "VIEW-RIFC")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFC");
+                    }
+                    else if (accessPlant == "VIEW-RIFL")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFL");
+                    }
+                    else if (accessPlant == "VIEW-RIFR")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFR");
+                    }
+                    else if (accessPlant == "VIEW-RIFW")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "WRH-RIFW");
+                    }
+                }
 
-                int totalSetUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "SET" && item.Isvmi == isvmiType)
-                    .Count();
-
-                int totalGUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "G" && item.Isvmi == isvmiType)
-                    .Count();
-
-                int totalKGUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "KG" && item.Isvmi == isvmiType)
-                    .Count();
-
-                int totalMUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M" && item.Isvmi == isvmiType)
-                    .Count();
-                int totalMLUnits = _dbContext.WarehouseItems
-                   .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ML" && item.Isvmi == isvmiType)
-                   .Count();
-                int totalROLLUnits = _dbContext.WarehouseItems
-                   .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ROLL" && item.Isvmi == isvmiType)
-                   .Count();
+                double totalKUnits = data.Count(item => item.Unit == "K");
+                double totalPcsUnits = data.Count(item => item.Unit == "PC");
+                double totalSetUnits = data.Count(item => item.Unit == "SET");
+                double totalGUnits = data.Count(item => item.Unit == "G");
+                double totalKGUnits = data.Count(item => item.Unit == "KG");
+                double totalMUnits = data.Count(item => item.Unit == "M");
+                double totalMLUnits = data.Count(item => item.Unit == "ML");
+                double totalROLLUnits = data.Count(item => item.Unit == "ROLL");
 
                 var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits, totalMLUnits, totalROLLUnits };
 
@@ -550,12 +825,40 @@ namespace WebApplication_StockDataFixx.Controllers
             }
         }
 
+
         // ============================================================================================================================================================================================================== //
 
 
         // =============================================================================================== CHART DATA PRODUCTION ======================================================================================== //
 
         // total count data (grafik2Prod)
+        //[HttpGet]
+        //public IActionResult GetChartDataProd(int year)
+        //{
+        //    if (year <= 0)
+        //    {
+        //        return BadRequest("Invalid year.");
+        //    }
+
+        //    string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
+        //    var monthlyCountData = new List<double[]>();
+
+        //    for (int month = 1; month <= 12; month++)
+        //    {
+
+        //        double totalProductionItems = _dbContext.ProductionItems
+        //            .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
+        //            .Count();
+        //        double totalAllProductionItems = _dbContext.ProductionItems
+        //            .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
+        //            .Count();
+
+        //        monthlyCountData.Add(new[] { totalProductionItems, totalAllProductionItems });
+        //    }
+        //    return Json(monthlyCountData);
+        //}
+
         [HttpGet]
         public IActionResult GetChartDataProd(int year)
         {
@@ -566,17 +869,50 @@ namespace WebApplication_StockDataFixx.Controllers
 
             string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
-            var monthlyCountData = new List<int[]>();
+            var monthlyCountData = new List<double[]>();
 
             for (int month = 1; month <= 12; month++)
             {
+                IQueryable<ProductionItem> data = _dbContext.ProductionItems
+                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month);
 
-                int totalProductionItems = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
-                    .Count();
-                int totalAllProductionItems = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
-                    .Count();
+                if (!string.IsNullOrEmpty(accessPlant))
+                {
+                    if (accessPlant == "VIEW-RIFO")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFR, WRH-RIFA, WRH-RIFC, WRH-RIFL, WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFA" || item.AccessPlant == "PROD-RIFC" || item.AccessPlant == "PROD-RIFL" || item.AccessPlant == "PROD-RIFR" || item.AccessPlant == "PROD-RIFW");
+                    }
+                    else if (accessPlant == "VIEW-RIFA")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFA");
+                    }
+                    else if (accessPlant == "VIEW-RIFC")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFC");
+                    }
+                    else if (accessPlant == "VIEW-RIFL")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFL");
+                    }
+                    else if (accessPlant == "VIEW-RIFR")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFR");
+                    }
+                    else if (accessPlant == "VIEW-RIFW")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFW");
+                    }
+                }
+
+                double totalProductionItems = data.Count();
+                double totalAllProductionItems = _dbContext.ProductionItems
+                    .Count(item => item.LastUpload.Year == year && item.LastUpload.Month == month);
 
                 monthlyCountData.Add(new[] { totalProductionItems, totalAllProductionItems });
             }
@@ -586,6 +922,34 @@ namespace WebApplication_StockDataFixx.Controllers
 
 
         // total Actual Qty data (grafik1Prod)
+        //[HttpGet]
+        //public IActionResult GetChart2DataProd(int year)
+        //{
+        //    if (year <= 0)
+        //    {
+        //        return BadRequest("Invalid year.");
+        //    }
+
+        //    var monthlyActualQtyData = new List<double[]>();
+
+        //    for (int month = 1; month <= 12; month++)
+        //    {
+        //        double monthlyActualQty = _dbContext.ProductionItems
+        //            .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
+        //            .Sum(item => item.ActualQty);
+
+        //        double AllActualQty = _dbContext.ProductionItems
+        //            .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
+        //            .Sum(item => item.ActualQty);
+
+        //        monthlyActualQtyData.Add(new[] { monthlyActualQty, AllActualQty });
+        //    }
+
+        //    return Json(monthlyActualQtyData);
+
+        //}
+
+
         [HttpGet]
         public IActionResult GetChart2DataProd(int year)
         {
@@ -594,15 +958,51 @@ namespace WebApplication_StockDataFixx.Controllers
                 return BadRequest("Invalid year.");
             }
 
-            var monthlyActualQtyData = new List<int[]>();
+            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
+            var monthlyActualQtyData = new List<double[]>();
 
             for (int month = 1; month <= 12; month++)
             {
-                int monthlyActualQty = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
-                    .Sum(item => item.ActualQty);
+                IQueryable<ProductionItem> data = _dbContext.ProductionItems
+                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month);
 
-                int AllActualQty = _dbContext.ProductionItems
+                if (!string.IsNullOrEmpty(accessPlant))
+                {
+                    if (accessPlant == "VIEW-RIFO")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFR, WRH-RIFA, WRH-RIFC, WRH-RIFL, WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFA" || item.AccessPlant == "PROD-RIFC" || item.AccessPlant == "PROD-RIFL" || item.AccessPlant == "PROD-RIFR" || item.AccessPlant == "PROD-RIFW");
+                    }
+                    else if (accessPlant == "VIEW-RIFA")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFA");
+                    }
+                    else if (accessPlant == "VIEW-RIFC")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFC");
+                    }
+                    else if (accessPlant == "VIEW-RIFL")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFL");
+                    }
+                    else if (accessPlant == "VIEW-RIFR")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFR");
+                    }
+                    else if (accessPlant == "VIEW-RIFW")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFW");
+                    }
+                }
+
+                double monthlyActualQty = data.Sum(item => item.ActualQty);
+                double AllActualQty = _dbContext.ProductionItems
                     .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
                     .Sum(item => item.ActualQty);
 
@@ -610,11 +1010,67 @@ namespace WebApplication_StockDataFixx.Controllers
             }
 
             return Json(monthlyActualQtyData);
-
         }
 
 
 
+        // Chart Data Per UoM
+        //[HttpGet]
+        //public IActionResult GetChart3DataProd(string selectedMonth)
+        //{
+        //    if (string.IsNullOrEmpty(selectedMonth))
+        //    {
+        //        return BadRequest("Selected month is missing or invalid.");
+        //    }
+
+        //    if (!int.TryParse(selectedMonth, out int selectedMonthValue))
+        //    {
+        //        return BadRequest("Selected month is not a valid integer.");
+        //    }
+
+        //    try
+        //    {
+        //        double totalKUnits = _dbContext.ProductionItems
+        //            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "K")
+        //            .Count();
+
+        //        double totalPcsUnits = _dbContext.ProductionItems
+        //            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "PC")
+        //            .Count();
+
+        //        double totalSetUnits = _dbContext.ProductionItems
+        //            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "SET")
+        //            .Count();
+
+        //        double totalGUnits = _dbContext.ProductionItems
+        //            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "G")
+        //            .Count();
+
+        //        double totalKGUnits = _dbContext.ProductionItems
+        //            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "KG")
+        //            .Count();
+
+        //        double totalMUnits = _dbContext.ProductionItems
+        //            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M")
+        //            .Count();
+
+        //        double totalMLUnits = _dbContext.ProductionItems
+        //           .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ML")
+        //           .Count();
+
+        //        double totalROLLUnits = _dbContext.ProductionItems
+        //           .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ROLL")
+        //           .Count();
+
+        //        var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits, totalMLUnits, totalROLLUnits };
+
+        //        return Json(chartData);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while fetching chart data.");
+        //    }
+        //}
 
         [HttpGet]
         public IActionResult GetChart3DataProd(string selectedMonth)
@@ -629,39 +1085,55 @@ namespace WebApplication_StockDataFixx.Controllers
                 return BadRequest("Selected month is not a valid integer.");
             }
 
+            string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
             try
             {
-                int totalKUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "K")
-                    .Count();
+                IQueryable<ProductionItem> data = _dbContext.ProductionItems
+                    .Where(item => item.LastUpload.Month == selectedMonthValue);
 
-                int totalPcsUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "PC")
-                    .Count();
+                if (!string.IsNullOrEmpty(accessPlant))
+                {
+                    if (accessPlant == "VIEW-RIFO")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFR, WRH-RIFA, WRH-RIFC, WRH-RIFL, WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFA" || item.AccessPlant == "PROD-RIFC" || item.AccessPlant == "PROD-RIFL" || item.AccessPlant == "PROD-RIFR" || item.AccessPlant == "PROD-RIFW");
+                    }
+                    else if (accessPlant == "VIEW-RIFA")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFA");
+                    }
+                    else if (accessPlant == "VIEW-RIFC")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFC");
+                    }
+                    else if (accessPlant == "VIEW-RIFL")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFL");
+                    }
+                    else if (accessPlant == "VIEW-RIFR")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFR");
+                    }
+                    else if (accessPlant == "VIEW-RIFW")
+                    {
+                        // Tampilkan data dengan accessPlant WRH-RIFW
+                        data = data.Where(item => item.AccessPlant == "PROD-RIFW");
+                    }
+                }
 
-                int totalSetUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "SET")
-                    .Count();
-
-                int totalGUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "G")
-                    .Count();
-
-                int totalKGUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "KG")
-                    .Count();
-
-                int totalMUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M")
-                    .Count();
-
-                int totalMLUnits = _dbContext.ProductionItems
-                   .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ML")
-                   .Count();
-
-                int totalROLLUnits = _dbContext.ProductionItems
-                   .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ROLL")
-                   .Count();
+                double totalKUnits = data.Count(item => item.Unit == "K");
+                double totalPcsUnits = data.Count(item => item.Unit == "PC");
+                double totalSetUnits = data.Count(item => item.Unit == "SET");
+                double totalGUnits = data.Count(item => item.Unit == "G");
+                double totalKGUnits = data.Count(item => item.Unit == "KG");
+                double totalMUnits = data.Count(item => item.Unit == "M");
+                double totalMLUnits = data.Count(item => item.Unit == "ML");
+                double totalROLLUnits = data.Count(item => item.Unit == "ROLL");
 
                 var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits, totalMLUnits, totalROLLUnits };
 
@@ -672,6 +1144,7 @@ namespace WebApplication_StockDataFixx.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while fetching chart data.");
             }
         }
+
 
         // ============================================================================================================================================================================================================== //
 

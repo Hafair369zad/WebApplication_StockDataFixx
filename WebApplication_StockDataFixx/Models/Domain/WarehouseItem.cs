@@ -45,7 +45,7 @@ public partial class WarehouseItem
     public string MaterialDesc { get; set; } = null!;
 
     [Column("ACTUAL_QTY")]
-    public int ActualQty { get; set; }
+    public double ActualQty { get; set; }
 
     [Column("QUAL_INSP")]
     public string QualInsp { get; set; } = null!;
