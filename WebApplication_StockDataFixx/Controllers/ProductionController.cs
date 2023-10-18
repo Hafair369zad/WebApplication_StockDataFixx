@@ -60,7 +60,7 @@ namespace WebApplication_StockDataFixx.Controllers
             // Retrieve the AccessPlant value from the session
             string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
-            if (selectedMonth == "Latest Update" || string.IsNullOrWhiteSpace(selectedMonth))
+            if (selectedMonth == "Latest Uploaded Month" || string.IsNullOrWhiteSpace(selectedMonth))
             {
                 // If "Latest Update" or no month selected, fetch data from the database without month filter
                 uploadedDataList = GetDataFromDatabase(accessPlant);
@@ -106,7 +106,7 @@ namespace WebApplication_StockDataFixx.Controllers
         // Method get data from database by per Month
         private List<ProductionItem> GetDataFromDatabaseByMonth(string selectedMonth, string accessPlant)
         {
-            if (selectedMonth == "Latest Update" || string.IsNullOrWhiteSpace(selectedMonth))
+            if (selectedMonth == "Latest Uploaded Month" || string.IsNullOrWhiteSpace(selectedMonth))
             {
                 return GetDataFromDatabase(accessPlant);
             }
@@ -156,7 +156,7 @@ namespace WebApplication_StockDataFixx.Controllers
             // Retrieve the AccessPlant value from the session
             string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
-            if (selectedMonth == "Latest Update" || string.IsNullOrWhiteSpace(selectedMonth))
+            if (selectedMonth == "Latest Uploaded Month" || string.IsNullOrWhiteSpace(selectedMonth))
             {
                 // If "Latest Update" or no month selected, fetch data from the database without month filter
                 uploadedDataList = GetDataFromDatabaseTemp(accessPlant);
@@ -202,7 +202,7 @@ namespace WebApplication_StockDataFixx.Controllers
         // Method get data from database by per Month
         private List<TempProductionItem> GetDataFromDatabaseByMonthTemp(string selectedMonth, string accessPlant)
         {
-            if (selectedMonth == "Latest Update" || string.IsNullOrWhiteSpace(selectedMonth))
+            if (selectedMonth == "Latest Uploaded Month" || string.IsNullOrWhiteSpace(selectedMonth))
             {
                 return GetDataFromDatabaseTemp(accessPlant);
             }
@@ -538,7 +538,7 @@ namespace WebApplication_StockDataFixx.Controllers
             string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
             var slocList = _dbContext.ProductionItems
-                .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == 10 && item.AccessPlant == accessPlant)
+                .Where(item => item.LastUpload.Year == year && item.AccessPlant == accessPlant)
                 .Select(item => item.Sloc)
                 .Distinct()
                 .ToList();

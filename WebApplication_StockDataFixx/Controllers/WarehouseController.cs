@@ -60,7 +60,7 @@ namespace WebApplication_StockDataFixx.Controllers
             {
                 data = GetDataFromDatabase(serialNo, Isvmi: true, accessPlant);
             }
-            else if (selectedType == "NON_VMI")
+            else if (selectedType == "NON VMI")
             {
                 data = GetDataFromDatabase(serialNo, Isvmi: false, accessPlant);
             }
@@ -79,7 +79,7 @@ namespace WebApplication_StockDataFixx.Controllers
             if (data.Any())
             {
                 // Jika selectedMonth tidak ada atau kosong, ambil data terbaru seperti di ReportProduction
-                if (string.IsNullOrEmpty(selectedMonth) || selectedMonth == "Latest Update")
+                if (string.IsNullOrEmpty(selectedMonth) || selectedMonth == "Latest Uploaded Month")
                 {
                     // Filter data based on the latest upload month and year
                     var latestUploadDate = data.Max(item => item.LastUpload.Date);
@@ -126,7 +126,7 @@ namespace WebApplication_StockDataFixx.Controllers
             {
                 data = GetDataFromDatabaseTemp(serialNo, Isvmi: true, accessPlant);
             }
-            else if (selectedType == "NON_VMI")
+            else if (selectedType == "NON VMI")
             {
                 data = GetDataFromDatabaseTemp(serialNo, Isvmi: false, accessPlant);
             }
@@ -145,7 +145,7 @@ namespace WebApplication_StockDataFixx.Controllers
             if (data.Any())
             {
                 // Jika selectedMonth tidak ada atau kosong, ambil data terbaru seperti di ReportProduction
-                if (string.IsNullOrEmpty(selectedMonth) || selectedMonth == "Latest Update")
+                if (string.IsNullOrEmpty(selectedMonth) || selectedMonth == "Latest Uploaded Month")
                 {
                     // Filter data based on the latest upload month and year
                     var latestUploadDate = data.Max(item => item.LastUpload.Date);

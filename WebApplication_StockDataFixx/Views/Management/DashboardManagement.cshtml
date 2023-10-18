@@ -373,7 +373,7 @@
     // Warehouse
     // Grafik Chart 1 Total Actual Qty
     var dataBar = {
-        labels: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
+        labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         datasets: [
             {
                 label: "VMI",
@@ -426,7 +426,7 @@
 
     // Grafik Chart 2 Total Count Data
     var dataBar2 = {
-        labels: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
+        labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         datasets: [
             {
                 label: "VMI",
@@ -504,7 +504,7 @@
     // Production
 
     var dataBar3 = {
-        labels: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
+        labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         datasets: [
             {
                 label: "PRODUCTION",
@@ -555,97 +555,55 @@
 
 
     // Grafik Chart 2 Total Count Data
-    //var dataBar4 = {
-    //    labels: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
-    //    datasets: [
-    //        {
-    //            label: "PRODUCTION",
-    //            backgroundColor: "#4EA652",
-    //            data: [] // Data VMI akan diisi dari hasil controller
-    //        },
-    //        {
-    //            label: "PRODUCTION ALL PLANT",
-    //            backgroundColor: "rgba(0, 0, 0, 1)",
-    //            data: [] // Data VMI akan diisi dari hasil controller
-    //        }
-    //        //{
-    //        //    label: "PRODUCTION ALL",
-    //        //    type: "line",
-    //        //    borderColor: "rgba(0, 0, 0, 1)",
-    //        //    borderWidth: 1,
-    //        //    data: [] // Data Total ActualQty akan diisi dari hasil controller
-    //        //}
-    //    ]
-    //};
-
-    //// Opsi konfigurasi grafik
-    //var options = {
-    //    scales: {
-    //        x: {
-    //            beginAtZero: true
-    //        },
-    //        y: {
-    //            beginAtZero: true
-    //        }
-    //    }
-    //};
-
-    //// Ambil data dari controller
-    //$.get("/Management/GetChartDataProd?year=2023", function (data) {
-    //    // Mengisi data grafik dengan hasil dari controller
-    //    dataBar4.datasets[0].data = data.map(item => item[0]); 
-    //    dataBar4.datasets[1].data = data.map(item => item[1]); 
-
-    //    // Buat grafik dengan data yang telah diisi
-    //    var ctxBar4 = document.getElementById("grafik2Prod").getContext("2d");
-    //    var myChartBar4 = new Chart(ctxBar4, {
-    //        type: "bar",
-    //        data: dataBar4,
-    //        options: options
-    //    });
-    //});
-
-
     var dataBar4 = {
-        labels: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
-        datasets: []  // Modify the datasets array
+        labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        datasets: [
+            {
+                label: "PRODUCTION",
+                backgroundColor: "#4EA652",
+                data: [] // Data VMI akan diisi dari hasil controller
+            },
+            {
+                label: "PRODUCTION ALL PLANT",
+                backgroundColor: "rgba(0, 0, 0, 1)",
+                data: [] // Data VMI akan diisi dari hasil controller
+            }
+            //{
+            //    label: "PRODUCTION ALL",
+            //    type: "line",
+            //    borderColor: "rgba(0, 0, 0, 1)",
+            //    borderWidth: 1,
+            //    data: [] // Data Total ActualQty akan diisi dari hasil controller
+            //}
+        ]
     };
 
-    // Update the chart data
-    $.get("/Production/GetChartDataProd?year=2023", function (data) {
-        var slocList = Object.keys(data[0]); // Get Sloc values from the first month's data
-
-        for (var i = 0; i < slocList.length; i++) {
-            var dataset = {
-                label: slocList[i],
-                backgroundColor: getRandomColor(),
-                data: data.map(item => item[slocList[i]])
-            };
-
-            dataBar4.datasets.push(dataset);
+    // Opsi konfigurasi grafik
+    var options = {
+        scales: {
+            x: {
+                beginAtZero: true
+            },
+            y: {
+                beginAtZero: true
+            }
         }
+    };
 
-        // Create the chart with updated data
+    // Ambil data dari controller
+    $.get("/Management/GetChartDataProd?year=2023", function (data) {
+        // Mengisi data grafik dengan hasil dari controller
+        dataBar4.datasets[0].data = data.map(item => item[0]); 
+        dataBar4.datasets[1].data = data.map(item => item[1]); 
+
+        // Buat grafik dengan data yang telah diisi
         var ctxBar4 = document.getElementById("grafik2Prod").getContext("2d");
         var myChartBar4 = new Chart(ctxBar4, {
             type: "bar",
             data: dataBar4,
-            options: {
-                scales: {
-                    x: { stacked: true },
-                    y: { stacked: true }
-                }
-            }
+            options: options
         });
     });
-    function getRandomColor() {
-        var letters = "0123456789ABCDEF";
-        var color = "#";
-        for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
 
 
 

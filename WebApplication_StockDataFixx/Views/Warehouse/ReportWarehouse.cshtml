@@ -32,11 +32,14 @@
             var selectedMonthParam = new URLSearchParams(window.location.search).get('selectedMonth');
 
             // Set opsi dropdown sesuai dengan nilai selectedTypeParam
-            if (selectedTypeParam === "VMI") {
+            if (selectedTypeParam === "ALL") {
+                document.getElementById("selectedType").value = "ALL";
+                updateReportTitle("ALL");
+            } else if (selectedTypeParam === "VMI") {
                 document.getElementById("selectedType").value = "VMI";
                 updateReportTitle("VMI");
-            } else if (selectedTypeParam === "NON_VMI") {
-                document.getElementById("selectedType").value = "NON_VMI";
+            } else if (selectedTypeParam === "NON VMI") {
+                document.getElementById("selectedType").value = "NON VMI";
                 updateReportTitle("NON VMI");
             } else {
                 document.getElementById("selectedType").value = "Update Terbaru";
@@ -61,7 +64,7 @@
 
             var url = "/Warehouse/ReportWarehouse";
 
-            if (selectedType === "Pilih_Tipe") {
+            if (selectedType === "ALL") {
                 lastChangeSource = "month";
                 url += "?selectedMonth=" + encodeURIComponent(selectedMonth);
             } else {
@@ -81,9 +84,11 @@
         function updateReportTitle(selectedType) {
             var titleElement = document.getElementById("reportTitle");
             if (titleElement) {
-                if (selectedType === "VMI") {
+                if (selectedType === "ALL") {
+                    titleElement.textContent = "Report Data @ViewBag.Title ALL";
+                } else if (selectedType === "VMI") {
                     titleElement.textContent = "Report Data @ViewBag.Title VMI";
-                } else if (selectedType === "NON_VMI") {
+                } else if (selectedType === "NON VMI") {
                     titleElement.textContent = "Report Data @ViewBag.Title Non VMI";
                 } else {
                     titleElement.textContent = "Report Data @ViewBag.Title Update Terbaru";
@@ -116,9 +121,11 @@
         function updateReportTitle(selectedType) {
             var titleElement = document.getElementById("reportTitle");
             if (titleElement) {
-                if (selectedType === "VMI") {
+                if (selectedType === "ALL") {
+                    titleElement.textContent = "Report Data @ViewBag.Title ALL";
+                } else if (selectedType === "VMI") {
                     titleElement.textContent = "Report Data @ViewBag.Title VMI";
-                } else if (selectedType === "NON_VMI") {
+                } else if (selectedType === "NON VMI") {
                     titleElement.textContent = "Report Data @ViewBag.Title Non VMI";
                 }
             }
@@ -198,7 +205,7 @@
 
                 @*jika menggunakan kolom last Upload*@
                 <select id="selectedMonth" onchange="filterDataByMonth()">
-                    <option value="Latest Update">Latest Uploaded Month</option>
+                    <option value="Latest Uploaded Month">Latest Uploaded Month</option>
                     @foreach (var month in ViewBag.LastUpload)
                     {
                         <option value="@month.ToString("yyyy-MM")">@month.ToString("MMMM yyyy")</option>
@@ -210,9 +217,9 @@
             <div class="select-month" style="margin-left: 10px;">
                 <label style="margin-right: 5px;">Select Warehouse :</label>
                 <select id="selectedType" onchange="filterData()">
-                    <option value="Pilih_Tipe">ALL</option>
+                    <option value="ALL">ALL</option>
                     <option value="VMI">VMI</option>
-                    <option value="NON_VMI">NON VMI</option>
+                    <option value="NON VMI">NON VMI</option>
                 </select>
             </div>
 

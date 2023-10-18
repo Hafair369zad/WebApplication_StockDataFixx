@@ -35,9 +35,9 @@
             if (selectedTypeParam === "VMI") {
                 document.getElementById("selectedType").value = "VMI";
                 updateReportTitle("VMI");
-            } else if (selectedTypeParam === "NON_VMI") {
-                document.getElementById("selectedType").value = "NON_VMI";
-                updateReportTitle("NON_VMI");
+            } else if (selectedTypeParam === "NON VMI") {
+                document.getElementById("selectedType").value = "NON VMI";
+                updateReportTitle("NON VMI");
             } else {
                 document.getElementById("selectedType").value = "Update Terbaru";
             }
@@ -83,7 +83,7 @@
             if (titleElement) {
                 if (selectedType === "VMI") {
                     titleElement.textContent = "Report Data @ViewBag.Title VMI";
-                } else if (selectedType === "NON_VMI") {
+                } else if (selectedType === "NON VMI") {
                     titleElement.textContent = "Report Data @ViewBag.Title Non VMI";
                 } else {
                     titleElement.textContent = "Report Data @ViewBag.Title Update Terbaru";
@@ -118,7 +118,7 @@
             if (titleElement) {
                 if (selectedType === "VMI") {
                     titleElement.textContent = "Report Data @ViewBag.Title VMI";
-                } else if (selectedType === "NON_VMI") {
+                } else if (selectedType === "NON VMI") {
                     titleElement.textContent = "Report Data @ViewBag.Title Non VMI";
                 }
             }
@@ -198,7 +198,7 @@
 
                 @*jika menggunakan kolom last Upload*@
                 <select id="selectedMonth" onchange="filterDataByMonth()">
-                    <option value="Latest Update">Latest Uploaded Month</option>
+                    <option value="Latest Uploaded Month">Latest Uploaded Month</option>
                     @foreach (var month in ViewBag.LastUpload)
                     {
                         <option value="@month.ToString("yyyy-MM")">@month.ToString("MMMM yyyy")</option>
@@ -212,7 +212,7 @@
                 <select id="selectedType" onchange="filterData()">
                     <option value="Pilih_Tipe">ALL</option>
                     <option value="VMI">VMI</option>
-                    <option value="NON_VMI">NON VMI</option>
+                    <option value="NON VMI">NON VMI</option>
                 </select>
             </div>
 

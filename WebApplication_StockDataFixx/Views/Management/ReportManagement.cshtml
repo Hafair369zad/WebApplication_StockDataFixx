@@ -51,10 +51,10 @@
             <h1 id="pageTitle" class="h3 mb-0"><strong>Report Data @ViewBag.Title</strong></h1>
 
             <div class="select-month" style="margin-left: 10px;">
-                <label style="margin-right: 5px;">Pilih Bulan :</label>
+                <label style="margin-right: 5px;">Select Month :</label>
 
                 <select id="selectedMonth" onchange="loadDefaultView()">
-                    <option value="Latest Update">Bulan ini (sedang berlangsung)</option>
+                    <option value="Latest Uploaded Month">Latest Uploaded Month</option>
                     @foreach (var month in ViewBag.MonthList)
                     {
                         <option value="@month.Value">@month.Text</option>
@@ -64,11 +64,11 @@
 
 
             <div class="select-month" style="margin-left: 10px;">
-                <label style="margin-right: 5px;">Pilih Tipe :</label>
+                <label style="margin-right: 5px;">Select Type :</label>
                 <select id="selectedType" onchange="updatePageTitle()">
-                    <option value="Production">Data Production</option>
-                    <option value="Warehouse_VMI">Data Warehouse VMI</option>
-                    <option value="Warehouse_NVMI">Data Warehouse Non VMI</option>
+                    <option value="Production">Production</option>
+                    <option value="Warehouse VMI">Warehouse VMI</option>
+                    <option value="Warehouse NON VMI">Warehouse Non VMI</option>
                 </select>
             </div>
         </div>
@@ -81,12 +81,12 @@
         <div class="row d-flex align-items-start">
             <div class="col">
                 <div class="selected-type-box" style="margin-left: 10px; margin-bottom: 10px; width: 300px;">
-                    <strong>Pilihan Tipe : </strong>
+                    @*<strong>Pilihan Tipe : </strong>*@
                     <span id="selectedTypeBox"></span>
                 </div>
 
                 <div class="selected-month-box" style="margin-left: 10px; width: 300px;">
-                    <strong>Pilihan Bulan : </strong>
+                    @*<strong>Pilihan Bulan : </strong>*@
                     <span id="selectedMonthBox"></span>
                 </div>
             </div>
@@ -128,9 +128,9 @@
 
             if (selectedType === "Production") {
                 newTitle += "Production";
-            } else if (selectedType === "Warehouse_VMI") {
+            } else if (selectedType === "Warehouse VMI") {
                 newTitle += "Warehouse VMI";
-            } else if (selectedType === "Warehouse_NVMI") {
+            } else if (selectedType === "Warehouse NON VMI") {
                 newTitle += "Warehouse Non VMI";
             }
 
@@ -235,11 +235,11 @@
                 js("#WarehouseVmi, #WarehouseNonVMI, #Production").DataTable().destroy();
 
                 // Initialize DataTables for the appropriate table based on selectedType
-                if (selectedType === "Warehouse_VMI") {
+                if (selectedType === "Warehouse VMI") {
                     js("#WarehouseVmi").DataTable({
                         //paging: false // Disable pagination
                     });
-                } else if (selectedType === "Warehouse_NVMI") {
+                } else if (selectedType === "Warehouse NON VMI") {
                     js("#WarehouseNonVMI").DataTable({
                         //paging: false // Disable pagination
                     });

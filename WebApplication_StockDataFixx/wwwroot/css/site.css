@@ -1324,7 +1324,10 @@ body.active .wrapper .section .top_navbar .nav-logout {
 }
 
 #chart4,
-#chart3 {
+#chart3,
+#chart3Wrh,
+#chart4Wrh,
+#chart7 {
     margin-top: 45px;
 }
 
