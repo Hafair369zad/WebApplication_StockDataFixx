@@ -555,60 +555,106 @@
 
 
     // Grafik Chart 2 Total Count Data
+    //var dataBar4 = {
+    //    labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    //    datasets: [
+    //        {
+    //            label: "PRODUCTION",
+    //            backgroundColor: "#4EA652",
+    //            data: [] // Data VMI akan diisi dari hasil controller
+    //        },
+    //        {
+    //            label: "PRODUCTION ALL PLANT",
+    //            backgroundColor: "rgba(0, 0, 0, 1)",
+    //            data: [] // Data VMI akan diisi dari hasil controller
+    //        }
+    //        //{
+    //        //    label: "PRODUCTION ALL",
+    //        //    type: "line",
+    //        //    borderColor: "rgba(0, 0, 0, 1)",
+    //        //    borderWidth: 1,
+    //        //    data: [] // Data Total ActualQty akan diisi dari hasil controller
+    //        //}
+    //    ]
+    //};
+
+    //// Opsi konfigurasi grafik
+    //var options = {
+    //    scales: {
+    //        x: {
+    //            beginAtZero: true
+    //        },
+    //        y: {
+    //            beginAtZero: true
+    //        }
+    //    }
+    //};
+
+    //// Ambil data dari controller
+    //$.get("/Management/GetChartDataProd?year=2023", function (data) {
+    //    // Mengisi data grafik dengan hasil dari controller
+    //    dataBar4.datasets[0].data = data.map(item => item[0]); 
+    //    dataBar4.datasets[1].data = data.map(item => item[1]); 
+
+    //    // Buat grafik dengan data yang telah diisi
+    //    var ctxBar4 = document.getElementById("grafik2Prod").getContext("2d");
+    //    var myChartBar4 = new Chart(ctxBar4, {
+    //        type: "bar",
+    //        data: dataBar4,
+    //        options: options
+    //    });
+    //});
     var dataBar4 = {
         labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        datasets: [
-            {
-                label: "PRODUCTION",
-                backgroundColor: "#4EA652",
-                data: [] // Data VMI akan diisi dari hasil controller
-            },
-            {
-                label: "PRODUCTION ALL PLANT",
-                backgroundColor: "rgba(0, 0, 0, 1)",
-                data: [] // Data VMI akan diisi dari hasil controller
-            }
-            //{
-            //    label: "PRODUCTION ALL",
-            //    type: "line",
-            //    borderColor: "rgba(0, 0, 0, 1)",
-            //    borderWidth: 1,
-            //    data: [] // Data Total ActualQty akan diisi dari hasil controller
-            //}
-        ]
+        datasets: []  // Modify the datasets array
     };
 
-    // Opsi konfigurasi grafik
-    var options = {
-        scales: {
-            x: {
-                beginAtZero: true
-            },
-            y: {
-                beginAtZero: true
-            }
-        }
-    };
-
-    // Ambil data dari controller
+    // Update the chart data
     $.get("/Management/GetChartDataProd?year=2023", function (data) {
-        // Mengisi data grafik dengan hasil dari controller
-        dataBar4.datasets[0].data = data.map(item => item[0]); 
-        dataBar4.datasets[1].data = data.map(item => item[1]); 
+        var slocList = Object.keys(data[0]); // Get Sloc values from the first month's data
 
-        // Buat grafik dengan data yang telah diisi
+        for (var i = 0; i < slocList.length; i++) {
+            var dataset = {
+                label: slocList[i],
+                backgroundColor: getRandomColor(), // Define a function to generate random colors
+                data: data.map(item => item[slocList[i]])
+            };
+
+            dataBar4.datasets.push(dataset);
+        }
+
+        // Create the chart with updated data
         var ctxBar4 = document.getElementById("grafik2Prod").getContext("2d");
         var myChartBar4 = new Chart(ctxBar4, {
             type: "bar",
             data: dataBar4,
-            options: options
+            options: {
+                scales: {
+                    x: { stacked: true },
+                    y: { stacked: true }
+                }
+            }
         });
     });
 
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
 
 
 
 
+
+
+
+
+
+    // grafik chart7
     function fetchChartData3Prod() {
         fetch(`/Management/GetChart3DataProd?selectedMonth=${selectedMonth}`)
             .then(response => response.json())

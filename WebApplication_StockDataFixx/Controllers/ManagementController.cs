@@ -832,6 +832,7 @@ namespace WebApplication_StockDataFixx.Controllers
         // =============================================================================================== CHART DATA PRODUCTION ======================================================================================== //
 
         // total count data (grafik2Prod)
+
         //[HttpGet]
         //public IActionResult GetChartDataProd(int year)
         //{
@@ -846,18 +847,52 @@ namespace WebApplication_StockDataFixx.Controllers
 
         //    for (int month = 1; month <= 12; month++)
         //    {
+        //        IQueryable<ProductionItem> data = _dbContext.ProductionItems
+        //            .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month);
 
-        //        double totalProductionItems = _dbContext.ProductionItems
-        //            .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
-        //            .Count();
+        //        if (!string.IsNullOrEmpty(accessPlant))
+        //        {
+        //            if (accessPlant == "VIEW-RIFO")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFR, WRH-RIFA, WRH-RIFC, WRH-RIFL, WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "PROD-RIFA" || item.AccessPlant == "PROD-RIFC" || item.AccessPlant == "PROD-RIFL" || item.AccessPlant == "PROD-RIFR" || item.AccessPlant == "PROD-RIFW");
+        //            }
+        //            else if (accessPlant == "VIEW-RIFA")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "PROD-RIFA");
+        //            }
+        //            else if (accessPlant == "VIEW-RIFC")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "PROD-RIFC");
+        //            }
+        //            else if (accessPlant == "VIEW-RIFL")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "PROD-RIFL");
+        //            }
+        //            else if (accessPlant == "VIEW-RIFR")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "PROD-RIFR");
+        //            }
+        //            else if (accessPlant == "VIEW-RIFW")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "PROD-RIFW");
+        //            }
+        //        }
+
+        //        double totalProductionItems = data.Count();
         //        double totalAllProductionItems = _dbContext.ProductionItems
-        //            .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
-        //            .Count();
+        //            .Count(item => item.LastUpload.Year == year && item.LastUpload.Month == month);
 
         //        monthlyCountData.Add(new[] { totalProductionItems, totalAllProductionItems });
         //    }
         //    return Json(monthlyCountData);
         //}
+
 
         [HttpGet]
         public IActionResult GetChartDataProd(int year)
@@ -869,88 +904,99 @@ namespace WebApplication_StockDataFixx.Controllers
 
             string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
-            var monthlyCountData = new List<double[]>();
+            IQueryable<ProductionItem> data = _dbContext.ProductionItems
+                .Where(item => item.LastUpload.Year == year);
+
+            if (!string.IsNullOrEmpty(accessPlant))
+            {
+                if (accessPlant == "VIEW-RIFO")
+                {
+                    // Tampilkan data dengan accessPlant PROD-RIFA, PROD-RIFC, PROD-RIFL, PROD-RIFR, PROD-RIFW
+                    data = data.Where(item => item.AccessPlant == "PROD-RIFA" || item.AccessPlant == "PROD-RIFC" || item.AccessPlant == "PROD-RIFL" || item.AccessPlant == "PROD-RIFR" || item.AccessPlant == "PROD-RIFW");
+                }
+                else if (accessPlant == "VIEW-RIFA")
+                {
+                    // Tampilkan data dengan accessPlant PROD-RIFA
+                    data = data.Where(item => item.AccessPlant == "PROD-RIFA");
+                }
+                else if (accessPlant == "VIEW-RIFC")
+                {
+                    // Tampilkan data dengan accessPlant PROD-RIFC
+                    data = data.Where(item => item.AccessPlant == "PROD-RIFC");
+                }
+                else if (accessPlant == "VIEW-RIFL")
+                {
+                    // Tampilkan data dengan accessPlant PROD-RIFL
+                    data = data.Where(item => item.AccessPlant == "PROD-RIFL");
+                }
+                else if (accessPlant == "VIEW-RIFR")
+                {
+                    // Tampilkan data dengan accessPlant PROD-RIFR
+                    data = data.Where(item => item.AccessPlant == "PROD-RIFR");
+                }
+                else if (accessPlant == "VIEW-RIFW")
+                {
+                    // Tampilkan data dengan accessPlant PROD-RIFW
+                    data = data.Where(item => item.AccessPlant == "PROD-RIFW");
+                }
+            }
+
+            var slocList = data
+                .Select(item => item.Sloc)
+                .Distinct()
+                .ToList();
+
+            var monthlyCountData = new List<Dictionary<string, double>>();
 
             for (int month = 1; month <= 12; month++)
             {
-                IQueryable<ProductionItem> data = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month);
-
-                if (!string.IsNullOrEmpty(accessPlant))
+                var monthlyCounts = new Dictionary<string, double>();
+                foreach (var sloc in slocList)
                 {
-                    if (accessPlant == "VIEW-RIFO")
-                    {
-                        // Tampilkan data dengan accessPlant WRH-RIFR, WRH-RIFA, WRH-RIFC, WRH-RIFL, WRH-RIFW
-                        data = data.Where(item => item.AccessPlant == "PROD-RIFA" || item.AccessPlant == "PROD-RIFC" || item.AccessPlant == "PROD-RIFL" || item.AccessPlant == "PROD-RIFR" || item.AccessPlant == "PROD-RIFW");
-                    }
-                    else if (accessPlant == "VIEW-RIFA")
-                    {
-                        // Tampilkan data dengan accessPlant WRH-RIFW
-                        data = data.Where(item => item.AccessPlant == "PROD-RIFA");
-                    }
-                    else if (accessPlant == "VIEW-RIFC")
-                    {
-                        // Tampilkan data dengan accessPlant WRH-RIFW
-                        data = data.Where(item => item.AccessPlant == "PROD-RIFC");
-                    }
-                    else if (accessPlant == "VIEW-RIFL")
-                    {
-                        // Tampilkan data dengan accessPlant WRH-RIFW
-                        data = data.Where(item => item.AccessPlant == "PROD-RIFL");
-                    }
-                    else if (accessPlant == "VIEW-RIFR")
-                    {
-                        // Tampilkan data dengan accessPlant WRH-RIFW
-                        data = data.Where(item => item.AccessPlant == "PROD-RIFR");
-                    }
-                    else if (accessPlant == "VIEW-RIFW")
-                    {
-                        // Tampilkan data dengan accessPlant WRH-RIFW
-                        data = data.Where(item => item.AccessPlant == "PROD-RIFW");
-                    }
+                    double count = data
+                        .Where(item => item.LastUpload.Month == month && item.Sloc == sloc)
+                        .Count();
+                    monthlyCounts[sloc] = count;
                 }
-
-                double totalProductionItems = data.Count();
-                double totalAllProductionItems = _dbContext.ProductionItems
-                    .Count(item => item.LastUpload.Year == year && item.LastUpload.Month == month);
-
-                monthlyCountData.Add(new[] { totalProductionItems, totalAllProductionItems });
+                monthlyCountData.Add(monthlyCounts);
             }
+
             return Json(monthlyCountData);
         }
 
 
 
-        // total Actual Qty data (grafik1Prod)
-        //[HttpGet]
-        //public IActionResult GetChart2DataProd(int year)
-        //{
-        //    if (year <= 0)
-        //    {
-        //        return BadRequest("Invalid year.");
-        //    }
 
-        //    var monthlyActualQtyData = new List<double[]>();
+            // total Actual Qty data (grafik1Prod)
+            //[HttpGet]
+            //public IActionResult GetChart2DataProd(int year)
+            //{
+            //    if (year <= 0)
+            //    {
+            //        return BadRequest("Invalid year.");
+            //    }
 
-        //    for (int month = 1; month <= 12; month++)
-        //    {
-        //        double monthlyActualQty = _dbContext.ProductionItems
-        //            .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
-        //            .Sum(item => item.ActualQty);
+            //    var monthlyActualQtyData = new List<double[]>();
 
-        //        double AllActualQty = _dbContext.ProductionItems
-        //            .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
-        //            .Sum(item => item.ActualQty);
+            //    for (int month = 1; month <= 12; month++)
+            //    {
+            //        double monthlyActualQty = _dbContext.ProductionItems
+            //            .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
+            //            .Sum(item => item.ActualQty);
 
-        //        monthlyActualQtyData.Add(new[] { monthlyActualQty, AllActualQty });
-        //    }
+            //        double AllActualQty = _dbContext.ProductionItems
+            //            .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
+            //            .Sum(item => item.ActualQty);
 
-        //    return Json(monthlyActualQtyData);
+            //        monthlyActualQtyData.Add(new[] { monthlyActualQty, AllActualQty });
+            //    }
 
-        //}
+            //    return Json(monthlyActualQtyData);
+
+            //}
 
 
-        [HttpGet]
+            [HttpGet]
         public IActionResult GetChart2DataProd(int year)
         {
             if (year <= 0)
