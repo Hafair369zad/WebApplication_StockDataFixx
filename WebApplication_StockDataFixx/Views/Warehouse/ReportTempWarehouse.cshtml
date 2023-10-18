@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Warehouse";
     Layout = "~/Views/Shared/_LayoutWarehouse.cshtml";
 }
@@ -20,19 +19,38 @@
         var lastChangeSource = ""; // Initialize the lastChangeSource variable
 
         var js = jQuery.noConflict(true);
+
         js(document).ready(function () {
             js('#data-table').DataTable({
                 // "paging": false // ngilangi fitur pagination
             });
 
-            js('.dataTables_filter input').attr('placeholder', 'Cari...');
-            js('.dataTables_filter label').prepend('<i class="fa fa-search"></i> '); // Menggunakan font-awesome ikon
+            var input = js('.dataTables_filter input');
+            var placeholder = 'Search items...';
+
+            // Sembunyikan placeholder saat halaman dimuat
+            input.attr('placeholder', '');
+
+            // Tampilkan placeholder saat kotak pencarian mendapatkan fokus (klik)
+            input.on('focus', function () {
+                input.attr('placeholder', placeholder);
+            });
+
+            // Sembunyikan placeholder saat kotak pencarian kehilangan fokus jika tidak ada teks yang dimasukkan
+            input.on('blur', function () {
+                if (input.val() === '') {
+                    input.attr('placeholder', '');
+                }
+            });
 
             var selectedTypeParam = new URLSearchParams(window.location.search).get('selectedType');
             var selectedMonthParam = new URLSearchParams(window.location.search).get('selectedMonth');
 
             // Set opsi dropdown sesuai dengan nilai selectedTypeParam
-            if (selectedTypeParam === "VMI") {
+            if (!selectedTypeParam || selectedTypeParam === "ALL") {
+                document.getElementById("selectedType").value = "ALL";
+                updateReportTitle("ALL");
+            } else if (selectedTypeParam === "VMI") {
                 document.getElementById("selectedType").value = "VMI";
                 updateReportTitle("VMI");
             } else if (selectedTypeParam === "NON VMI") {
@@ -61,7 +79,7 @@
 
             var url = "/Warehouse/ReportTempWarehouse";
 
-            if (selectedType === "Pilih_Tipe") {
+            if (selectedType === "ALL") {
                 lastChangeSource = "month";
                 url += "?selectedMonth=" + encodeURIComponent(selectedMonth);
             } else {
@@ -75,13 +93,25 @@
         function changeTypeDropdown(selectedType) {
             lastChangeSource = "type";
             document.getElementById("selectedType").value = selectedType;
+
+            // Tambahkan kondisi untuk mengubah teks "Selected Type" menjadi "ALL" jika pilihan adalah "Pilih_Tipe"
+            var selectedTypeText = document.getElementById("selectedTypeText");
+            if (selectedType === "Pilih_Tipe") {
+                selectedTypeText.textContent = "ALL";
+            } else {
+                selectedTypeText.textContent = selectedType;
+            }
+
             filterDataByMonth();
         }
+
 
         function updateReportTitle(selectedType) {
             var titleElement = document.getElementById("reportTitle");
             if (titleElement) {
-                if (selectedType === "VMI") {
+                if (selectedType === "ALL") {
+                    titleElement.textContent = "Report Data @ViewBag.Title ALL";
+                } else if (selectedType === "VMI") {
                     titleElement.textContent = "Report Data @ViewBag.Title VMI";
                 } else if (selectedType === "NON VMI") {
                     titleElement.textContent = "Report Data @ViewBag.Title Non VMI";
@@ -99,7 +129,7 @@
             // Get the AccessPlant value from the ViewBag
             var accessPlantValue = "@(ViewBag.AccessPlant)";
 
-            // Redirect to the ReportWarehouse action with the selected type and AccessPlant as query parameters
+            // Redirect to the ReportTempWarehouse action with the selected type and AccessPlant as query parameters
             window.location.href = "/Warehouse/ReportTempWarehouse?selectedType=" + encodeURIComponent(selectedType) + "&accessPlant=" + encodeURIComponent(accessPlantValue);
         }
         // ...
@@ -116,7 +146,9 @@
         function updateReportTitle(selectedType) {
             var titleElement = document.getElementById("reportTitle");
             if (titleElement) {
-                if (selectedType === "VMI") {
+                if (selectedType === "ALL") {
+                    titleElement.textContent = "Report Data @ViewBag.Title ALL";
+                } else if (selectedType === "VMI") {
                     titleElement.textContent = "Report Data @ViewBag.Title VMI";
                 } else if (selectedType === "NON VMI") {
                     titleElement.textContent = "Report Data @ViewBag.Title Non VMI";
@@ -170,7 +202,7 @@
 </head>
 <body>
 
-    @*Populoader*@
+    @*@Populoader@*@
     <div id="loading-popup" class="loading-popup">
         <div class="custom-loader"></div>
     </div>
@@ -183,20 +215,9 @@
 
 
             <div class="select-month" style="margin-left: 10px;">
-                <label style="margin-right: 5px;">Pilih Bulan :</label>
-                
+                <label style="margin-right: 5px;">Select Month :</label>
 
-                @*jika menggunakan kolom Month*@
-                @*<select id="selectedMonth" onchange="filterDataByMonth()">
-                    <option value="Latest Update">Update Terbaru</option>
-                    @foreach (var month in ViewBag.LastUpload)
-                    {
-                        <option value="@month">@month</option>
-                    }
-                </select>*@
-
-
-                @*jika menggunakan kolom last Upload*@
+                @*@jika menggunakan kolom last Upload@*@
                 <select id="selectedMonth" onchange="filterDataByMonth()">
                     <option value="Latest Uploaded Month">Latest Uploaded Month</option>
                     @foreach (var month in ViewBag.LastUpload)
@@ -208,9 +229,9 @@
             </div>
 
             <div class="select-month" style="margin-left: 10px;">
-                <label style="margin-right: 5px;">Pilih Tipe :</label>
+                <label style="margin-right: 5px;">Select Warehouse :</label>
                 <select id="selectedType" onchange="filterData()">
-                    <option value="Pilih_Tipe">ALL</option>
+                    <option value="ALL">ALL</option>
                     <option value="VMI">VMI</option>
                     <option value="NON VMI">NON VMI</option>
                 </select>
@@ -223,24 +244,28 @@
 
 
     <!-- Tampilkan kotak tampilan bulan yang dipilih -->
-    
+
 
     <div class="row  mb-10" style="margin-top:70px;">
-        
-            <div class="row d-flex align-items-start">
-                <div class="col">
-                <div class="selected-type-box" style="margin-left: 10px; width: 300px; margin-bottom: 10px;">
-                    <strong>Pilihan Tipe : </strong>
+
+        <div class="row d-flex align-items-start">
+            <div class="col">
+                <div class="selected-type-box" style="margin-left: 10px; width:300px; margin-bottom: 10px;">
+                    @*<strong>Pilihan Tipe : </strong>*@
+                    <strong>
                         <span id="selectedTypeBox"></span>
-                    </div>
+                    </strong>
+                </div>
 
                 <div class="selected-month-box" style="margin-left: 10px; width: 300px; margin-bottom: 10px;">
-                        <strong>Pilihan Bulan : </strong>
+                    @*<strong>Pilihan Bulan : </strong>*@
+                    <strong>
                         <span id="selectedMonthBox"></span>
-                    </div>
+                    </strong>
                 </div>
             </div>
-        
+        </div>
+
 
 
 
@@ -295,7 +320,7 @@
                             </tr>
                         }
                     }
-                  
+
                 </tbody>
             </table>
         </div>
@@ -303,12 +328,13 @@
     <br />
     <div style="margin-bottom: 5px;"></div>
 
+
     <div class="download-float-button">
         <button id="open-popup">Download <i class="fas fa-download"></i></button>
         <div id="popup" class="popup popup-dow">
             <div class="popup-content popup-content-dow ">
                 <div class="popup-header popup-header-dow">
-                    <h3>Dowonload File Excel</h3>
+                    <h3>Download File Excel</h3>
                     <a id="close-popup-dow" class="btn close-popup-dow">&times;</a>
                 </div>
                 <div class="popup-body popup-body-dow">
@@ -336,11 +362,6 @@
         });
 
     </script>
- 
+
 </body>
 </html>
-
-
-
-
-

@@ -113,9 +113,9 @@
             <h1 class="h3 mb-0"><strong>Report Data @ViewBag.Title</strong></h1>
 
             <div class="select-month" style="margin-left: 10px;">
-                <label style="margin-right: 5px;">Pilih Bulan :</label>
+                <label style="margin-right: 5px;">Select Month :</label>
                 <select id="selectedMonth" onchange="filterDataByMonth()">
-                    <option value="Latest Update">Bulan ini (sedang berlangsung)</option>
+                    <option value="Latest Uploaded Month">Latest Uploaded Month</option>
                     @foreach (var month in ViewBag.UniqueMonths)
                     {
                         <option value="@month.ToString("yyyy-MM")">@month.ToString("MMMM yyyy")</option>
@@ -132,7 +132,7 @@
         <div class="row d-flex align-items-start">
             <div class="col">
                 <div class="selected-month-box" style="margin-left: 10px; width: 300px; margin-bottom: 15px;">
-                    <strong>Pilihan Bulan : </strong>
+                    @*<strong>Pilihan Bulan : </strong>*@
                     <span id="selectedMonthBox"></span>
                 </div>
             </div>
