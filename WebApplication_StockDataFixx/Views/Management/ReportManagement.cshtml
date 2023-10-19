@@ -82,12 +82,16 @@
             <div class="col">
                 <div class="selected-type-box" style="margin-left: 10px; margin-bottom: 10px; width: 300px;">
                     @*<strong>Pilihan Tipe : </strong>*@
+                    <strong>
                     <span id="selectedTypeBox"></span>
+                    </strong>
                 </div>
 
                 <div class="selected-month-box" style="margin-left: 10px; width: 300px;">
                     @*<strong>Pilihan Bulan : </strong>*@
+                    <strong>
                     <span id="selectedMonthBox"></span>
+                    </strong>
                 </div>
             </div>
         </div>
@@ -160,7 +164,15 @@
                 var selectedTypeBox = document.getElementById("selectedTypeBox");
                 selectedTypeBox.textContent = selectedType;
                 var selectedMonthBox = document.getElementById("selectedMonthBox");
-                selectedMonthBox.textContent = selectedMonth;
+                //selectedMonthBox.textContent = selectedMonth;
+
+                var selectedMonthOption = document.querySelector("#selectedMonth option:checked");
+
+                if (selectedMonthOption.value === "Latest Uploaded Month") {
+                    selectedMonthBox.textContent = "Latest Uploaded Month";
+                } else {
+                    selectedMonthBox.textContent = selectedMonthOption.textContent;
+                }
 
 
 

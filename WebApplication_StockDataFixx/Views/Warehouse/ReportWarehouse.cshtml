@@ -70,7 +70,15 @@
 
             var selectedMonth = document.getElementById("selectedMonth").value;
             var selectedMonthBox = document.getElementById("selectedMonthBox");
-            selectedMonthBox.textContent = selectedMonth;
+            //selectedMonthBox.textContent = selectedMonth;
+
+            var selectedMonthOption = document.querySelector("#selectedMonth option:checked");
+
+            if (selectedMonthOption.value === "Latest Uploaded Month") {
+                selectedMonthBox.textContent = "Latest Uploaded Month";
+            } else {
+                selectedMonthBox.textContent = selectedMonthOption.textContent;
+            }
         });
 
         function filterDataByMonth() {

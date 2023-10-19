@@ -113,69 +113,6 @@
             </div>
         </div>
 
-        <!--Lama-->
-        @*<div class="card flex-fill w-100 h-100 mb-10">
-        <div class="card-cr">
-        <div class="upload-form">
-        <form id="myForm" asp-controller="Warehouse" asp-action="UploadFile" enctype="multipart/form-data" method="post">
-        <div class="header-upload">
-        <p>UPLOAD FILE .XLS</p>
-        </div>
-        <button type="submit" class="btn-upload">Upload</button>
-        <div class="row">
-        <div class="col-12 col-md-8">
-        <div class="form-group">
-        <!-- Hidden input file element -->
-        <input type="file" class="form-control-file" id="file" accept=".xls, .xlsx, .csv" style="display: none;" name="file">
-        <div class="drop-zone" id="dropZone">
-        <div class="image-container">
-        <img src="/images/img/Frame_4.png" style="margin-left: 3px; margin-bottom: 5px;">
-        <p class="drag-text" style="margin-left: -10px;">Drag and drop file here</p>
-        </div>
-        </div>
-        <div class="btn-zone w-100 col-12">
-        <!-- Apply button -->
-        <label for="file" class="btn col-3">Pilih</label>
-        <button class="btn col-3" id="resetBtn" type="button" value="Reset">Hapus</button>
-        </div>
-        </div>
-        </div>
-        <div class="col-12 col-md-4 mt-4 mt-md-0">
-
-        <div class="row">
-        <div class="form-group">
-        <div class="storage">
-        <h5>Pilih Tipe Storage : </h5><br />
-        <input type="radio" id="radio1" name="Storage_Type" value="VMI" onclick="setStorageType('VMI')">
-        <label for="radio1">VMI</label>
-        <input type="radio" id="radio2" name="Storage_Type" value="NON-VMI" onclick="setStorageType('NonVMI')">
-        <label for="radio2">NON-VMI</label>
-        </div>
-        </div>
-        </div>
-        <input type="hidden" id="storageType" name="storageType" value="" />
-        <div class="li-file mt-4">
-        <h5>Ketentuan File :</h5><br />
-        <p>
-        <ul>
-        <ol>
-        <li>File upload harus dalam format <strong>.XLS, .XLSX, .CSV (Microsoft Excel).</strong></li>
-        <li>Ketika mengunggah <strong>file VMI</strong>, pastikan untuk memilih <strong>tipe Storage VMI</strong> dengan benar. Demikian pula, saat mengunggah <strong>file NonVMI</strong>, pastikan untuk memilih <strong>tipe Storage NonVMI</strong> dengan benar.</li>
-        <li>File harus mengandung beberapa tabel yang terpisah secara jelas.</li>
-        <li>Pastikan setiap tabel memiliki judul yang jelas dan informatif.</li>
-        <li>Pastikan tidak ada data yang tersembunyi atau terlindungi dengan kata sandi.</li>
-        </ol>
-        </ul>
-        </p>
-        </div>
-        </div>
-        </div>
-        </form>
-        </div>
-        </div>
-        </div>*@
-
-
 
         <script>
             const fileInput = document.getElementById('file');
@@ -243,53 +180,25 @@
             <button class="close-button" onclick="closePopup()">Close</button>
         </div>
     </div>
-    <div class="popup" id="popupMismatch">
-        <div class="popup-content">
-            <h2>Storage Type Mismatch</h2>
-            <img src="~/images/img/Frame_7.png" width="140px" style="margin-bottom: 10px;margin-top: 10px;" />
-            <p id="popup-mismatch-message" style="font-weight: 600;"></p>
-            <button class="close-button" onclick="closePopupMismatch()">Close</button>
-        </div>
-    </div>
+    
 
     <script>
-        function setStorageType(type) {
-            document.getElementById('storageType').value = type;
-        }
-        function showStorageTypeAlert() {
-            alert("Please select a storage type before uploading.");
-        }
-
+ 
         function closePopup() {
             document.getElementById("popup").style.display = "none";
         }
-
 
         function showPopup() {
             document.getElementById("popup").style.display = "block";
         }
 
-        function showStorageTypeMismatchPopup() {
-            document.getElementById("popupMismatch").style.display = "block";
-        }
-
-        function closePopupMismatch() {
-            document.getElementById("popupMismatch").style.display = "none";
-        }
-
-
-
         // Function lama
         function submitFormAndShowPopup() {
-            const selectedStorageType = document.querySelector('input[name="Storage_Type"]:checked');
-            //if (!selectedStorageType) {
-            //    showStorageTypeAlert();
-            //    return;
-            //}
+            //const selectedStorageType = document.querySelector('input[name="Storage_Type"]:checked');
+      
             document.getElementById("myForm").submit(); // Kirim form
             checkDataSaved(); // Panggil fungsi untuk cek data sudah disimpan dan tampilkan popup jika ya
         }
-
 
         // Fungsi lama
         function checkDataSaved() {
@@ -315,6 +224,9 @@
             event.preventDefault(); // Hentikan submit default
             submitFormAndShowPopup(); // Panggil fungsi untuk submit form dan tampilkan popup
         });
+
+
+
 
         //Popup Loader
         function showLoadingPopup() {
@@ -349,99 +261,26 @@
 
 
 
-
-      @* ////// Function baru
-        //function checkDataSaved() {
-        //    fetch("/Warehouse/CheckDataSaved")
-        //        .then(response => response.json())
-        //        .then(data => {
-        //            if (data.saved) {
-        //                // Data successfully saved, show success popup
-        //                document.getElementById("popup-message").textContent = "File Anda telah berhasil diunggah dan data telah disimpan ke dalam database.";
-        //                showPopup();
-        //            } else {
-        //                // Data not yet saved, check again after a delay (e.g., 1 second)
-        //                setTimeout(checkDataSaved, 1000);
-        //            }
-
-        //            // Close the storage type mismatch popup if it's open
-        //            closePopupMismatch();
-        //        })
-        //        .catch(error => {
-        //            console.error('Error checking data saved:', error);
-        //        });
+@*<div class="popup" id="popupMismatch">
+        <div class="popup-content">
+            <h2>Storage Type Mismatch</h2>
+            <img src="~/images/img/Frame_7.png" width="140px" style="margin-bottom: 10px;margin-top: 10px;" />
+            <p id="popup-mismatch-message" style="font-weight: 600;"></p>
+            <button class="close-button" onclick="closePopupMismatch()">Close</button>
+        </div>
+    </div>
+        //function setStorageType(type) {
+        //    document.getElementById('storageType').value = type;
+        //}
+        //function showStorageTypeAlert() {
+        //    alert("Please select a storage type before uploading.");
+        //}
+        //function showStorageTypeMismatchPopup() {
+        //    document.getElementById("popupMismatch").style.display = "block";
         //}
 
+        //function closePopupMismatch() {
+        //    document.getElementById("popupMismatch").style.display = "none";
+        //}*@
 
-        //// Fuction baru
-        //function submitFormAndShowPopup() {
-        //    const selectedStorageType = document.querySelector('input[name="Storage_Type"]:checked');
-        //    if (!selectedStorageType) {
-        //        showStorageTypeAlert();
-        //        return;
-        //    }
-
-        //    const detectedStorageType = document.getElementById('storageType').value;
-        //    if (selectedStorageType.value !== detectedStorageType) {
-        //        showStorageTypeMismatchPopup();
-        //        return;
-        //    }
-
-        //    document.getElementById("myForm").submit(); // Submit form
-        //    checkDataSaved(); // Check data saved and show popup if successful
-        //}
-
-
-
-         // fungsi baru
-
-        //function submitFormAndShowPopup() {
-        //    const selectedStorageType = document.querySelector('input[name="Storage_Type"]:checked');
-        //    if (!selectedStorageType) {
-        //        showStorageTypeAlert();
-        //        return;
-        //    }
-        //    document.getElementById("myForm").submit(); // Submit the form
-        //    checkDataSaved(); // Call the function to check if data is saved and display the appropriate popup
-        //}
-
-        //function checkDataSaved() {
-        //    fetch("/Warehouse/CheckDataSaved")
-        //        .then(response => response.json())
-        //        .then(data => {
-        //            const storageType = document.getElementById('storageType').value;
-        //            const detectedFileType = data.detectedFileType; // Assume you get this value from the server
-
-        //            if (storageType === "VMI") {
-        //                if (detectedFileType === "VMI") {
-        //                    // File is VMI, storage type is VMI
-        //                    document.getElementById("popup").style.display = "block";
-        //                    document.getElementById("popup-message").textContent = "File Uploaded!";
-        //                } else {
-        //                    // File is VMI, but storage type is Non VMI
-        //                    document.getElementById("popupMismatch").style.display = "block";
-        //                    document.getElementById("popup-mismatch-message").textContent = "Mismatch Type Storage";
-        //                }
-        //            } else if (storageType === "NonVMI") {
-        //                if (detectedFileType === "NonVMI") {
-        //                    // File is Non VMI, storage type is Non VMI
-        //                    document.getElementById("popup").style.display = "block";
-        //                    document.getElementById("popup-message").textContent = "File Uploaded!";
-        //                } else {
-        //                    // File is Non VMI, but storage type is VMI
-        //                    document.getElementById("popupMismatch").style.display = "block";
-        //                    document.getElementById("popup-mismatch-message").textContent = "Mismatch Type Storage";
-        //                }
-        //            }
-        //        })
-        //        .catch(error => {
-        //            console.error('Error checking data saved:', error);
-        //        });
-        //}
-
-        //// Add an event listener for form submit
-        //document.getElementById("myForm").addEventListener("submit", function (event) {
-        //    event.preventDefault(); // Prevent default form submission
-        //    submitFormAndShowPopup(); // Submit the form and display the appropriate popup
-        //});
-*@
+       
