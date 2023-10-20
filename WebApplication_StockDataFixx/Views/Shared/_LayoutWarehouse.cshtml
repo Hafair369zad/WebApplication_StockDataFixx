@@ -41,20 +41,48 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
+
+
         function confirmLogout() {
-            // Menampilkan pop-up konfirmasi
-            if (window.confirm("Apakah Anda yakin ingin logout?")) {
-                // Jika pengguna mengkonfirmasi logout, arahkan ke tindakan logout
-                window.location.href = '@Url.Action("Logout", "Home")';
-            } else {
-                // Jika pengguna membatalkan logout, tidak ada yang terjadi
-            }
+            // Tampilkan popup konfirmasi
+            document.getElementById("popup-logout").style.display = "block";
         }
+
+        function closePopup() {
+            // Tutup popup
+            document.getElementById("popup-logout").style.display = "none";
+        }
+
+        function logout() {
+            // Redirect ke halaman logout jika user mengkonfirmasi logout
+            window.location.href = '@Url.Action("Logout", "Home")';
+        }
+
+        //function confirmLogout() {
+        //    // Menampilkan pop-up konfirmasi
+        //    if (window.confirm("Apakah Anda yakin ingin logout?")) {
+        //        // Jika pengguna mengkonfirmasi logout, arahkan ke tindakan logout
+        //        window.location.href = '@Url/*.Action("Logout", "Home")*/';
+        //    } else {
+        //        // Jika pengguna membatalkan logout, tidak ada yang terjadi
+        //    }
+        //}
     </script>
 </head>
 
-    @*baru*@
+@*baru*@
 <body>
+
+    @*Popup Logout*@
+    <div class="popup-logout" id="popup-logout">
+        <div class="popup-content-logout">
+            <p id="popup-message" style="font-weight: 800;margin-top: 15px;">Are you sure you want to logout?</p>
+            <button class="close-button-logout" onclick="logout()">Logout</button>
+            <button class="close-button-cancel" onclick="closePopup()">Cancel</button>
+        </div>
+    </div>
+
+
     <div class="wrapper">
         <div class="section">
             <div class="top_navbar">
@@ -104,6 +132,12 @@
                     <a asp-area="" asp-controller="Warehouse" asp-action="ReportWarehouse">
                         <span class="icon"><i class="fas fa-file"></i></span>
                         <span class="item">Report</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-area="" asp-controller="Warehouse" asp-action="Aprovement">
+                        <span class="icon"><i class="fas fa-solid fa-clipboard-check"></i></span>             
+                        <span class="item">Aprovement</span>
                     </a>
                 </li>
             </ul>

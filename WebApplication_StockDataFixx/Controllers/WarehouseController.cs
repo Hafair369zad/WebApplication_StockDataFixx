@@ -41,11 +41,17 @@ namespace WebApplication_StockDataFixx.Controllers
             return View();
         }
 
-       
- // =============================================================================================== READ DATA =============================================================================================== //
-        
-        
-        
+        public ActionResult Aprovement()
+        {
+            // Tampilkan halaman upload file warehouse
+            return View();
+        }
+
+
+        // =============================================================================================== READ DATA =============================================================================================== //
+
+
+
         // Main Method Report 
         // Method to display based on access plant, storage type dll..
         [HttpGet]

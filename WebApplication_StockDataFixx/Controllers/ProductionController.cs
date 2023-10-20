@@ -46,6 +46,11 @@ namespace WebApplication_StockDataFixx.Controllers
             // Disp-lay UploadDataProduction Page
             return View();
         }
+        public ActionResult AprovementProduction()
+        {
+            // Tampilkan halaman upload file warehouse
+            return View();
+        }
 
         // ================================================================================================= READ DATA ===================================================================================================== //
 
@@ -584,11 +589,13 @@ namespace WebApplication_StockDataFixx.Controllers
                     .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month && item.AccessPlant == accessPlant)
                     .Sum(item => item.ActualQty);
 
-                double AllActualQty = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
-                    .Sum(item => item.ActualQty);
+                //double AllActualQty = _dbContext.ProductionItems
+                //    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
+                //    .Sum(item => item.ActualQty);
 
-                monthlyActualQtyData.Add(new[] { monthlyActualQty, AllActualQty });
+                //monthlyActualQtyData.Add(new[] { monthlyActualQty, AllActualQty });
+
+                monthlyActualQtyData.Add(new[] { monthlyActualQty});
             }
 
             return Json(monthlyActualQtyData);

@@ -243,7 +243,7 @@
                         <p class="card-text">Total Per UoM</p>
                     </div>
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        @*<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Select Month
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -259,7 +259,7 @@
                             <a class="dropdown-item" data-month="10">October</a>
                             <a class="dropdown-item" data-month="11">November</a>
                             <a class="dropdown-item" data-month="12">December</a>
-                        </div>
+                        </div>*@
                     </div>
                 </div>
                     <canvas id="chart7"></canvas>
@@ -511,11 +511,11 @@
                 backgroundColor: "#4EA652",
                 data: [] // Data VMI akan diisi dari hasil controller
             },
-            {
-                label: "PRODUCTION ALL PLANT",
-                backgroundColor: "rgba(0, 0, 0, 1)",
-                data: [] // Data VMI akan diisi dari hasil controller
-            }
+            //{
+            //    label: "PRODUCTION ALL PLANT",
+            //    backgroundColor: "rgba(0, 0, 0, 1)",
+            //    data: [] // Data VMI akan diisi dari hasil controller
+            //}
             //{
             //    label: "PRODUCTION ALL",
             //    type: "line",
@@ -542,7 +542,7 @@
     $.get("/Management/GetChart2DataProd?year=2023", function (data) {
         // Mengisi data grafik dengan hasil dari controller
         dataBar3.datasets[0].data = data.map(item => item[0]); // Data VMI
-        dataBar3.datasets[1].data = data.map(item => item[1]); // Data Non VMI
+        //dataBar3.datasets[1].data = data.map(item => item[1]); // Data Non VMI
 
         // Buat grafik dengan data yang telah diisi
         var ctxBar3 = document.getElementById("grafik1Prod").getContext("2d");

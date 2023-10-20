@@ -1048,11 +1048,13 @@ namespace WebApplication_StockDataFixx.Controllers
                 }
 
                 double monthlyActualQty = data.Sum(item => item.ActualQty);
-                double AllActualQty = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
-                    .Sum(item => item.ActualQty);
+                //double AllActualQty = _dbContext.ProductionItems
+                //    .Where(item => item.LastUpload.Year == year && item.LastUpload.Month == month)
+                //    .Sum(item => item.ActualQty);
 
-                monthlyActualQtyData.Add(new[] { monthlyActualQty, AllActualQty });
+                //monthlyActualQtyData.Add(new[] { monthlyActualQty, AllActualQty });
+
+                monthlyActualQtyData.Add(new[] { monthlyActualQty});
             }
 
             return Json(monthlyActualQtyData);
