@@ -28,3 +28,28 @@ $(document).ready(function () {
     });
 });
 
+
+
+    $(document).ready(function () {
+        $('#userForm').submit(function (e) {
+            if (!validateForm()) {
+                e.preventDefault(); // Menghentikan pengiriman form jika validasi gagal
+                alert('Harap isi semua kolom form secara lengkap.');
+            }
+        });
+
+        function validateForm() {
+            var userId = $('#UserId').val();
+            var username = $('#Username').val();
+            var password = $('#Password').val();
+            var levelId = $('#LevelId').val();
+            var jobId = $('#JobId').val();
+            var plantId = $('#PlantId').val();
+
+            if (!userId || !username || !password || !levelId || !jobId || !plantId) {
+                return false; // Form tidak valid jika ada yang kosong
+            }
+
+            return true; // Form valid
+        }
+    });

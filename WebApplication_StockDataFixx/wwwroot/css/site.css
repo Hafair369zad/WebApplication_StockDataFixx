@@ -1475,3 +1475,74 @@ body.active .wrapper .section .top_navbar .nav-logout {
     transform: rotate(90deg);
     transform-origin: center;
 }
+
+
+
+/*Header Title Admin & Button header*/
+.header-tittle {
+    font-family: 'Inter';
+}
+
+    .header-tittle h2 {
+        font-weight: 800;
+        font-size: 30px;
+        margin-bottom: -5px;
+        letter-spacing: 0px;
+    }
+
+    .header-tittle p {
+        font-weight: 600;
+        font-size: 12px;
+        margin-top: -8px;
+        letter-spacing: 0px;
+        margin-left: 2px;
+    }
+
+
+.button-header {
+    position: absolute;
+    top: 105px; /* Sesuaikan dengan jarak dari atas */
+    right: 25px; /* Sesuaikan dengan jarak dari kanan */
+}
+
+
+    .button-header a {
+        padding: 9px 9px;
+        text-decoration: none;
+        color: #fff;
+        background: #1861AC;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+        .button-header a:hover {
+            background: #33363F;
+            color: #fff;
+        }
+
+    .button-header i {
+        font-size: 12px;
+        margin-right: 7px;
+        margin-top: -5px;
+    }
+/*End Header Title Admin*/
+
+
+/*button add user admin*/
+.btn-addAdmin button {
+    padding: 8px 225px;
+    text-align: center;
+    color: white;
+    background-color: #1D5D9B;
+    border-radius: 5px;
+    border: 0.5px solid #1D5D9B;
+    margin-top: 15px;
+}
+
+.btn-addAdmin button:hover {
+    background-color: #888;
+    color: white;
+    box-shadow: 0.5px;
+    border: 0.5px solid #D1D1EE;
+}
+/*End button add user admin*/

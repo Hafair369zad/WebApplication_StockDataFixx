@@ -5,43 +5,83 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Add User</h1>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<form asp-action="AddUser" method="post">
-    <div class="form-group">
-        <label asp-for="UserId">User ID</label>
-        <input asp-for="UserId" class="form-control" />
-        <span asp-validation-for="UserId" class="text-danger"></span>
+<div class="container-fluid p-0">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="header-tittle" style="margin-bottom: 25px;">
+                <h2>Add User</h2>
+                <p>Welcome Admin Stock Taking</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="text-right ml-auto">
+                <!-- Gunakan class ml-auto di sini -->
+                <div class="button-header">
+                    <a class="button" asp-controller="Admin" asp-action="DashboardAdmin">
+                        View Data
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label asp-for="Username">Username</label>
-        <input asp-for="Username" class="form-control" />
-        <span asp-validation-for="Username" class="text-danger"></span>
+
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row  mb-10" style="margin-top:40px;">
+                <div class="col-md-6">
+                    <form asp-action="AddUser" method="post" id="userForm">
+                        <div class="form-group">
+                            <label asp-for="UserId">User ID</label>
+                            <input asp-for="UserId" class="form-control" />
+                            <span asp-validation-for="UserId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Username">Username</label>
+                            <input asp-for="Username" class="form-control" />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Password">Password</label>
+                            <input asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LevelId">Level</label>
+                            <select asp-for="LevelId" class="form-control">
+                                @foreach (var level in ViewBag.Levels)
+                                {
+                                    <option value="@level.LevelId">@level.LevelDesc</option>
+                                }
+                            </select>
+                            <span asp-validation-for="LevelId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="JobId">Job ID</label>
+                            <input asp-for="JobId" class="form-control" />
+                            <span asp-validation-for="JobId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PlantId">Plant ID</label>
+                            <input asp-for="PlantId" class="form-control" />
+                            <span asp-validation-for="PlantId" class="text-danger"></span>
+                        </div>
+                        <div class="btn-addAdmin">
+                            <button type="submit" class="btn" style="margin-bottom: 30px;">Add User</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    @* <img src="/images/img/comingsoon2.png"/>*@
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label asp-for="Password">Password</label>
-        <input asp-for="Password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="LevelId">Level</label>
-        <select asp-for="LevelId" class="form-control">
-            @foreach (var level in ViewBag.Levels)
-            {
-                <option value="@level.LevelId">@level.LevelDesc</option>
-            }
-        </select>
-        <span asp-validation-for="LevelId" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="JobId">Job ID</label>
-        <input asp-for="JobId" class="form-control" />
-        <span asp-validation-for="JobId" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="PlantId">Plant ID</label>
-        <input asp-for="PlantId" class="form-control" />
-        <span asp-validation-for="PlantId" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Add User</button>
-</form>
+    
+</div>  
+
+
+
+
