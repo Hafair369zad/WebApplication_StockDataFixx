@@ -5,95 +5,82 @@
 }
 
 
-    @*Populoader*@
-    <div id="loading-popup" class="loading-popup">
-        <div class="custom-loader"></div>
-    </div>
-    @*style="width: 320px;margin-left: 260px; position: absolute; right: -1px"*@
+@*Populoader*@
+<div id="loading-popup" class="loading-popup">
+    <div class="custom-loader"></div>
+</div>
+@*style="width: 320px;margin-left: 260px; position: absolute; right: -1px"*@
 
-    <div class="container-fluid p-0">
-        <div class="sect0">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="d-flex justify-content-between head-Add">
-                            <div class="col-10">
-                                @using Microsoft.AspNetCore.Http;
-                                <h4><strong>Hello @CurrentUsername !! </strong></h4>
-                                <p>
+<div class="container-fluid p-0">
+    <div class="sect0">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="d-flex justify-content-between head-Add">
+                        <div class="col-10">
+                            @using Microsoft.AspNetCore.Http;
+                            <h4><strong>Hello @CurrentUsername !! </strong></h4>
+                            <p>
                                 "You can monitor and control <strong style="font-weight: 800;">your material stock in real-time</strong><br />with the convenience we provide."
-                                </p>
-                            </div>
-                            <div class="col-2">
-                                <img class="head-AddImg" src="~/images/img/Frame_3_1.png">
-                            </div>
+                            </p>
+                        </div>
+                        <div class="col-2">
+                            <img class="head-AddImg" src="~/images/img/Frame_3_1.png">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <br />
+</div>
+<br />
 
-    <div class="container-fluid p-0">
-        <div class="card flex-fill w-100 h-100 mb-10">
-            <div class="">
-                <form id="myForm" asp-controller="Warehouse" asp-action="UploadFile" enctype="multipart/form-data" method="post">
-                    
-                        <div class="row">
-                            <div class="col-md-12">
-                            <div class="d-flex justify-content-between sect-1">
-                                    <div class="header-upload">
-                                        <p>UPLOAD FILE .XLS</p>
-                                    </div>
-                                    <div class="button-form">
-                                        <button type="submit" class="btn-upload">Upload</button>
-                                    </div>
-                                </div>
+<div class="container-fluid p-0">
+    <div class="card flex-fill w-100 h-100 mb-10">
+        <div class="">
+            <form id="myForm" asp-controller="Warehouse" asp-action="UploadFile" enctype="multipart/form-data" method="post">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="d-flex justify-content-between sect-1">
+                            <div class="header-upload">
+                                <p>UPLOAD FILE .XLS</p>
+                            </div>
+                            <div class="button-form">
+                                <button type="submit" class="btn-upload">Upload</button>
                             </div>
                         </div>
-                   
+                    </div>
+                </div>
 
-                    <div class="sect-2">
-                        <div class="row">
-                            <div class="col-md-6">
-                               
-                                <div class="form-group">
-                                    <!-- Hidden input file element -->
-                                    <input type="file" class="form-control-file" id="file" accept=".xls, .xlsx, .csv" style="display: none;" name="file">
-                                    <div class="drop-zone" id="dropZone">
-                                        <div class="image-container">
-                                            <img src="/images/img/Frame_4.png" style="margin-left: 3px; margin-bottom: 5px;">
-                                            <p class="drag-text" style="margin-left: -10px;">Drag and drop file here</p>
-                                        </div>
+
+                <div class="sect-2">
+                    <div class="row">
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <!-- Hidden input file element -->
+                                <input type="file" class="form-control-file" id="file" accept=".xls, .xlsx, .csv" style="display: none;" name="file">
+                                <div class="drop-zone" id="dropZone">
+                                    <div class="image-container">
+                                        <img src="/images/img/Frame_4.png" style="margin-left: 3px; margin-bottom: 5px;">
+                                        <p class="drag-text" style="margin-left: -10px;">Drag and drop file here</p>
                                     </div>
-                                    <div class="btn-zone w-100 col-12">
-                                        <!-- Apply button -->
+                                </div>
+                                <div class="btn-zone w-100 col-12">
+                                    <!-- Apply button -->
                                     <label for="file" class="btn col-3">Choose</label>
                                     <button class="btn col-3" id="resetBtn" type="button" value="Reset">Remove</button>
-                                    </div>
                                 </div>
-                                
                             </div>
-                            
-                            <div class="col-md-6">
-                            
-                                <div class="form-group">
-                                   @* <div class="storage">
-                                        <h5>Pilih Tipe Storage : </h5><br />
-                                        <input type="radio" id="radio1" name="Storage_Type" value="VMI" onclick="setStorageType('VMI')">
-                                        <label for="radio1">VMI</label>
-                                        <input type="radio" id="radio2" name="Storage_Type" value="NON-VMI" onclick="setStorageType('NonVMI')">
-                                        <label for="radio2">NON-VMI</label>
-                                    </div>*@
-                                </div>
-                            
-                                <input type="hidden" id="storageType" name="storageType" value="" />
 
-                                <div class="form-group">
-                                    <div class="li-file mt-4">
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="li-file mt-4">
                                     <h5>File Terms :</h5><br />
-                                        <p>
+                                    <p>
                                         <ul>
                                             <ol>
                                                 <li>File uploads must be in the format of <strong>.XLS, .XLSX, .CSV (Microsoft Excel).</strong></li>
@@ -103,184 +90,162 @@
                                                 <li>Make sure there is no data hidden or protected by a password.</li>
                                             </ol>
                                         </ul>
-                                        </p>
-                                    </div>
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </form>
-            </div>
-        </div>
-
-
-        <script>
-            const fileInput = document.getElementById('file');
-            const resetBtn = document.getElementById('resetBtn');
-            const dropZone = document.getElementById('dropZone');
-
-            fileInput.addEventListener('change', function () {
-                const fileLabel = document.createElement('p');
-                fileLabel.textContent = `File name: ${fileInput.files[0].name}`;
-                fileLabel.classList.add('file-label'); // Add a class to the file label for easy identification
-
-                // Check if there's already a file label and remove it before adding the new one
-                const existingFileLabel = document.querySelector('.file-label');
-                if (existingFileLabel) {
-                    existingFileLabel.remove();
-                }
-
-                document.querySelector('.form-group').appendChild(fileLabel);
-            });
-
-            resetBtn.addEventListener('click', function () {
-                fileInput.value = ''; // Clear the selected file
-                const existingFileLabel = document.querySelector('.file-label');
-                if (existingFileLabel) {
-                    existingFileLabel.remove();
-                }
-            });
-
-            // Function to handle files dropped into the drop-zone
-            function handleFileDrop(event) {
-                event.preventDefault();
-                const files = event.dataTransfer.files;
-                fileInput.files = files;
-
-                const fileLabel = document.createElement('p');
-                fileLabel.textContent = `File name: ${files[0].name}`;
-                fileLabel.style.marginTop = '10px';
-                fileLabel.classList.add('file-label'); // Add a class to the file label for easy identification
-
-                // Check if there's already a file label and remove it before adding the new one
-                const existingFileLabel = document.querySelector('.file-label');
-                if (existingFileLabel) {
-                    existingFileLabel.remove();
-                }
-
-                document.querySelector('.form-group').appendChild(fileLabel);
-            }
-
-            // Event listener for the drop-zone to handle the drop event
-            dropZone.addEventListener('drop', handleFileDrop);
-
-            // Event listener for the drop-zone to handle the dragover event
-            dropZone.addEventListener('dragover', function (event) {
-                event.preventDefault();
-            });
-        </script>
-    </div>
-
-    <!--Pop Up-->
-    <div class="popup" id="popup">
-        <div class="popup-content">
-            <h2>File Uploaded!</h2>
-            <img src="~/images/img/Frame_5_1.png" width="140px" />
-            <p id="popup-message" style="font-weight: 600;"></p>
-            <button class="close-button" onclick="closePopup()">Close</button>
+                </div>
+            </form>
         </div>
     </div>
-    
 
     <script>
- 
-        function closePopup() {
-            document.getElementById("popup").style.display = "none";
-        }
+        const fileInput = document.getElementById('file');
+        const resetBtn = document.getElementById('resetBtn');
+        const dropZone = document.getElementById('dropZone');
 
-        function showPopup() {
-            document.getElementById("popup").style.display = "block";
-        }
+        fileInput.addEventListener('change', function () {
+            const fileLabel = document.createElement('p');
+            fileLabel.textContent = `File name: ${fileInput.files[0].name}`;
+            fileLabel.classList.add('file-label'); // Add a class to the file label for easy identification
 
-        // Function lama
-        function submitFormAndShowPopup() {
-            //const selectedStorageType = document.querySelector('input[name="Storage_Type"]:checked');
-      
-            document.getElementById("myForm").submit(); // Kirim form
-            checkDataSaved(); // Panggil fungsi untuk cek data sudah disimpan dan tampilkan popup jika ya
-        }
+            // Check if there's already a file label and remove it before adding the new one
+            const existingFileLabel = document.querySelector('.file-label');
+            if (existingFileLabel) {
+                existingFileLabel.remove();
+            }
 
-        // Fungsi lama
-        function checkDataSaved() {
-            fetch("/Warehouse/CheckDataSaved")
-                .then(response => response.json())
-                .then(data => {
-                    if (data.saved) {
-                        // Data berhasil disimpan, tampilkan popup dengan pesan sukses
-                        document.getElementById("popup-message").textContent = "File Anda telah berhasil diunggah dan data telah disimpan ke dalam database.";
-                        showPopup();
-                    } else {
-                        // Data belum berhasil disimpan, coba cek lagi setelah beberapa waktu (misalnya 1 detik)
-                        setTimeout(checkDataSaved, 1000);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error checking data saved:', error);
-                });
-        }
-
-        // Tambahkan event listener untuk form submit
-        document.getElementById("myForm").addEventListener("submit", function (event) {
-            event.preventDefault(); // Hentikan submit default
-            submitFormAndShowPopup(); // Panggil fungsi untuk submit form dan tampilkan popup
+            document.querySelector('.form-group').appendChild(fileLabel);
         });
 
-
-
-
-        //Popup Loader
-        function showLoadingPopup() {
-            document.getElementById("loading-popup").style.display = "flex";
-        }
-
-        // Function to hide the loading popup
-        function hideLoadingPopup() {
-            document.getElementById("loading-popup").style.display = "none";
-        }
-
-        // Function to check the network status
-        function checkNetworkStatus() {
-            var online = navigator.onLine;
-
-            if (online) {
-                // Connection is restored, hide the loading popup
-                hideLoadingPopup();
-            } else {
-                // Connection is lost, show the loading popup
-                showLoadingPopup();
+        resetBtn.addEventListener('click', function () {
+            fileInput.value = ''; // Clear the selected file
+            const existingFileLabel = document.querySelector('.file-label');
+            if (existingFileLabel) {
+                existingFileLabel.remove();
             }
+        });
+
+        // Function to handle files dropped into the drop-zone
+        function handleFileDrop(event) {
+            event.preventDefault();
+            const files = event.dataTransfer.files;
+            fileInput.files = files;
+
+            const fileLabel = document.createElement('p');
+            fileLabel.textContent = `File name: ${files[0].name}`;
+            fileLabel.style.marginTop = '10px';
+            fileLabel.classList.add('file-label'); // Add a class to the file label for easy identification
+
+            // Check if there's already a file label and remove it before adding the new one
+            const existingFileLabel = document.querySelector('.file-label');
+            if (existingFileLabel) {
+                existingFileLabel.remove();
+            }
+
+            document.querySelector('.form-group').appendChild(fileLabel);
         }
 
-        // Add an event listener to check network status on page load
-        window.addEventListener('load', checkNetworkStatus);
+        // Event listener for the drop-zone to handle the drop event
+        dropZone.addEventListener('drop', handleFileDrop);
 
-        // Add an event listener to check network status when the connection changes
-        window.addEventListener('online', checkNetworkStatus);
-        window.addEventListener('offline', checkNetworkStatus);
+        // Event listener for the drop-zone to handle the dragover event
+        dropZone.addEventListener('dragover', function (event) {
+            event.preventDefault();
+        });
     </script>
+</div>
 
-
-
-@*<div class="popup" id="popupMismatch">
-        <div class="popup-content">
-            <h2>Storage Type Mismatch</h2>
-            <img src="~/images/img/Frame_7.png" width="140px" style="margin-bottom: 10px;margin-top: 10px;" />
-            <p id="popup-mismatch-message" style="font-weight: 600;"></p>
-            <button class="close-button" onclick="closePopupMismatch()">Close</button>
-        </div>
+<!--Pop Up-->
+<div class="popup" id="popup">
+    <div class="popup-content">
+        <h2>File Uploaded!</h2>
+        <img src="~/images/img/Frame_5_1.png" width="140" />
+        <p id="popup-message" style="font-weight: 600;"></p>
+        <button class="close-button" onclick="closePopup()">Close</button>
     </div>
-        //function setStorageType(type) {
-        //    document.getElementById('storageType').value = type;
-        //}
-        //function showStorageTypeAlert() {
-        //    alert("Please select a storage type before uploading.");
-        //}
-        //function showStorageTypeMismatchPopup() {
-        //    document.getElementById("popupMismatch").style.display = "block";
-        //}
+</div>
+<div class="popup" id="popupMismatch">
+    <div class="popup-content">
+        <h2>Storage Type Mismatch</h2>
+        <img src="~/images/img/Frame_7.png" width="140" style="margin-bottom: 10px;margin-top: 10px;" />
+        <p id="popup-mismatch-message" style="font-weight: 600;"></p>
+        <button class="close-button" onclick="closePopupMismatch()">Close</button>
+    </div>
+</div>
 
-        //function closePopupMismatch() {
-        //    document.getElementById("popupMismatch").style.display = "none";
-        //}*@
+<script>
 
-       
+    function closePopup() {
+        document.getElementById("popup").style.display = "none";
+    }
+
+
+    function showPopup() {
+        document.getElementById("popup").style.display = "block";
+    }
+
+    function submitFormAndShowPopup() {
+        //const selectedStorageType = document.querySelector('input[name="Storage_Type"]:checked');
+
+        document.getElementById("myForm").submit(); // Kirim form
+        setTimeout(checkDataSaved, 2000); // Panggil fungsi untuk cek data sudah disimpan dan tampilkan popup jika ya
+    }
+
+    // Fungsi lama
+    function checkDataSaved() {
+        fetch("/Warehouse/CheckDataSaved")
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === "VMI") {
+                    document.getElementById("popup-message").textContent = "VMI data has been successfully uploaded and stored in the database";
+                    showPopup();
+                } else if (data.message === "NonVMI") {
+                    document.getElementById("popup-message").textContent = "Non VMI data has been successfully uploaded and stored in the database";
+                    showPopup();
+                } else {
+                    setTimeout(checkDataSaved, 3000);
+                }
+            })
+            .catch(error => {
+                console.error('Error checking data saved:', error);
+            });
+    }
+
+    // Tambahkan event listener untuk form submit
+    document.getElementById("myForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // Hentikan submit default
+        submitFormAndShowPopup(); // Panggil fungsi untuk submit form dan tampilkan popup
+    });
+
+    //Popup Loader
+    function showLoadingPopup() {
+        document.getElementById("loading-popup").style.display = "flex";
+    }
+
+    // Function to hide the loading popup
+    function hideLoadingPopup() {
+        document.getElementById("loading-popup").style.display = "none";
+    }
+
+    // Function to check the network status
+    function checkNetworkStatus() {
+        var online = navigator.onLine;
+
+        if (online) {
+            // Connection is restored, hide the loading popup
+            hideLoadingPopup();
+        } else {
+            // Connection is lost, show the loading popup
+            showLoadingPopup();
+        }
+    }
+
+    // Add an event listener to check network status on page load
+    window.addEventListener('load', checkNetworkStatus);
+
+    // Add an event listener to check network status when the connection changes
+    window.addEventListener('online', checkNetworkStatus);
+    window.addEventListener('offline', checkNetworkStatus);
+</script>

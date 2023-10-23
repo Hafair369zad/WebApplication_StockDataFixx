@@ -295,7 +295,7 @@ namespace WebApplication_StockDataFixx.Controllers
                 // Add the new data to the database
                 _dbContext.TempWarehouseItems.AddRange(group);
             }
-
+            _dbContext.DeleteFromLog();
             _dbContext.SaveChanges();
 
             // Redirect to the ReportWarehouse action
@@ -484,19 +484,35 @@ namespace WebApplication_StockDataFixx.Controllers
         [HttpGet]
         public IActionResult CheckDataSaved()
         {
-            // Example: Check if there is any WarehouseItem data in the database
-            bool dataSaved = _dbContext.TempWarehouseItems.Any();
+            bool dataSaved = _dbContext.TempWarehouseItemLogs.Any();
+
+            string message = "";
+
+            if (dataSaved)
+            {
+                // Cek apakah salah satu dari tiga data pertama memiliki ISVMI "VMI"
+                bool isVMI = _dbContext.TempWarehouseItemLogs.Any(item => item.Isvmi == "VMI");
+
+                if (isVMI)
+                {
+                    message = "VMI";
+                }
+                else
+                {
+                    message = "NonVMI";
+                }
+            }
 
             // Return the result in JSON format
-            return Json(new { saved = dataSaved });
+            return Json(new { dataSaved, message });
         }
 
         // =========================================================================================================================================================================================================== //
-        
-        
-        
-        
-        
+
+
+
+
+
         // ============================================================================================== DOWNLOAD DATA ============================================================================================== //
 
         // Method Download File Excel 

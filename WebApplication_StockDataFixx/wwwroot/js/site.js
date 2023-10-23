@@ -53,3 +53,17 @@ $(document).ready(function () {
             return true; // Form valid
         }
     });
+
+
+function togglePassword(icon) {
+    var passwordElement = icon.nextElementSibling;
+    if (passwordElement.style.display === 'none' || passwordElement.style.display === '') {
+        passwordElement.style.display = 'inline';
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        passwordElement.style.display = 'none';
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}
