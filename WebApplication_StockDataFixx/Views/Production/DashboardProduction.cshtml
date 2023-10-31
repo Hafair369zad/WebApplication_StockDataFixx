@@ -131,35 +131,90 @@
     }
 
     // Function to update Chart 3
-    function updateChart3(data) {
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    function updateChart3() {
         const ctx = chart3.getContext('2d');
         if (window.chart3Instance) {
             window.chart3Instance.destroy(); // Hancurkan objek Chart yang ada
         }
 
-        window.chart3Instance = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['K', 'PC', 'SET', 'G', 'KG', 'M', 'ML', 'ROLL'],
-                datasets: [
-                    {
-                        label: `Unit Distribution Production for ${getMonthName(selectedMonth)}`,
-                        data: data,
-                        borderWidth: 2,
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#E91E63', '#2196F3', '#FFA07A', '#FFD700'],
+        // Menggunakan AJAX untuk mendapatkan data dari controller GetChart3Data
+        $.ajax({
+            url: '/Production/GetChart3Data',
+            method: 'GET',
+            data: { selectedMonth: selectedMonth }, // Anda perlu mengganti ControllerName dengan nama controller yang sesuai
+            success: function (data) {
+                const backgroundColors = data.labels.map(() => getRandomColor());
+
+                window.chart3Instance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            {
+                                label: `Unit Distribution Production for ${getMonthName(selectedMonth)}`,
+                                data: data.values,
+                                borderWidth: 2,
+                                backgroundColor: backgroundColors,
+                            },
+                        ],
                     },
-                ],
-            },
-            options: {
-                cutout: '50%',
-                plugins: {
-                    legend: {
-                        position: 'bottom',
+                    options: {
+                        cutout: '50%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            },
+                        },
                     },
-                },
+                });
             },
+            error: function () {
+                console.log('Failed to retrieve data for Chart 3');
+            }
         });
     }
+
+
+
+
+    //function updateChart3(data) {
+    //    const ctx = chart3.getContext('2d');
+    //    if (window.chart3Instance) {
+    //        window.chart3Instance.destroy(); // Hancurkan objek Chart yang ada
+    //    }
+
+    //    window.chart3Instance = new Chart(ctx, {
+    //        type: 'doughnut',
+    //        data: {
+    //            labels: ['K', 'PC', 'SET', 'G', 'KG', 'M', 'ML', 'ROLL'],
+    //            datasets: [
+    //                {
+    //                    label: `Unit Distribution Production for ${getMonthName(selectedMonth)}`,
+    //                    data: data,
+    //                    borderWidth: 2,
+    //                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#E91E63', '#2196F3', '#FFA07A', '#FFD700'],
+    //                },
+    //            ],
+    //        },
+    //        options: {
+    //            cutout: '50%',
+    //            plugins: {
+    //                legend: {
+    //                    position: 'bottom',
+    //                },
+    //            },
+    //        },
+    //    });
+    //}
 
 
     // Function to convert month number to name

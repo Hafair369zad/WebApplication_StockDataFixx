@@ -567,10 +567,6 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
 
-
-
-
-
         [HttpGet]
         public IActionResult GetChart2Data(int year)
         {
@@ -618,40 +614,22 @@ namespace WebApplication_StockDataFixx.Controllers
 
             string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
 
-
             try
             {
-                double totalKUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "K" && item.AccessPlant == accessPlant)
-                    .Count();
+                var unitData = _dbContext.ProductionItems
+                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.AccessPlant == accessPlant)
+                    .GroupBy(item => item.Unit)
+                    .Select(group => new
+                    {
+                        Unit = group.Key,
+                        Count = group.Count()
+                    })
+                    .ToList();
 
-                double totalPcsUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "PC" && item.AccessPlant == accessPlant)
-                    .Count();
+                var labels = unitData.Select(data => data.Unit).ToArray();
+                var values = unitData.Select(data => data.Count).ToArray();
 
-                double totalSetUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "SET" && item.AccessPlant == accessPlant)
-                    .Count();
-
-                double totalGUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "G" && item.AccessPlant == accessPlant)
-                    .Count();
-
-                double totalKGUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "KG" && item.AccessPlant == accessPlant)
-                    .Count();
-
-                double totalMUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M" && item.AccessPlant == accessPlant)
-                    .Count();
-                double totalMLUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ML" && item.AccessPlant == accessPlant)
-                    .Count();
-                double totalROLLUnits = _dbContext.ProductionItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ROLL" && item.AccessPlant == accessPlant)
-                    .Count();
-
-                var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits, totalMLUnits, totalROLLUnits };
+                var chartData = new { labels, values };
 
                 return Json(chartData);
             }
@@ -664,3 +642,62 @@ namespace WebApplication_StockDataFixx.Controllers
         // ============================================================================================================================================================================================================ //
     }
 }
+
+
+//[HttpGet]
+//public IActionResult GetChart3Data(string selectedMonth)
+//{
+//    if (string.IsNullOrEmpty(selectedMonth))
+//    {
+//        return BadRequest("Selected month is missing or invalid.");
+//    }
+
+//    if (!int.TryParse(selectedMonth, out int selectedMonthValue))
+//    {
+//        return BadRequest("Selected month is not a valid integer.");
+//    }
+
+//    string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
+
+//    try
+//    {
+//        double totalKUnits = _dbContext.ProductionItems
+//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "K" && item.AccessPlant == accessPlant)
+//            .Count();
+
+//        double totalPcsUnits = _dbContext.ProductionItems
+//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "PC" && item.AccessPlant == accessPlant)
+//            .Count();
+
+//        double totalSetUnits = _dbContext.ProductionItems
+//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "SET" && item.AccessPlant == accessPlant)
+//            .Count();
+
+//        double totalGUnits = _dbContext.ProductionItems
+//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "G" && item.AccessPlant == accessPlant)
+//            .Count();
+
+//        double totalKGUnits = _dbContext.ProductionItems
+//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "KG" && item.AccessPlant == accessPlant)
+//            .Count();
+
+//        double totalMUnits = _dbContext.ProductionItems
+//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M" && item.AccessPlant == accessPlant)
+//            .Count();
+//        double totalMLUnits = _dbContext.ProductionItems
+//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ML" && item.AccessPlant == accessPlant)
+//            .Count();
+//        double totalROLLUnits = _dbContext.ProductionItems
+//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ROLL" && item.AccessPlant == accessPlant)
+//            .Count();
+
+//        var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits, totalMLUnits, totalROLLUnits };
+
+//        return Json(chartData);
+//    }
+//    catch (Exception)
+//    {
+//        return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while fetching chart data.");
+//    }
+//}

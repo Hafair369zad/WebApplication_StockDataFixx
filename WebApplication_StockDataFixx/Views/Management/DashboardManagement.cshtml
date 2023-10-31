@@ -671,99 +671,212 @@
     // Warehouse
 
     // Function to update Chart 3 (VMI)
-    function updateChart3(data) {
+
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    function updateChart3() {
         const ctx = chart3.getContext('2d');
         if (window.chart3Instance) {
             window.chart3Instance.destroy(); // Hancurkan objek Chart yang ada
         }
 
-        window.chart3Instance = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['K', 'PC', 'SET', 'G', 'KG', 'M', 'ML', 'ROLL'],
-                datasets: [
-                    {
-                        label: `Unit Distribution VMI for ${getMonthName(selectedMonth)}`,
-                        data: data,
-                        borderWidth: 2,
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#E91E63', '#2196F3', '#FFA07A', '#FFD700'],
+        // Menggunakan AJAX untuk mendapatkan data dari controller GetChart3Data
+        $.ajax({
+            url: '/Management/GetChart3DataWrh',
+            method: 'GET',
+            data: { selectedMonth: selectedMonth }, // Anda perlu mengganti ControllerName dengan nama controller yang sesuai
+            success: function (data) {
+                const backgroundColors = data.labels.map(() => getRandomColor());
+
+                window.chart3Instance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            {
+                                label: `Unit Distribution VMI for ${getMonthName(selectedMonth)}`,
+                                data: data.values,
+                                borderWidth: 2,
+                                backgroundColor: backgroundColors,
+                            },
+                        ],
                     },
-                ],
-            },
-            options: {
-                cutout: '50%',
-                plugins: {
-                    legend: {
-                        position: 'bottom',
+                    options: {
+                        cutout: '50%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            },
+                        },
                     },
-                },
+                });
             },
+            error: function () {
+                console.log('Failed to retrieve data for Chart 3');
+            }
         });
     }
 
+    //function updateChart3(data) {
+    //    const ctx = chart3.getContext('2d');
+    //    if (window.chart3Instance) {
+    //        window.chart3Instance.destroy(); // Hancurkan objek Chart yang ada
+    //    }
+
+    //    window.chart3Instance = new Chart(ctx, {
+    //        type: 'doughnut',
+    //        data: {
+    //            labels: ['K', 'PC', 'SET', 'G', 'KG', 'M', 'ML', 'ROLL'],
+    //            datasets: [
+    //                {
+    //                    label: `Unit Distribution VMI for ${getMonthName(selectedMonth)}`,
+    //                    data: data,
+    //                    borderWidth: 2,
+    //                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#E91E63', '#2196F3', '#FFA07A', '#FFD700'],
+    //                },
+    //            ],
+    //        },
+    //        options: {
+    //            cutout: '50%',
+    //            plugins: {
+    //                legend: {
+    //                    position: 'bottom',
+    //                },
+    //            },
+    //        },
+    //    });
+    //}
+
+
     // Function to update Chart 4 (NonVMI)
-    function updateChart4(data) {
+
+    function updateChart4() {
         const ctx = chart4.getContext('2d');
         if (window.chart4Instance) {
             window.chart4Instance.destroy(); // Hancurkan objek Chart yang ada
         }
 
-        window.chart4Instance = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['K', 'PC', 'SET', 'G', 'KG', 'M', 'ML', 'ROLL'],
-                datasets: [
-                    {
-                        label: `Unit Distribution NonVMI for ${getMonthName(selectedMonth)}`,
-                        data: data,
-                        borderWidth: 2,
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#E91E63', '#2196F3', '#FFA07A', '#FFD700'],
+        // Menggunakan AJAX untuk mendapatkan data dari controller GetChart4Data
+        $.ajax({
+            url: '/Management/GetChart4DataWrh',
+            method: 'GET',
+            data: { selectedMonth: selectedMonth }, // Anda perlu mengganti ControllerName dengan nama controller yang sesuai
+            success: function (data) {
+                const backgroundColors = data.labels.map(() => getRandomColor());
+
+                window.chart4Instance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            {
+                                label: `Unit Distribution NonVMI for ${getMonthName(selectedMonth)}`,
+                                data: data.values,
+                                borderWidth: 2,
+                                backgroundColor: backgroundColors,
+                            },
+                        ],
                     },
-                ],
-            },
-            options: {
-                cutout: '50%',
-                plugins: {
-                    legend: {
-                        position: 'bottom',
+                    options: {
+                        cutout: '50%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            },
+                        },
                     },
-                },
+                });
             },
+            error: function () {
+                console.log('Failed to retrieve data for Chart 4');
+            }
         });
     }
+
+
+
+    //function updateChart4(data) {
+    //    const ctx = chart4.getContext('2d');
+    //    if (window.chart4Instance) {
+    //        window.chart4Instance.destroy(); // Hancurkan objek Chart yang ada
+    //    }
+
+    //    window.chart4Instance = new Chart(ctx, {
+    //        type: 'doughnut',
+    //        data: {
+    //            labels: ['K', 'PC', 'SET', 'G', 'KG', 'M', 'ML', 'ROLL'],
+    //            datasets: [
+    //                {
+    //                    label: `Unit Distribution NonVMI for ${getMonthName(selectedMonth)}`,
+    //                    data: data,
+    //                    borderWidth: 2,
+    //                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#E91E63', '#2196F3', '#FFA07A', '#FFD700'],
+    //                },
+    //            ],
+    //        },
+    //        options: {
+    //            cutout: '50%',
+    //            plugins: {
+    //                legend: {
+    //                    position: 'bottom',
+    //                },
+    //            },
+    //        },
+    //    });
+    //}
 
 
 
     //Production
 
     // Function to update Chart 3
-    function updateChart7(data) {
+
+    function updateChart7() {
         const ctx = chart7.getContext('2d');
         if (window.chart7Instance) {
             window.chart7Instance.destroy(); // Hancurkan objek Chart yang ada
         }
 
-        window.chart7Instance = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['K', 'PC', 'SET', 'G', 'KG', 'M', 'ML', 'ROLL'],
-                datasets: [
-                    {
-                        label: `Unit Distribution Production for ${getMonthName(selectedMonth)}`,
-                        data: data,
-                        borderWidth: 2,
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#E91E63', '#2196F3', '#FFA07A', '#FFD700'],
+        $.ajax({
+            url: '/Management/GetChart3DataProd',
+            method: 'GET',
+            data: { selectedMonth: selectedMonth }, // Anda perlu mengganti ControllerName dengan nama controller yang sesuai
+            success: function (data) {
+                const backgroundColors = data.labels.map(() => getRandomColor());
+
+                window.chart7Instance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            {
+                                label: `Unit Distribution Production for ${getMonthName(selectedMonth)}`,
+                                data: data.values,
+                                borderWidth: 2,
+                                backgroundColor: backgroundColors,
+                            },
+                        ],
                     },
-                ],
-            },
-            options: {
-                cutout: '50%',
-                plugins: {
-                    legend: {
-                        position: 'bottom',
+                    options: {
+                        cutout: '50%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            },
+                        },
                     },
-                },
+                });
             },
+            error: function () {
+                console.log('Failed to retrieve data for Chart 7');
+            }
         });
     }
 

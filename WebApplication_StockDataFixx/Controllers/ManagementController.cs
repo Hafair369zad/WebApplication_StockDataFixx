@@ -753,6 +753,7 @@ namespace WebApplication_StockDataFixx.Controllers
             return GetChartDataForUnitTypeWrh(selectedMonth, "NonVMI");
         }
 
+
         private IActionResult GetChartDataForUnitTypeWrh(string selectedMonth, string isvmiType)
         {
             if (string.IsNullOrEmpty(selectedMonth))
@@ -806,16 +807,19 @@ namespace WebApplication_StockDataFixx.Controllers
                     }
                 }
 
-                double totalKUnits = data.Count(item => item.Unit == "K");
-                double totalPcsUnits = data.Count(item => item.Unit == "PC");
-                double totalSetUnits = data.Count(item => item.Unit == "SET");
-                double totalGUnits = data.Count(item => item.Unit == "G");
-                double totalKGUnits = data.Count(item => item.Unit == "KG");
-                double totalMUnits = data.Count(item => item.Unit == "M");
-                double totalMLUnits = data.Count(item => item.Unit == "ML");
-                double totalROLLUnits = data.Count(item => item.Unit == "ROLL");
+                var unitData = data
+                    .GroupBy(item => item.Unit)
+                    .Select(group => new
+                    {
+                        Unit = group.Key,
+                        Count = group.Count()
+                    })
+                    .ToList();
 
-                var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits, totalMLUnits, totalROLLUnits };
+                var labels = unitData.Select(data => data.Unit).ToArray();
+                var values = unitData.Select(data => data.Count).ToArray();
+
+                var chartData = new { labels, values };
 
                 return Json(chartData);
             }
@@ -824,6 +828,81 @@ namespace WebApplication_StockDataFixx.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while fetching chart data.");
             }
         }
+
+
+
+
+        //private IActionResult GetChartDataForUnitTypeWrh(string selectedMonth, string isvmiType)
+        //{
+        //    if (string.IsNullOrEmpty(selectedMonth))
+        //    {
+        //        return BadRequest("Selected month is missing or invalid.");
+        //    }
+
+        //    if (!int.TryParse(selectedMonth, out int selectedMonthValue))
+        //    {
+        //        return BadRequest("Selected month is not a valid integer.");
+        //    }
+
+        //    string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
+        //    try
+        //    {
+        //        IQueryable<WarehouseItem> data = _dbContext.WarehouseItems
+        //            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Isvmi == isvmiType);
+
+        //        if (!string.IsNullOrEmpty(accessPlant))
+        //        {
+        //            if (accessPlant == "VIEW-RIFO")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFR, WRH-RIFA, WRH-RIFC, WRH-RIFL, WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "WRH-RIFA" || item.AccessPlant == "WRH-RIFC" || item.AccessPlant == "WRH-RIFL" || item.AccessPlant == "WRH-RIFR" || item.AccessPlant == "WRH-RIFW");
+        //            }
+        //            else if (accessPlant == "VIEW-RIFA")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "WRH-RIFA");
+        //            }
+        //            else if (accessPlant == "VIEW-RIFC")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "WRH-RIFC");
+        //            }
+        //            else if (accessPlant == "VIEW-RIFL")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "WRH-RIFL");
+        //            }
+        //            else if (accessPlant == "VIEW-RIFR")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "WRH-RIFR");
+        //            }
+        //            else if (accessPlant == "VIEW-RIFW")
+        //            {
+        //                // Tampilkan data dengan accessPlant WRH-RIFW
+        //                data = data.Where(item => item.AccessPlant == "WRH-RIFW");
+        //            }
+        //        }
+
+        //        double totalKUnits = data.Count(item => item.Unit == "K");
+        //        double totalPcsUnits = data.Count(item => item.Unit == "PC");
+        //        double totalSetUnits = data.Count(item => item.Unit == "SET");
+        //        double totalGUnits = data.Count(item => item.Unit == "G");
+        //        double totalKGUnits = data.Count(item => item.Unit == "KG");
+        //        double totalMUnits = data.Count(item => item.Unit == "M");
+        //        double totalMLUnits = data.Count(item => item.Unit == "ML");
+        //        double totalROLLUnits = data.Count(item => item.Unit == "ROLL");
+
+        //        var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits, totalMLUnits, totalROLLUnits };
+
+        //        return Json(chartData);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while fetching chart data.");
+        //    }
+        //}
 
 
         // ============================================================================================================================================================================================================== //
@@ -1174,16 +1253,19 @@ namespace WebApplication_StockDataFixx.Controllers
                     }
                 }
 
-                double totalKUnits = data.Count(item => item.Unit == "K");
-                double totalPcsUnits = data.Count(item => item.Unit == "PC");
-                double totalSetUnits = data.Count(item => item.Unit == "SET");
-                double totalGUnits = data.Count(item => item.Unit == "G");
-                double totalKGUnits = data.Count(item => item.Unit == "KG");
-                double totalMUnits = data.Count(item => item.Unit == "M");
-                double totalMLUnits = data.Count(item => item.Unit == "ML");
-                double totalROLLUnits = data.Count(item => item.Unit == "ROLL");
+                var unitDataProd = data
+                    .GroupBy(item => item.Unit)
+                    .Select(group => new
+                    {
+                        Unit = group.Key,
+                        Count = group.Count()
+                    })
+                    .ToList();
 
-                var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits, totalMLUnits, totalROLLUnits };
+                var labels = unitDataProd.Select(data => data.Unit).ToArray();
+                var values = unitDataProd.Select(data => data.Count).ToArray();
+
+                var chartData = new { labels, values };
 
                 return Json(chartData);
             }

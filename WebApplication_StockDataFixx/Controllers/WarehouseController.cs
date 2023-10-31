@@ -735,38 +735,20 @@ namespace WebApplication_StockDataFixx.Controllers
 
             try
             {
-                double totalKUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "K" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
-                    .Count();
+                var unitData = _dbContext.WarehouseItems
+                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
+                    .GroupBy(item => item.Unit)
+                    .Select(group => new
+                    {
+                        Unit = group.Key,
+                        Count = group.Count()
+                    })
+                    .ToList();
 
-                double totalPcsUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "PC" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
-                    .Count();
+                var labels = unitData.Select(data => data.Unit).ToArray();
+                var values = unitData.Select(data => data.Count).ToArray();
 
-                double totalSetUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "SET" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
-                    .Count();
-
-                double totalGUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "G" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
-                    .Count();
-
-                int totalKGUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "KG" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
-                    .Count();
-
-                double totalMUnits = _dbContext.WarehouseItems
-                    .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
-                    .Count();
-                double totalMLUnits = _dbContext.WarehouseItems
-                   .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ML" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
-                   .Count();
-                double totalROLLLUnits = _dbContext.WarehouseItems
-                   .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ROLL" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
-                   .Count();
-
-
-                var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits, totalMLUnits, totalROLLLUnits };
+                var chartData = new { labels, values };
 
                 return Json(chartData);
             }
@@ -775,6 +757,7 @@ namespace WebApplication_StockDataFixx.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while fetching chart data.");
             }
         }
+
 
         // =============================================================================================================================================================================================== //
     }
@@ -824,8 +807,68 @@ namespace WebApplication_StockDataFixx.Controllers
 //    return false;
 //}
 
+
+//private IActionResult GetChartDataForUnitType(string selectedMonth, string isvmiType)
+//{
+//    if (string.IsNullOrEmpty(selectedMonth))
+//    {
+//        return BadRequest("Selected month is missing or invalid.");
+//    }
+
+//    if (!int.TryParse(selectedMonth, out int selectedMonthValue))
+//    {
+//        return BadRequest("Selected month is not a valid integer.");
+//    }
+
+//    string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
+
+//    try
+//    {
+//        double totalKUnits = _dbContext.WarehouseItems
+//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "K" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
+//            .Count();
+
+//        double totalPcsUnits = _dbContext.WarehouseItems
+//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "PC" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
+//            .Count();
+
+//        double totalSetUnits = _dbContext.WarehouseItems
+//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "SET" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
+//            .Count();
+
+//        double totalGUnits = _dbContext.WarehouseItems
+//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "G" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
+//            .Count();
+
+//        int totalKGUnits = _dbContext.WarehouseItems
+//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "KG" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
+//            .Count();
+
+//        double totalMUnits = _dbContext.WarehouseItems
+//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
+//            .Count();
+//        double totalMLUnits = _dbContext.WarehouseItems
+//           .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ML" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
+//           .Count();
+//        double totalROLLLUnits = _dbContext.WarehouseItems
+//           .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ROLL" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
+//           .Count();
+
+
+//        var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits, totalMLUnits, totalROLLLUnits };
+
+//        return Json(chartData);
+//    }
+//    catch (Exception)
+//    {
+//        return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while fetching chart data.");
+//    }
+//}
+
+
+
+
 //\\\\\\\\\/\/\/////////////////\\\\\\\\///////////////////\\\\\\
 
 
 
-// atur agar mengabaikan pilihan input pilih tipe storage pada UploadDataWarehouse.cshtml . dan untuk mendeteksi jenis tipe storage pada file excel menggunakan method IsUploadedFileVMI yang menandakan file tersebut bertipe VMI , jika tidak memenuhi method tersebut makan file tersebut bertipe NonVMI 

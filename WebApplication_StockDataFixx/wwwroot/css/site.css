@@ -1546,3 +1546,14 @@ body.active .wrapper .section .top_navbar .nav-logout {
     border: 0.5px solid #D1D1EE;
 }
 /*End button add user admin*/
+
+/*Disbled Link*/
+.disabled-link {
+    pointer-events: none;
+    text-decoration: none;
+}
+.disabled-link span,
+.disabled-link i{
+    color: #888;
+}
+/*End Disbled Link*/
