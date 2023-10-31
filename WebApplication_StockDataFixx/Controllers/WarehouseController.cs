@@ -337,7 +337,8 @@ namespace WebApplication_StockDataFixx.Controllers
             var headerRow = worksheet.Row(1);
             var columnNames = headerRow.Cells().Select(cell => cell.Value.ToString().Trim()).ToList();
 
-            return columnNames.Contains("VendorCode") && columnNames.Contains("VendorName") && columnNames.Contains("StockType");
+            return columnNames.Contains("Vendor") && columnNames.Contains("Vendor Name") && columnNames.Contains("Stock Typ");
+            //return columnNames.Contains("VendorCode") && columnNames.Contains("VendorName") && columnNames.Contains("StockType");
         }
 
 
@@ -542,9 +543,9 @@ namespace WebApplication_StockDataFixx.Controllers
             // If Isvmi is true, include Vendor Code and Vendor Name in header
             if (Isvmi)
             {
-                worksheet.Cell(1, columnIndex).Value = "Stock Type";
+                worksheet.Cell(1, columnIndex).Value = "Stock Typ";
                 columnIndex++;
-                worksheet.Cell(1, columnIndex).Value = "Vendor Code";
+                worksheet.Cell(1, columnIndex).Value = "Vendor";
                 columnIndex++;
                 worksheet.Cell(1, columnIndex).Value = "Vendor Name";
                 columnIndex++;
@@ -552,11 +553,11 @@ namespace WebApplication_StockDataFixx.Controllers
 
             worksheet.Cell(1, columnIndex).Value = "Material";
             columnIndex++;
-            worksheet.Cell(1, columnIndex).Value = "Material Desc";
+            worksheet.Cell(1, columnIndex).Value = "Descr";
             columnIndex++;
             worksheet.Cell(1, columnIndex).Value = "Unrestr";
             columnIndex++;
-            worksheet.Cell(1, columnIndex).Value = "QualInsp";
+            worksheet.Cell(1, columnIndex).Value = "Qual";
             columnIndex++;
             worksheet.Cell(1, columnIndex).Value = "Blocked";
             columnIndex++;
@@ -570,9 +571,9 @@ namespace WebApplication_StockDataFixx.Controllers
                 var item = data[i];
                 worksheet.Cell(i + 2, 1).Value = item.Plant;
                 worksheet.Cell(i + 2, 2).Value = item.Sloc;
-                worksheet.Cell(i + 2, 3).Value = item.Month;
+                worksheet.Cell(i + 2, 3).Value = int.TryParse(item.Month, out int monthValue) ? monthValue : 0;
                 worksheet.Cell(i + 2, 4).Value = item.SerialNo;
-                worksheet.Cell(i + 2, 5).Value = item.TagNo;
+                worksheet.Cell(i + 2, 5).Value = int.TryParse(item.TagNo, out int tagNoValue) ? tagNoValue : 0;
 
                 columnIndex = 6; // Start index for columns after Tag No
 
@@ -593,9 +594,9 @@ namespace WebApplication_StockDataFixx.Controllers
                 columnIndex++;
                 worksheet.Cell(i + 2, columnIndex).Value = item.ActualQty;
                 columnIndex++;
-                worksheet.Cell(i + 2, columnIndex).Value = item.QualInsp;
+                worksheet.Cell(i + 2, columnIndex).Value = int.TryParse(item.QualInsp, out int qualValue) ? qualValue : 0;
                 columnIndex++;
-                worksheet.Cell(i + 2, columnIndex).Value = item.Blocked;
+                worksheet.Cell(i + 2, columnIndex).Value = int.TryParse(item.Blocked, out int blockedValue) ? blockedValue : 0;
                 columnIndex++;
                 worksheet.Cell(i + 2, columnIndex).Value = item.Unit;
                 columnIndex++;

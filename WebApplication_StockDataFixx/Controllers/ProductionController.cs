@@ -395,7 +395,7 @@ namespace WebApplication_StockDataFixx.Controllers
             worksheet.Cell(1, 6).Value = "Material";
             worksheet.Cell(1, 7).Value = "Descr";
             worksheet.Cell(1, 8).Value = "Unrestr";
-            worksheet.Cell(1, 9).Value = "QualInsp";
+            worksheet.Cell(1, 9).Value = "Qual";
             worksheet.Cell(1, 10).Value = "Blocked";
             worksheet.Cell(1, 11).Value = "Unit";
             worksheet.Cell(1, 12).Value = "Issue Planner";
@@ -406,14 +406,14 @@ namespace WebApplication_StockDataFixx.Controllers
                 var item = data[i];
                 worksheet.Cell(i + 2, 1).Value = item.Plant;
                 worksheet.Cell(i + 2, 2).Value = item.Sloc;
-                worksheet.Cell(i + 2, 3).Value = item.Month;
+                worksheet.Cell(i + 2, 3).Value = int.TryParse(item.Month, out int monthValue) ? monthValue : 0;
                 worksheet.Cell(i + 2, 4).Value = item.SerialNo;
-                worksheet.Cell(i + 2, 5).Value = item.TagNo;
+                worksheet.Cell(i + 2, 5).Value = int.TryParse(item.TagNo, out int tagNoValue) ? tagNoValue : 0;
                 worksheet.Cell(i + 2, 6).Value = item.Material;
                 worksheet.Cell(i + 2, 7).Value = item.MaterialDesc;
                 worksheet.Cell(i + 2, 8).Value = item.ActualQty;
-                worksheet.Cell(i + 2, 9).Value = item.QualInsp;
-                worksheet.Cell(i + 2, 10).Value = item.Blocked;
+                worksheet.Cell(i + 2, 9).Value = int.TryParse(item.QualInsp, out int qualValue) ? qualValue : 0;
+                worksheet.Cell(i + 2, 10).Value = int.TryParse(item.Blocked, out int blockedValue) ? blockedValue : 0;
                 worksheet.Cell(i + 2, 11).Value = item.Unit;
                 worksheet.Cell(i + 2, 12).Value = item.IssuePlanner;
             }
