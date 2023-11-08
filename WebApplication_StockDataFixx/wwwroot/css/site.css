@@ -1557,3 +1557,25 @@ body.active .wrapper .section .top_navbar .nav-logout {
     color: #888;
 }
 /*End Disbled Link*/
+
+
+/*IMG Add User*/
+.AddUserImg {
+    display: flex;
+    justify-content: space-between;
+}
+
+@media (max-width: 767px) {
+    .AddUserImg {
+        flex-direction: column;
+    }
+    .imgAddUser {
+        margin-top: 20px;
+        margin-left: 5px;
+    }
+}
+.imgAddUser {
+    margin-top: 90px;
+    margin-left: 45px;
+}
+/*End IMG Add User*/
