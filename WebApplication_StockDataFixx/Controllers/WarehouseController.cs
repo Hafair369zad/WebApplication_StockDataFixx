@@ -258,14 +258,11 @@ namespace WebApplication_StockDataFixx.Controllers
             return data.OrderBy(w => w.SerialNo).ToList();
         }
 
-
-
         // ============================================================================================================================================================================================================ //
 
 
         // ================================================================================================ UPLOAD DATA =============================================================================================== //
 
-        // Method to Process Upload File  
         [HttpPost]
         public IActionResult UploadFile(IFormFile file)
         {
@@ -295,7 +292,7 @@ namespace WebApplication_StockDataFixx.Controllers
                 // Add the new data to the database
                 _dbContext.TempWarehouseItems.AddRange(group);
             }
-            _dbContext.DeleteFromLog();
+            
             _dbContext.SaveChanges();
 
             // Redirect to the ReportWarehouse action
@@ -307,16 +304,12 @@ namespace WebApplication_StockDataFixx.Controllers
         {
             List<TempWarehouseItem> uploadedData = new List<TempWarehouseItem>();
 
-            // Read data from the Excel file using UTF-8 encoding
             using (var stream = file.OpenReadStream())
             {
                 using (var workbook = new XLWorkbook(stream))
                 {
                     var worksheet = workbook.Worksheet(1); // Assuming data is in the first worksheet
                     var rows = worksheet.RowsUsed();
-
-                    // Check if the Excel file is VMI or Non-VMI based on column names
-                    bool isVMI = IsVMIExcelFile(worksheet);
 
                     if (isVMI)
                     {
@@ -338,9 +331,7 @@ namespace WebApplication_StockDataFixx.Controllers
             var columnNames = headerRow.Cells().Select(cell => cell.Value.ToString().Trim()).ToList();
 
             return columnNames.Contains("Vendor") && columnNames.Contains("Vendor Name") && columnNames.Contains("Stock Typ");
-            //return columnNames.Contains("VendorCode") && columnNames.Contains("VendorName") && columnNames.Contains("StockType");
         }
-
 
         // Method for processing the uploaded Excel file StorageType VMI 
         private List<TempWarehouseItem> ProcessExcelFileVMI(IEnumerable<IXLRow> rows)
@@ -353,7 +344,6 @@ namespace WebApplication_StockDataFixx.Controllers
                 var actualQtyCell = row.Cell(11); // Corrected index for the Unrestr field
                 if (actualQtyCell.TryGetValue(out actualQty))
                 {
-                    // If Unrestr field contains a numeric value, set ActualQty to 0
                     actualQty = 0;
                 }
 
@@ -409,7 +399,6 @@ namespace WebApplication_StockDataFixx.Controllers
 
             return uploadedData;
         }
-
 
         // Method for processing the uploaded Excel file StorageType Non VMI 
         private List<TempWarehouseItem> ProcessExcelFileNonVMI(IEnumerable<IXLRow> rows)
@@ -479,33 +468,13 @@ namespace WebApplication_StockDataFixx.Controllers
             return uploadedData;
         }
 
-
-
         // Action method to handle the request for checking the status of saved data
         [HttpGet]
         public IActionResult CheckDataSaved()
         {
-            bool dataSaved = _dbContext.TempWarehouseItemLogs.Any();
+            // Example: Check if there is any WarehouseItem data in the database
 
-            string message = "";
-
-            if (dataSaved)
-            {
-                // Cek apakah salah satu dari tiga data pertama memiliki ISVMI "VMI"
-                bool isVMI = _dbContext.TempWarehouseItemLogs.Any(item => item.Isvmi == "VMI");
-
-                if (isVMI)
-                {
-                    message = "VMI";
-                }
-                else
-                {
-                    message = "NonVMI";
-                }
-            }
-
-            // Return the result in JSON format
-            return Json(new { dataSaved, message });
+            return Json(new { statusISVMI = result });
         }
 
         // =========================================================================================================================================================================================================== //
@@ -763,113 +732,3 @@ namespace WebApplication_StockDataFixx.Controllers
         // =============================================================================================================================================================================================== //
     }
 }
-
-
-
-
-
-
-
-
-//  Method jangan dihapus dulu yakk // 
-
-//private bool IsUploadedFileNonVMI(IEnumerable<IXLRow> rows)
-//{
-//    // Check if the uploaded file is VMI
-//    foreach (var row in rows.Skip(1)) // Skip header row
-//    {
-//        string stockType = row.Cell(6).Value.ToString();
-//        string vendorCode = row.Cell(7).Value.ToString();
-//        string vendorName = row.Cell(8).Value.ToString();
-
-//        if (string.IsNullOrWhiteSpace(stockType) && string.IsNullOrWhiteSpace(vendorCode) && string.IsNullOrWhiteSpace(vendorName))
-//        {
-//            return true;  // If all three fields are not empty, the file is VMI
-//        }
-//    }
-//    return false;
-//}
-
-
-//private bool IsUploadedFileVMI(IEnumerable<IXLRow> rows)
-//{
-//    // Check if the uploaded file is VMI
-//    foreach (var row in rows.Skip(1)) // Skip header row
-//    {
-//        string stockType = row.Cell(6).Value.ToString();
-//        string vendorCode = row.Cell(7).Value.ToString();
-//        string vendorName = row.Cell(8).Value.ToString();
-
-//        if (!string.IsNullOrWhiteSpace(stockType) && !string.IsNullOrWhiteSpace(vendorCode) && !string.IsNullOrWhiteSpace(vendorName))
-//        {
-//            return true;  // If all three fields are not empty, the file is VMI
-//        }
-//    }
-//    return false;
-//}
-
-
-//private IActionResult GetChartDataForUnitType(string selectedMonth, string isvmiType)
-//{
-//    if (string.IsNullOrEmpty(selectedMonth))
-//    {
-//        return BadRequest("Selected month is missing or invalid.");
-//    }
-
-//    if (!int.TryParse(selectedMonth, out int selectedMonthValue))
-//    {
-//        return BadRequest("Selected month is not a valid integer.");
-//    }
-
-//    string accessPlant = HttpContext.Session.GetString("AccessPlant") ?? "";
-
-//    try
-//    {
-//        double totalKUnits = _dbContext.WarehouseItems
-//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "K" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
-//            .Count();
-
-//        double totalPcsUnits = _dbContext.WarehouseItems
-//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "PC" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
-//            .Count();
-
-//        double totalSetUnits = _dbContext.WarehouseItems
-//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "SET" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
-//            .Count();
-
-//        double totalGUnits = _dbContext.WarehouseItems
-//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "G" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
-//            .Count();
-
-//        int totalKGUnits = _dbContext.WarehouseItems
-//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "KG" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
-//            .Count();
-
-//        double totalMUnits = _dbContext.WarehouseItems
-//            .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "M" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
-//            .Count();
-//        double totalMLUnits = _dbContext.WarehouseItems
-//           .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ML" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
-//           .Count();
-//        double totalROLLLUnits = _dbContext.WarehouseItems
-//           .Where(item => item.LastUpload.Month == selectedMonthValue && item.Unit == "ROLL" && item.Isvmi == isvmiType && item.AccessPlant == accessPlant)
-//           .Count();
-
-
-//        var chartData = new[] { totalKUnits, totalPcsUnits, totalSetUnits, totalGUnits, totalKGUnits, totalMUnits, totalMLUnits, totalROLLLUnits };
-
-//        return Json(chartData);
-//    }
-//    catch (Exception)
-//    {
-//        return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while fetching chart data.");
-//    }
-//}
-
-
-
-
-//\\\\\\\\\/\/\/////////////////\\\\\\\\///////////////////\\\\\\
-
-
-

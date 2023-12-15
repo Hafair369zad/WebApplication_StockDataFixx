@@ -166,21 +166,12 @@
         <button class="close-button" onclick="closePopup()">Close</button>
     </div>
 </div>
-<div class="popup" id="popupMismatch">
-    <div class="popup-content">
-        <h2>Storage Type Mismatch</h2>
-        <img src="~/images/img/Frame_7.png" width="140" style="margin-bottom: 10px;margin-top: 10px;" />
-        <p id="popup-mismatch-message" style="font-weight: 600;"></p>
-        <button class="close-button" onclick="closePopupMismatch()">Close</button>
-    </div>
-</div>
 
 <script>
 
     function closePopup() {
         document.getElementById("popup").style.display = "none";
     }
-
 
     function showPopup() {
         document.getElementById("popup").style.display = "block";

@@ -77,19 +77,6 @@
                             </div>
 
                             <div class="col-md-6">
-
-                                <!--<div class="form-group">
-                                    <div class="storage">
-                                        <h5>Pilih Tipe Storage : </h5><br />
-                                        <input type="radio" id="radio1" name="Storage_Type" value="VMI" onclick="setStorageType('VMI')">
-                                        <label for="radio1">VMI</label>
-                                        <input type="radio" id="radio2" name="Storage_Type" value="NON-VMI" onclick="setStorageType('NonVMI')">
-                                        <label for="radio2">NON-VMI</label>
-                                    </div>
-                                </div>
-
-                                <input type="hidden" id="storageType" name="storageType" value="" />-->
-
                                 <div class="form-group ProdKet">
                                     <div class="li-file mt-4">
                                     <h5>File Terms :</h5><br />
@@ -207,10 +194,8 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.saved) {
-                        // Data berhasil disimpan, tampilkan popup
                         showPopup();
                     } else {
-                        // Data belum berhasil disimpan, coba cek lagi setelah beberapa waktu (misalnya 1 detik)
                         setTimeout(checkDataSaved, 1000);
                     }
                 })

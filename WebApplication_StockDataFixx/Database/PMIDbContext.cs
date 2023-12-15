@@ -133,7 +133,6 @@ public partial class PMIDbContext : DbContext
                     tb.HasTrigger("TRG_LAST_INPUT_DATA_TEMP_WAREHOUSE_ITEM");
                     tb.HasTrigger("TRG_LAST_UPLOAD_TEMP_WAREHOUSE_ITEM");
                     tb.HasTrigger("TRG_OLD_DATA_IN_TEMP_WAREHOUSE_ITEM");
-                    tb.HasTrigger("TRG_TEMP_WAREHOUSE_ITEM_LOG");
                     tb.HasTrigger("TRG_UPDATE_WAREHOUSE_ACTUAL_QTY");
                     tb.HasTrigger("TRG_WAREHOUSE_ITEM_LOG");
                 });
