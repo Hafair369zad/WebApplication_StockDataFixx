@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "AllView";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+    <div class="container-fluid p-0"> 
+        <img src="/images/img/bgAllView.jpeg" class="bgAllView">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="header-tittle" style="margin-bottom: 20px;color: #1D5D9B;">
+                <h2>ALL VIEW</h2>
+                <p>To maintenance all data , please select this role user :</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+        </div>
+    </div>
+
+        <div class="row AllView">
+            <div class="col-md-4">
+                <div class="AllProd">
+                    <a asp-controller ="Production" asp-action="DashboardProduction">
+                        <div class="card card-AllView" style="border-radius: 15px;">                           
+                            <img src="/images/img/productionAllView.jpeg"/>
+                            <p>PRODUCTION</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="AllWrh">
+                <a asp-controller="Warehouse" asp-action="DashboardWarehouse">
+                    <div class="card card-AllView" style="border-radius: 15px;">
+                        <img src="/images/img/warehouseAllView.jpeg" />
+                        <p>WAREHOUSE</p>
+                    </div>
+                </a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="AllMng">
+                <a asp-controller="Management" asp-action="DashboardManagement">
+                    <div class="card card-AllView" style="border-radius: 15px;">
+                        <img src="/images/img/managementAllVie.jpeg" />
+                        <p>MANAGEMENT</p>
+                    </div>
+                </a>
+                </div>
+            </div>
+        </div>
+    </div>
+

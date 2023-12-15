@@ -6,34 +6,34 @@
 
 
 
-@*Populoader*@
-<div id="loading-popup" class="loading-popup">
-    <div class="custom-loader"></div>
-</div>
+    @*Populoader*@
+    <div id="loading-popup" class="loading-popup">
+        <div class="custom-loader"></div>
+    </div>
 
-<div class="container-fluid p-0">
-    <div class="sect0">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="d-flex justify-content-between head-Add">
-                        <div class="col-10">
-                            @using Microsoft.AspNetCore.Http;
-                            <h4><strong>Hello @CurrentUsername !! </strong></h4>
-                            <p>
-                                "You can monitor and control <strong style="font-weight: 800;">your material stock in real-time</strong><br />with the convenience we provide."
-                            </p>
-                        </div>
-                        <div class="col-2">
-                            <img class="head-AddImg" src="~/images/img/Frame_3_1.png">
+    <div class="container-fluid p-0">
+        <div class="sect0">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="d-flex justify-content-between head-Add">
+                            <div class="col-10">
+                                @using Microsoft.AspNetCore.Http;
+                                <h4><strong>Hello @CurrentUsername !! </strong></h4>
+                                <p>
+                                    "You can monitor and control <strong style="font-weight: 800;">your material stock in real-time</strong><br />with the convenience we provide."
+                                </p>
+                            </div>
+                            <div class="col-2">
+                                <img class="head-AddImg" src="~/images/img/Frame_3_1.png">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<br />
+    <br />
 
     <div class="container-fluid p-0">
         <div class="card flex-fill w-100 h-100 mb-10">
@@ -60,7 +60,7 @@
 
                                 <div class="form-group">
                                     <!-- Hidden input file element -->
-                                    <input type="file" class="form-control-file" id="file" accept=".xlsx" style="display: none;" name="file">
+                                <input type="file" class="form-control-file" id="file" accept=".xlsx" style="display: none;" name="file">
                                     <div class="drop-zone" id="dropZone">
                                         <div class="image-container">
                                             <img src="/images/img/Frame_4.png" style="margin-left: 3px; margin-bottom: 5px;">
@@ -100,9 +100,7 @@
             </div>
         </div>
 
-
-
-
+        @*========================== SCRIPT INTERNAL JS ===================================*@
         <script>
             const fileInput = document.getElementById('file');
             const resetBtn = document.getElementById('resetBtn');
@@ -111,7 +109,6 @@
             fileInput.addEventListener('change', function () {
                 const fileLabel = document.createElement('p');
                 fileLabel.textContent = `File name: ${fileInput.files[0].name}`;
-                fileLabel.style.marginTop = '10px';
                 fileLabel.classList.add('file-label'); // Add a class to the file label for easy identification
 
                 // Check if there's already a file label and remove it before adding the new one
@@ -159,38 +156,126 @@
                 event.preventDefault();
             });
         </script>
+        @*========================== END SCRIPT INTERNAL JS ===================================*@
     </div>
 
-    <!--Pop Up-->
+    <!-- ==================== Pop Up ==================== -->
     <div class="popup" id="popup">
         <div class="popup-content">
             <h2>File Uploaded!</h2>
             <img src="~/images/img/Frame_5_1.png" width="140px" />
-            <p>Your file has been successfully uploaded and data has been saved to the database.</p>
+            <p>Your Production file has been successfully uploaded and the data has been saved into the database.</p>
             <button class="close-button" onclick="closePopup()">Close</button>
         </div>
     </div>
+    <div class="popup" id="popupAlert">
+        <div class="popup-content">
+            <h2>ERROR</h2>
+            <img src="~/images/img/Frame_7.png" width="140px" style="margin-bottom: 10px;margin-top: 10px;" />
+            <p id="popup-alert-message" style="font-weight: 600;"></p>
+            <button class="close-button" onclick="closePopupAlert()">Close</button>
+        </div>
+    </div>
+    <div class="popup" id="popupAlertDataRequired">
+        <div class="popup-content">
+            <h2>ERROR</h2>
+            <img src="~/images/img/Frame_7.png" width="140px" style="margin-bottom: 10px;margin-top: 10px;" />
+            <p style="font-weight: 600;">PLEASE SELECT A FILE BEFORE UPLOADING!!!</p>
+            <button class="close-button" onclick="closePopupAlertDataRequired()">Close</button>
+        </div>
+    </div>
 
+@*========================== SCRIPT INTERNAL JS ===================================*@
     <script>
         function closePopup() {
             document.getElementById("popup").style.display = "none";
         }
-
         // Fungsi untuk menampilkan popup
         function showPopup() {
             document.getElementById("popup").style.display = "block";
         }
+        function showPopupAlert() {
+            document.getElementById("popupAlert").style.display = "block";
+        }
+        function closePopupAlert() {
+            document.getElementById("popupAlert").style.display = "none";
+        }
+        function showPopupAlertDataRequired() {
+            document.getElementById("popupAlertDataRequired").style.display = "block";
+        }
+        function closePopupAlertDataRequired() {
+            document.getElementById("popupAlertDataRequired").style.display = "none";
+        }
+        document.getElementById('dropZone').addEventListener('dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.add('dragover');
+        });
+        document.getElementById('dropZone').addEventListener('dragleave', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.remove('dragover');
+        });
+        document.getElementById('dropZone').addEventListener('drop', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.remove('dragover');
 
-        // Fungsi untuk mengirim form dan menampilkan popup setelah berhasil
-        function submitFormAndShowPopup() {
-            document.getElementById("myForm").submit(); // Kirim form
-            checkDataSaved(); // Panggil fungsi untuk cek data sudah disimpan dan tampilkan popup jika ya
+            var files = e.dataTransfer.files;
+            if (files.length > 0) {
+                var file = files[0];
+                var fileExtension = file.name.split('.').pop().toLowerCase();
+                if (fileExtension !== 'xlsx') {
+                    document.getElementById("popup-alert-message").textContent = "The file type to upload is not .XLSX";
+                    showPopupAlert(); // Tampilkan pesan kesalahan jika tipe file bukan .xlsx
+                    return;
+                }
+
+                // Hapus file yang tidak sesuai dari drop zone
+                this.innerHTML = ''; // Mengosongkan drop zone
+
+                document.getElementById('file').files = files;
+                // Lakukan pengiriman file ke server di sini (gunakan AJAX atau form submission)
+            }
+        });
+
+        function handleFileDrop(event) {
+            event.preventDefault();
+            const files = event.dataTransfer.files;
+            fileInput.files = files;
+
+            const fileLabel = document.createElement('p');
+            if (files[0].name.toLowerCase().endsWith('.xlsx')) {
+                fileLabel.textContent = `File name: ${files[0].name}`;
+            } else {
+                fileLabel.textContent = ``;
+            }
+            fileLabel.style.marginTop = '10px';
+            fileLabel.classList.add('file-label'); // Add a class to the file label for easy identification
+
+            // Check if there's already a file label and remove it before adding the new one
+            const existingFileLabel = document.querySelector('.file-label');
+            if (existingFileLabel) {
+                existingFileLabel.remove();
+            }
+
+            document.querySelector('.form-group').appendChild(fileLabel);
         }
 
-        // Fungsi untuk cek data sudah disimpan dan tampilkan popup jika berhasil
+        dropZone.addEventListener('drop', handleFileDrop);
+
+        function submitFormAndShowPopup() {
+            const selectedFile = document.getElementById('file').files[0];
+            if (!selectedFile) {
+                showPopupAlertDataRequired();
+                return; 
+            }
+            document.getElementById("myForm").submit(); 
+            setTimeout(checkDataSaved, 2000);
+        }
+
         function checkDataSaved() {
-            // Ganti dengan AJAX request ke server untuk melakukan pengecekan data
-            fetch("/Production/CheckDataSaved") // Ganti URL endpoint sesuai dengan controller dan action yang sesuai
+            fetch("/Production/CheckDataSaved")
                 .then(response => response.json())
                 .then(data => {
                     if (data.saved) {
@@ -204,10 +289,9 @@
                 });
         }
 
-        // Tambahkan event listener untuk form submit
         document.getElementById("myForm").addEventListener("submit", function (event) {
-            event.preventDefault(); // Hentikan submit default
-            submitFormAndShowPopup(); // Panggil fungsi untuk submit form dan tampilkan popup
+            event.preventDefault(); 
+            submitFormAndShowPopup(); 
         });
 
 
@@ -241,7 +325,7 @@
         window.addEventListener('online', checkNetworkStatus);
         window.addEventListener('offline', checkNetworkStatus);
     </script>
-
+@*========================== END SCRIPT INTERNAL JS ===================================*@
 
 
 

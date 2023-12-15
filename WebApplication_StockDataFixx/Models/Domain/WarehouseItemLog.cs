@@ -14,12 +14,15 @@ public partial class WarehouseItemLog
     [StringLength(225)]
     public string WarehouseLogId { get; set; } = null!;
 
+    [Column("PLANT")]
+    public string Plant { get; set; } = null!;
+
     [Column("MESSAGE_LOG")]
     public string MessageLog { get; set; } = null!;
 
-    [Column("LOG_TIME", TypeName = "datetime")]
-    public DateTime LogTime { get; set; }
-
     [Column("ISVMI")]
     public string Isvmi { get; set; } = null!;
+
+    [Column("LOG_TIME", TypeName = "datetime")]
+    public DateTime LogTime { get; set; }
 }

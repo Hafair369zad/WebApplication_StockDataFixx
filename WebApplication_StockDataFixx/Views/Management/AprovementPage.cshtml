@@ -1,0 +1,288 @@
+﻿@{
+    ViewData["Title"] = "Management";
+    Layout = "~/Views/Shared/_LayoutManagement.cshtml";
+}
+
+
+
+<div class="title-aprove">
+    <div class="row">
+        <div class="d-flex justify-content-between">
+            <div class="title-header">
+                <h1>Aprovement Page</h1>
+            </div>
+            <div class=""></div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid p-0">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card-aprove-wrh">
+                <div class="card">
+                    <div class="card-body">                   
+                        <div class="aprove-title-wrh">
+                            <h3>Aprove Data Warehouse</h3>
+                            <p>Click 'Open' to download Stock Taking data for the month of [tgl bulan] for warehouse users. Conversely, click 'Close' to deactivate access.</p>                      
+                        </div>
+                        <div class="d-flex justify-content-between btnDowAcces">
+                            <div class="stts-aprove">
+                                <p>Download feature status :<strong id="sttsFtrDowWrh" class="stts-FtrDow"></strong></p>
+                            </div>
+                            <div class="aprove-btn">
+                               <a id="openBtnFtrWrh" class="btn btn-success">Open</a>
+                               <a id="closeBtnFtrWrh" class="btn btn-secondary">Close</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card-aprove-prod">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="aprove-title-prod">
+                            <h3>Aprove Data Production</h3>
+                            <p>Click 'Open' to download Stock Taking data for the month of [tgl bulan] for production users. Conversely, click 'Close' to deactivate access.</p>
+                        </div>
+                        <div class="d-flex justify-content-between btnDowAcces">
+                            <div class="stts-aprove">
+                                <p class="">Download feature status : <strong id="sttsFtrDowProd" class="stts-FtrDow">OPEN</strong></p>
+                            </div>
+                            <div class="aprove-btn">
+                                <a id="openBtnFtrProd" class="btn btn-success">Open</a>
+                                <a id="closeBtnFtrProd" class="btn btn-secondary">Close</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        <div class="CompListUser">
+            <div class="card">
+                
+                    <div class="d-flex justifiy-content-between head-listact">
+                        <div class="aprove-title-tbl">
+                            <h4>List Activity User</h4>
+                        </div>
+                        <div class="btn-drop1">
+                            <select class="custom-select" id="btn-drop1">
+                                <option value="Select Month" selected>Select Month</option>
+                                <option value="January">January</option>
+                                <option value="Fabruary">Fabruary</option>
+                                <option value="March">March</option>
+                                <option value="April">April</option>
+                                <option value="May">May</option>
+                                <option value="June">June</option>
+                                <option value="July">July</option>
+                                <option value="August">August</option>
+                                <option value="September">September</option>
+                                <option value="October">October</option>
+                                <option value="November">November</option>
+                                <option value="December">December</option>
+                            </select>
+                        </div>
+                        <div class="btn-drop2">
+                            <select class="custom-select" id="btn-drop2">
+                                <option value="All" selected>All</option>
+                                <option value="Download">Download</option>
+                                <option value="Aprove">Aprove</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                <div class="card-body mb-5">
+                    <div class="table-list">
+                        <table class="display-Activity" id="List-Activity">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Profile</th>
+                                    <th>Role</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>
+                                        <img src="/images/img/user-aprove.png" class="aprov-img" />
+                                        <!-- Nama Profile dari database -->
+                                        Nurul Fauziah
+                                    </td>
+                                    <td>Warehouse RIFL</td>
+                                    <td>23-12-2023 18:05 WIB</td>
+                                    <td>
+                                        <p class="aprove-ket">Aprove</p>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>2</td>
+                                    <td>
+                                        <img src="/images/img/user-aprove.png" class="aprov-img" />
+                                        <!-- Nama Profile dari database -->
+                                        Nurul Fauziah
+                                    </td>
+                                    <td>Warehouse RIFL</td>
+                                    <td>23-12-2023 18:05 WIB</td>
+                                    <td>
+                                        <p class="dow-ket">Download</p>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>3</td>
+                                    <td>
+                                        <img src="/images/img/user-aprove.png" class="aprov-img" />
+                                        <!-- Nama Profile dari database -->
+                                        Nurul Fauziah
+                                    </td>
+                                    <td>Warehouse RIFL</td>
+                                    <td>23-12-2023 18:05 WIB</td>
+                                    <td>
+                                        <p class="closed-ket">Closed</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>
+                                        <img src="/images/img/user-aprove.png" class="aprov-img" />
+                                        <!-- Nama Profile dari database -->
+                                        Nurul Fauziah
+                                    </td>
+                                    <td>Warehouse RIFL</td>
+                                    <td>23-12-2023 18:05 WIB</td>
+                                    <td class="ketList">
+                                        <p class="aprove-ket">Aprove</p>
+                                        <p class="dow-ket">Download</p>
+                                        <p class="closed-ket">Closed</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>
+                                        <img src="/images/img/user-aprove.png" class="aprov-img" />
+                                        <!-- Nama Profile dari database -->
+                                        Nurul Fauziah
+                                    </td>
+                                    <td>Warehouse RIFL</td>
+                                    <td>23-12-2023 18:05 WIB</td>
+                                    <td>
+                                        <p class="aprove-ket">Aprove</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>
+                                        <img src="/images/img/user-aprove.png" class="aprov-img" />
+                                        <!-- Nama Profile dari database -->
+                                        Nurul Fauziah
+                                    </td>
+                                    <td>Warehouse RIFL</td>
+                                    <td>23-12-2023 18:05 WIB</td>
+                                    <td>
+                                        <p class="aprove-ket">Aprove</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td>
+                                        <img src="/images/img/user-aprove.png" class="aprov-img" />
+                                        <!-- Nama Profile dari database -->
+                                        Nurul Fauziah
+                                    </td>
+                                    <td>Warehouse RIFL</td>
+                                    <td>23-12-2023 18:05 WIB</td>
+                                    <td>
+                                        <p class="aprove-ket">Aprove</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>
+                                        <img src="/images/img/user-aprove.png" class="aprov-img" />
+                                        <!-- Nama Profile dari database -->
+                                        Nurul Fauziah
+                                    </td>
+                                    <td>Warehouse RIFL</td>
+                                    <td>23-12-2023 18:05 WIB</td>
+                                    <td>
+                                        <p class="aprove-ket">Aprove</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>9</td>
+                                    <td>
+                                        <img src="/images/img/user-aprove.png" class="aprov-img" />
+                                        <!-- Nama Profile dari database -->
+                                        Nurul Fauziah
+                                    </td>
+                                    <td>Warehouse RIFL</td>
+                                    <td>23-12-2023 18:05 WIB</td>
+                                    <td>
+                                        <p class="aprove-ket">Aprove</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>10</td>
+                                    <td>
+                                        <img src="/images/img/user-aprove.png" class="aprov-img" />
+                                        <!-- Nama Profile dari database -->
+                                        Nurul Fauziah
+                                    </td>
+                                    <td>Warehouse RIFL</td>
+                                    <td>23-12-2023 18:05 WIB</td>
+                                    <td>
+                                        <p class="aprove-ket">Aprove</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>11</td>
+                                    <td>
+                                        <img src="/images/img/user-aprove.png" class="aprov-img" />
+                                        <!-- Nama Profile dari database -->
+                                        Nurul Fauziah
+                                    </td>
+                                    <td>Warehouse RIFL</td>
+                                    <td>23-12-2023 18:05 WIB</td>
+                                    <td>
+                                        <p class="aprove-ket">Aprove</p>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>                                 
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script src="~/js/aprovement.js"></script>
+<script>
+    var js = jQuery.noConflict(true);
+
+    js(document).ready(function () {
+        js('#List-Activity').DataTable({
+            // "paging": false // ngilangi fitur pagination
+        });
+    });
+</script>

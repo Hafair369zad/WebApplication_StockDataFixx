@@ -2,236 +2,158 @@
     ViewData["Title"] = "Stock Taking Report";
     var CurrentUsername = Context.Session.GetString("CurrentUsername");
     var AccessPlant = Context.Session.GetString("AccessPlant");
+    var LevelId = Context.Session.GetInt32("LevelId");
 }
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - WebApp_StockFixx</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/WebApplication_StockDataFixx.styles.css" asp-append-version="true" />
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - WebApp_StockFixx</title>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/WebApplication_StockDataFixx.styles.css" asp-append-version="true" />
 
-    <!--Cdn Files-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" />
-    <script src="~/js/report.js"></script>
-    <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <!--Cdn Files-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" />
+        <script src="~/js/report.js"></script>
+        <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
     
-        <!-- Tambahkan referensi ke file CSS DataTables -->
-        <link rel="stylesheet" type="text/css" href="~/css/jquery.dataTables.css" />
-        <link rel="stylesheet" href="/DataTables/datatables.css" />
+            <!-- Tambahkan referensi ke file CSS DataTables -->
+            <link rel="stylesheet" type="text/css" href="~/css/jquery.dataTables.css" />
+            <link rel="stylesheet" href="/DataTables/datatables.css" />
 
-        <script src="/DataTables/datatables.js"></script>
-        <!-- Tambahkan referensi ke file JavaScript DataTables -->
-        <script src="~/js/jquery.dataTables.js"></script>
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
-        <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+            <script src="/DataTables/datatables.js"></script>
+            <!-- Tambahkan referensi ke file JavaScript DataTables -->
+            <script src="~/js/jquery.dataTables.js"></script>
+            <script src="~/lib/jquery/dist/jquery.min.js"></script>
+            <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
+            <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
 
+    @*========================== SCRIPT INTERNAL JS ===================================*@
+        <script>
 
+            // JIKA MENGUNNAKAN HALAMAN ALL VIEW
+            //function confirmLogout() {
+            //    var levelId = @LevelId; // Get the levelId from ViewBag
+            //    var logoutText = document.getElementById("logout-text");
 
+            //    // Check the levelId and update the button and behavior accordingly
+            //    if (levelId == 0) {
+            //        // If levelId is 0, change the button text and redirect without confirmation
+            //        logoutText.innerText = "Back To Admin";
+            //        window.location.href = '@Url.Action("AllView", "Admin")';
+            //    } else {
+            //        // For other levelIds, show the logout confirmation popup
+            //        document.getElementById("popup-logout").style.display = "block";
+            //    }
+            //}
 
-    <script>
+            function confirmLogout() {
+                // Tampilkan popup konfirmasi
+                document.getElementById("popup-logout").style.display = "block";
+            }
 
+            function closePopup() {
+                // Tutup popup
+                document.getElementById("popup-logout").style.display = "none";
+            }
 
-        function confirmLogout() {
-            // Tampilkan popup konfirmasi
-            document.getElementById("popup-logout").style.display = "block";
-        }
+            function logout() {
+                // Redirect ke halaman logout jika user mengkonfirmasi logout
+                window.location.href = '@Url.Action("Logout", "Home")';
+            }
+        </script>
+    @*========================== END SCRIPT INTERNAL JS ===================================*@
+    </head>
 
-        function closePopup() {
-            // Tutup popup
-            document.getElementById("popup-logout").style.display = "none";
-        }
-
-        function logout() {
-            // Redirect ke halaman logout jika user mengkonfirmasi logout
-            window.location.href = '@Url.Action("Logout", "Home")';
-        }
-
-        //function confirmLogout() {
-        //    // Menampilkan pop-up konfirmasi
-        //    if (window.confirm("Apakah Anda yakin ingin logout?")) {
-        //        // Jika pengguna mengkonfirmasi logout, arahkan ke tindakan logout
-        //        window.location.href = '@Url/*.Action("Logout", "Home")*/';
-        //    } else {
-        //        // Jika pengguna membatalkan logout, tidak ada yang terjadi
-        //    }
-        //}
-    </script>
-</head>
-
-@*baru*@
-<body>
-
-    @*Popup Logout*@
-    <div class="popup-logout" id="popup-logout">
-        <div class="popup-content-logout">
-            <p id="popup-message" style="font-weight: 800;margin-top: 15px;">Are you sure you want to logout?</p>
-            <button class="close-button-logout" onclick="logout()">Logout</button>
-            <button class="close-button-cancel" onclick="closePopup()">Cancel</button>
-        </div>
-    </div>
-
-
-    <div class="wrapper">
-        <div class="section">
-            <div class="top_navbar">
-                <div class="hamburger">
-                    <a href="#">
-                        <i class="fas fa-bars"></i>
-                    </a>
-                </div>
-                <div class="nav-logout">
-                    <a href="javascript:void(0);" onclick="confirmLogout();">
-                        <i class='bx bx-log-out nav_icon'></i>
-                        <span class="nav_name">Logout</span>
-                    </a>
-                </div>
-            </div>
-            <div class="content">
-                @RenderBody()
+    <body>
+        @*Popup Logout*@
+        <div class="popup-logout" id="popup-logout">
+            <div class="popup-content-logout">
+                <p id="popup-message" style="font-weight: 800;margin-top: 15px;">Are you sure you want to logout?</p>
+                <button class="close-button-logout" onclick="logout()">Logout</button>
+                <button class="close-button-cancel" onclick="closePopup()">Cancel</button>
             </div>
         </div>
 
-        <div class="sidebar">
-            <div class="headerLogo">
-                @*<a asp-controller="Management" asp-action="DashboardManagement">
-                    <img src="/images/img/image228.svg" />
-                </a>*@
-                <a asp-controller="Warehouse" asp-action="DashboardWarehouse">
-                    <img src="/images/img/LogoStockTaking2.svg" />
-                </a>
-            </div>
-            <div class="profile">
-                <img src="/images/img/gambarView.png">
-                @using Microsoft.AspNetCore.Http;
-                <h5>@CurrentUsername</h5>
-                <p>@AccessPlant</p>
-            </div>
-            <ul id="nav_accordion">
-                <li>
-                    <a asp-area="" asp-controller="Management" asp-action="DashboardManagement">
-                        <span class="icon"><i class="fas fa-th-list"></i></span>
-                        <span class="item">Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a asp-area="" asp-controller="Management" asp-action="ReportManagement">
-                        <span class="icon"><i class="fas fa-file"></i></span>
-                        <span class="item">Report</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="nav-bottom-brand">
-                <h3>Panasonic</h3>
-            </div>
-        </div>
-    </div>
 
-    @*<footer class="border-top footer text-muted">
-    <div class="container">
-    &copy; 2023 - WebApplication_StandardInventDays - <a asp-area="" asp-page="/Privacy">Privacy</a>
-    </div>
-    </footer>*@
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-</body>
-</html>
-
-
-@*lama*@
-@*<body id="body-pd">
-   <header class="header" id="header">
-        <div class="hamburger-container">
-            <div class="hamburger" id="hamburger">
-                <div class="line"></div>
-                <div class="line"></div>
-                <div class="line"></div>
-            </div>
-        </div>
-
-        <div>
-            <a href="javascript:void(0);" onclick="confirmLogout();" class="nav-logout">
-                <i class='bx bx-log-out nav_icon'></i>
-                <span class="nav_name">Logout</span>
-            </a>
-        </div>
-    </header>
-    <div class="l-navbar" id="nav-bar">
-        <div class="headerLogo">
-            <h5>Stock Taking App 1.0</h5>
-        </div>
-        <nav class="nav">
-            <div>
-                <div class="nav_list">
-                    <div class="profile">
-                        @if (ViewBag.LevelId == 3)
-                        {
-                            <img src="~/images/img/gambarWrh.png" width="120px" height="120px">
-                        }
-                        else if (ViewBag.LevelId == 4)
-                        {
-                            <img src="~/images/img/gambarProd.png" width="120px" height="120px">
-                        }
-                        else if (ViewBag.LevelId == 5)
-                        {
-                            <img src="~/images/img/gambarView.png" width="120px" height="120px">
-                        }
-                        else
-                        {
-                            <img src="~/images/img/Frame_6.png" width="120px" height="120px">
-                        }
-
-
-                        @using Microsoft.AspNetCore.Http;
-                        <h3>@CurrentUsername</h3>
+        <div class="wrapper">
+            <div class="section">
+                <div class="top_navbar">
+                    <div class="hamburger">
+                        <a href="#">
+                            <i class="fas fa-bars"></i>
+                        </a>
                     </div>
-                    <a class="nav_link" asp-area="" asp-controller="Management" asp-action="DashboardManagement">
-                        <i class='bx bx-grid-alt nav_icon'></i>
-                        <span class="nav_name @(ViewContext.RouteData.Values["Action"].ToString().ToLower() == "DashboardManagement" ? "active" : "")"> Dashboard</span>
-                    </a>
-                    <a class="nav_link" asp-area="" asp-controller="Management" asp-action="ReportManagement">
-                        <i class='bx bxs-report nav_icon'></i>
-                        <span class="nav_name @(ViewContext.RouteData.Values["Action"].ToString().ToLower() == "ReportManagement" ? "active" : "")">Report</span>
-                    </a>
+
+                    <div class="nav-logout">
+                        <a href="javascript:void(0);" onclick="confirmLogout();">
+                            <i class='bx bx-log-out nav_icon'></i>
+                            <span id="logout-text" class="nav_name">Logout</span>
+                        </a>
+                    </div>
 
                 </div>
-
-            </div>
-            <div class="nav-bottom-brand">
-                <h3>Panasonic</h3>
-            </div>
-        </nav>
-    </div>
-    <!--Container Main start-->
-    <div class="content-container">
-        <div class="height-100 bg-light">
-            <div class="cont-body">
-                <main role="main">
+                <div class="content">
                     @RenderBody()
-                </main>
+                </div>
+
+                <footer class="border-top footer" style="background-color: #1D5D9B;">
+                    <div class="container">
+                        <p class="footer-p"><a src="https://www.pens.ac.id/">&copy; copyright 2023 - ISC X PENS Surabaya -</a></p>
+                    </div>
+                </footer>
+
+            </div>
+
+            <div class="sidebar">
+                <div class="headerLogo">
+                    <a asp-controller="Warehouse" asp-action="DashboardWarehouse">
+                        <img src="/images/img/LogoStockTaking2.svg" />
+                    </a>
+                </div>
+                <div class="profile">
+                    <img src="/images/img/gambarView.png">
+                    @using Microsoft.AspNetCore.Http;
+                    <h5>@CurrentUsername</h5>
+                    <p>@AccessPlant</p>
+                </div>
+                <ul id="nav_accordion">
+                    <li>
+                        <a asp-area="" asp-controller="Management" asp-action="DashboardManagement">
+                            <span class="icon"><i class="fas fa-th-list"></i></span>
+                            <span class="item">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="" asp-controller="Management" asp-action="ReportManagement">
+                            <span class="icon"><i class="fas fa-file"></i></span>
+                            <span class="item">Report</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="" asp-controller="Management" asp-action="AprovementPage">
+                            <span class="icon"><i class="fas fa-solid fa-clipboard-check"></i></span>
+                            <span class="item">Aprovement</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="nav-bottom-brand">
+                    <h3>Panasonic</h3>
+                </div>
             </div>
         </div>
-    </div>*@
-@*div class="height-100 bg-light">
-        <div class="container">
-            <main role="main" class="container-main" >
-                @RenderBody()
-            </main>
-        </div>
-    </div>*@
 
-@*<script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)*@
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </body>
+</html>

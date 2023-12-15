@@ -14,6 +14,9 @@ public partial class ProductionItemLog
     [StringLength(225)]
     public string ProductionLogId { get; set; } = null!;
 
+    [Column("PLANT")]
+    public string Plant { get; set; } = null!;
+
     [Column("MESSAGE_LOG")]
     public string MessageLog { get; set; } = null!;
 

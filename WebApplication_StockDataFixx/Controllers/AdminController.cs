@@ -42,6 +42,11 @@ namespace WebApplication_StockDataFixx.Controllers
             return View();
         }
 
+        public IActionResult AllView()
+        {
+            return View();
+        }
+
 
         [HttpPost]
         public IActionResult AddUser(AddUserRequest addUserRequest)

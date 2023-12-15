@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Production";
+    Layout = "~/Views/Shared/_LayoutProduction.cshtml";
+}
+
+
+
+<script src="~/js/downloadpageprod.js"></script>
+
+<div class="container-fluid p-0">
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dp-comp-dow">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="comp-dp">
+                            <div class="header-dpProd">
+                                <h2>Download Data Production</h2>
+                            </div>
+                            <div class="main-dpProd">
+                                <input type="text" class="input-dp" id="serialNoInput" placeholder="Please Insert Serial Number.....">
+                                @*<button class="btn btn-dow" id="dp-button" onclick="validateSerialNumber()">Download</button>*@
+                                <button class="btn btn-dow" id="dp-button" onclick="validateSerialNumber()">Download</button>
+                            </div>
+                            @*<div class="stts-dp">
+                                <p>Status Feature Download : <strong class="dp-stts" id="download-status">OPEN</strong></p>
+                            </div>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="note-dp">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="header-note-dp">
+                            <h2>Instruction Download</h2>
+                        </div>
+                        <ol>
+                            <li>Enter the serial number in the input field, then click the "Download" button to initiate the download process.</li>
+                            <li>If the "Download" button is <b style="color: #388E3D; ">active (not disabled)</b>, the download process can be performed.</li>
+                            <li>If the "Download" button is still <b style="color: darkred;">inactive (disabled)</b>, please contact the finance department to request file access.</li>
+                            <li>The download result is in the form of an Excel file (.xls).</li>
+                        </ol>          
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

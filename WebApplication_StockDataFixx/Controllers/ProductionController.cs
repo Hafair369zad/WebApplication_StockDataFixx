@@ -46,7 +46,7 @@ namespace WebApplication_StockDataFixx.Controllers
             // Disp-lay UploadDataProduction Page
             return View();
         }
-        public ActionResult AprovementProduction()
+        public ActionResult DownloadPageProd()
         {
             // Tampilkan halaman upload file warehouse
             return View();
@@ -282,7 +282,89 @@ namespace WebApplication_StockDataFixx.Controllers
             return RedirectToAction("ReportTempProduction");
         }
 
-        //// Initial ProcessExcelFile method : to read Excel input data per row
+        ////// Initial ProcessExcelFile method : to read Excel ekstension .xls input data per row
+        //private List<TempProductionItem> ProcessExcelFile(IFormFile file)
+        //{
+        //    List<TempProductionItem> uploadedData = new List<TempProductionItem>();
+
+        //    using (var stream = file.OpenReadStream())
+        //    {
+        //        using (var reader = ExcelReaderFactory.CreateReader(stream))
+        //        {
+        //            // Dataset untuk menyimpan data dari Excel
+        //            var dataSet = reader.AsDataSet();
+
+        //            // Ambil tabel pertama (asumsi data berada di tabel pertama)
+        //            var dataTable = dataSet.Tables[0];
+
+        //            // Loop melalui baris, mulai dari baris kedua (indeks 1) karena baris pertama adalah header
+        //            for (int i = 1; i < dataTable.Rows.Count; i++)
+        //            {
+        //                var row = dataTable.Rows[i];
+
+        //                double actualQty;
+        //                var actualQtyCell = row[7]; // Kolom ke-8
+        //                if (double.TryParse(actualQtyCell.ToString(), out actualQty))
+        //                {
+        //                    // Jika kolom Unrestr berisi nilai numerik, set ActualQty ke 0
+        //                    actualQty = 0;
+        //                }
+
+        //                string plant = row[0].ToString(); // Kolom ke-1
+        //                string Description = "";
+
+        //                // Tambahkan logika kondisional di sini
+        //                switch (plant)
+        //                {
+        //                    case "RIFA":
+        //                        Description = "PMI-AUDIO";
+        //                        break;
+        //                    case "RIFC":
+        //                        Description = "PMI-AIR CONDITIONER (AC)";
+        //                        break;
+        //                    case "RIFR":
+        //                        Description = "PMI-REFRIGRATOR";
+        //                        break;
+        //                    case "RIFW":
+        //                        Description = "PMI-IAQ";
+        //                        break;
+        //                    default:
+        //                        Description = "Default Description"; // Deskripsi default jika tidak ada kondisi yang cocok
+        //                        break;
+        //                }
+
+        //                // Inisialisasi objek TempProductionItem
+        //                TempProductionItem item = new TempProductionItem
+        //                {
+        //                    ProductionId = $"{row[0]}{row[1]}{row[2]}{row[5]}",
+        //                    Plant = row[0].ToString(),
+        //                    Sloc = row[1].ToString(),
+        //                    Month = row[2].ToString(),
+        //                    SerialNo = row[3].ToString(),
+        //                    TagNo = row[4].ToString(),
+        //                    Material = row[5].ToString(),
+        //                    MaterialDesc = row[6].ToString(),
+        //                    ActualQty = actualQty,
+        //                    QualInsp = row[8].ToString(),
+        //                    Blocked = row[9].ToString(),
+        //                    Unit = row[10].ToString(),
+        //                    IssuePlanner = row[11].ToString(),
+        //                    Description = Description,
+        //                    ProdId = $"PROD-{row[0]}-{row[1]}",
+        //                    AccessPlant = $"PROD-{row[0]}"
+        //                };
+
+        //                // Tambahkan objek ke dalam list
+        //                uploadedData.Add(item);
+        //            }
+        //        }
+        //    }
+
+        //    return uploadedData;
+        //}
+
+
+        // Initial ProcessExcelFile method : to read Excel ekstension .xlsx input data per row
         private List<TempProductionItem> ProcessExcelFile(IFormFile file)
         {
             List<TempProductionItem> uploadedData = new List<TempProductionItem>();
@@ -423,7 +505,7 @@ namespace WebApplication_StockDataFixx.Controllers
             var stream = new MemoryStream();
             workbook.SaveAs(stream);
             stream.Position = 0;
-            string excelFileName = "Production_" + serialNo + ".xlsx";
+            string excelFileName = "Production_" + serialNo + ".xls";
 
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFileName);
         }
@@ -701,3 +783,5 @@ namespace WebApplication_StockDataFixx.Controllers
 //        return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while fetching chart data.");
 //    }
 //}
+
+

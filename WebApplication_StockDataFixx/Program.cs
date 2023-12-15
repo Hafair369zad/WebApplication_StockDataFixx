@@ -30,8 +30,8 @@ builder.Services.AddControllers()
             options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore; // Mengabaikan loop referensi
             options.SerializerSettings.ContractResolver = new DefaultContractResolver
             {
-                NamingStrategy = new CamelCaseNamingStrategy() // Menggunakan gaya camelCase untuk nama properti
-            };
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };  
         });
 
 

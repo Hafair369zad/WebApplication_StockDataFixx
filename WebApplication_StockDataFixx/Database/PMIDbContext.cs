@@ -79,7 +79,6 @@ public partial class PMIDbContext : DbContext
                 {
                     tb.HasTrigger("TRG_LAST_INPUT_DATA_PRODUCTION_ITEM");
                     tb.HasTrigger("TRG_LAST_UPLOAD_PRODUCTION_ITEM");
-                    tb.HasTrigger("TRG_PRODUCTION_ITEM_LOG");
                 });
 
             entity.Property(e => e.LastUpload).HasDefaultValueSql("(getdate())");
@@ -111,6 +110,7 @@ public partial class PMIDbContext : DbContext
                     tb.HasTrigger("TRG_LAST_INPUT_DATA_TEMP_PRODUCTION_ITEM");
                     tb.HasTrigger("TRG_LAST_UPLOAD_TEMP_PRODUCTION_ITEM");
                     tb.HasTrigger("TRG_OLD_DATA_IN_TEMP_PRODUCTION_ITEM");
+                    tb.HasTrigger("TRG_PRODUCTION_ITEM_LOG");
                     tb.HasTrigger("TRG_UPDATE_PRODUCTION_ACTUAL_QTY");
                 });
 

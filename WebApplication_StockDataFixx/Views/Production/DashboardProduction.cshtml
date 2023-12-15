@@ -31,17 +31,7 @@
                             <h5 class="card-title mb-1">Total Actual Qty</h5>
                             <p class="card-text">Per Month</p>
                         </div>
-                        <div class="dropdown">
-                            @*<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Select Year
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="yearDropdown">
-                            <a class="dropdown-item"  data-year="2022">2022</a>
-                            <a class="dropdown-item"  data-year="2023">2023</a>
-                            <a class="dropdown-item"  data-year="2024">2024</a>
-                            <a class="dropdown-item"  data-year="2025">2025</a>
-                            <!-- Tambahkan opsi tahun lainnya sesuai kebutuhan -->
-                            </div>*@
+                        <div class="dropdown">            
                         </div>
                     </div>
                     <canvas id="grafik1"></canvas>
@@ -92,14 +82,7 @@
                             <h5 class="card-title mb-1">Total Part Number - Stock Taking</h5>
                             <p class="card-text">Per Month</p>
                         </div>
-                        <div class="dropdown">
-                            @* <button class="btn btn-primary dropdown-toggle btn-typeChart" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            VMI
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item active" value="VMI">VMI</a>
-                            <a class="dropdown-item" value="NonVMI">NON VMI</a>
-                            </div>*@
+                        <div class="dropdown">                         
                         </div>
                     </div>
                     <canvas id="grafik2"></canvas>
@@ -110,10 +93,13 @@
 </div>
 <div style="margin-top: 50px;"></div>
 
+
+
+@*============================ INTERNAL CHART JAVASCRIPT ============================*@
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    //$(document).ready(function () {
     Chart.debug = true;
     const chart3 = document.getElementById('chart3');
     let selectedMonth = "";
@@ -182,39 +168,6 @@
             }
         });
     }
-
-
-
-
-    //function updateChart3(data) {
-    //    const ctx = chart3.getContext('2d');
-    //    if (window.chart3Instance) {
-    //        window.chart3Instance.destroy(); // Hancurkan objek Chart yang ada
-    //    }
-
-    //    window.chart3Instance = new Chart(ctx, {
-    //        type: 'doughnut',
-    //        data: {
-    //            labels: ['K', 'PC', 'SET', 'G', 'KG', 'M', 'ML', 'ROLL'],
-    //            datasets: [
-    //                {
-    //                    label: `Unit Distribution Production for ${getMonthName(selectedMonth)}`,
-    //                    data: data,
-    //                    borderWidth: 2,
-    //                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#E91E63', '#2196F3', '#FFA07A', '#FFD700'],
-    //                },
-    //            ],
-    //        },
-    //        options: {
-    //            cutout: '50%',
-    //            plugins: {
-    //                legend: {
-    //                    position: 'bottom',
-    //                },
-    //            },
-    //        },
-    //    });
-    //}
 
 
     // Function to convert month number to name
@@ -293,18 +246,7 @@
                 backgroundColor: "#4EA652",
                 data: [] // Data VMI akan diisi dari hasil controller
             },
-            //{
-            //    label: "PRODUCTION ALL PLANT",
-            //    backgroundColor: "rgba(0, 0, 0, 1)",
-            //    data: [] // Data VMI akan diisi dari hasil controller
-            //}
-            //{
-            //    label: "PRODUCTION ALL",
-            //    type: "line",
-            //    borderColor: "rgba(0, 0, 0, 1)",
-            //    borderWidth: 1,
-            //    data: [] // Data Total ActualQty akan diisi dari hasil controller
-            //}
+            
         ]
     };
 
@@ -320,13 +262,19 @@
         }
     };
 
-    // Ambil data dari controller
-    $.get("/Production/GetChart2Data?year=2023", function (data) {
-        // Mengisi data grafik dengan hasil dari controller
-        dataBar.datasets[0].data = data.map(item => item[0]); 
-        //dataBar.datasets[1].data = data.map(item => item[1]); 
+    var currentYear = new Date().getFullYear();
 
-        // Buat grafik dengan data yang telah diisi
+    //// Membuat URL dengan tahun saat ini
+    //var url = "/Warehouse/GetChart2Data?year=" + currentYear;
+
+    //// Melakukan permintaan AJAX dengan URL yang telah dibuat
+    //$.get(url, function (data) {
+
+
+    // Ambil data dari controller
+    var url1 = "/Production/GetChart2Data?year=" + currentYear;
+        $.get(url1, function (data) {
+        dataBar.datasets[0].data = data.map(item => item[0]); 
         var ctxBar = document.getElementById("grafik1").getContext("2d");
         var myChartBar = new Chart(ctxBar, {
             type: "bar",
@@ -336,72 +284,16 @@
     });
 
 
-
-
-
-
-
-    // Grafik Chart 2 Total Count Data
-    //var dataBar2 = {
-    //    labels: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
-    //    datasets: [
-    //        {
-    //            label: "PRODUCTION",
-    //            backgroundColor: "#4EA652",
-    //            data: [] // Data VMI akan diisi dari hasil controller
-    //        },
-    //        {
-    //            label: "PRODUCTION ALL PLANT",
-    //            backgroundColor: "rgba(0, 0, 0, 1)",
-    //            data: [] // Data VMI akan diisi dari hasil controller
-    //        }
-    //        //{
-    //        //    label: "PRODUCTION ALL",
-    //        //    type: "line",
-    //        //    borderColor: "rgba(0, 0, 0, 1)",
-    //        //    borderWidth: 1,
-    //        //    data: [] // Data Total ActualQty akan diisi dari hasil controller
-    //        //}
-    //    ]
-    //};
-
-    //// Opsi konfigurasi grafik
-    //var options = {
-    //    scales: {
-    //        x: {
-    //            beginAtZero: true
-    //        },
-    //        y: {
-    //            beginAtZero: true
-    //        }
-    //    }
-    //};
-
-    //// Ambil data dari controller
-    //$.get("/Production/GetChartData?year=2023", function (data) {
-    //    // Mengisi data grafik dengan hasil dari controller
-    //    dataBar2.datasets[0].data = data.map(item => item[0]); // Data VMI
-    //    dataBar2.datasets[1].data = data.map(item => item[1]); // Data Non VMI
-
-    //    // Buat grafik dengan data yang telah diisi
-    //    var ctxBar2 = document.getElementById("grafik2").getContext("2d");
-    //    var myChartBar2 = new Chart(ctxBar2, {
-    //        type: "bar",
-    //        data: dataBar2,
-    //        options: options
-    //    });
-    //});
-
-
-
-
     var dataBar2 = {
         labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         datasets: []  // Modify the datasets array
     };
+    // End Ambil data dari controller
+
 
     // Update the chart data
-    $.get("/Production/GetChartData?year=2023", function (data) {
+    var url2 = "/Production/GetChartData?year=" + currentYear;
+        $.get(url2, function (data) {
         var slocList = Object.keys(data[0]); // Get Sloc values from the first month's data
 
         for (var i = 0; i < slocList.length; i++) {
@@ -428,8 +320,6 @@
         });
     });
 
-
-
     function getRandomColor() {
         var letters = "0123456789ABCDEF";
         var color = "#";
@@ -439,41 +329,27 @@
         return color;
     }
 
-
-
+    // End Update the chart data
 
     // Dropwon Chart
     $(document).ready(function () {
-        // Ketika item dropdown dipilih
+
         $(".dropdown-item").click(function () {
-            // Hapus kelas active dari semua item dropdown
+
             $(".dropdown-item").removeClass("active");
-
-            // Tambahkan kelas active ke item yang dipilih
             $(this).addClass("active");
-
-            // Ambil nilai (value) dari item yang dipilih
             var selectedValue = $(this).attr("value");
-
-            // Ganti teks pada tombol dropdown dengan nilai yang dipilih
             $(".btn-typeChart").text(selectedValue);
-
-            // Anda juga dapat melakukan tindakan lain sesuai kebutuhan di sini
-
-            // Contoh: Cetak nilai yang dipilih ke konsol
             console.log("Anda memilih: " + selectedValue);
+
         });
     });
-        // End Dropdown Chart
+    // End Dropdown Chart
 
 
 </script>
 
+@*============================ END INTERNAL CHART JAVASCRIPT ============================*@
 
-
-@*perbaiki kalimat berikut agar mudah dipahami : 
-
-atur ketika masuk pertama kali ke DashboardProduction, card masih menempilkan kosong atau belum menampilkan chart, baru chart bisa tampil ketika sudah memilih menu dropdown bulan. saya ingin mangatur ketika masuk pertama kali ke halaman DashboardProduction pertama kali langsung menampilkan chart bulan saat ini secara real time , dan menu dropdown bulan saat ini secara real time aktif dan masih bisa menampilkan chart bulan lainnya ketika memilih menu dropdown bulan lainnya  : 
-*@
 
 

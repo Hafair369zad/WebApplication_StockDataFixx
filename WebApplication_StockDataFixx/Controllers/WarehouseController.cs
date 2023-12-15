@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using WebApplication_StockDataFixx.Models.Domain;
-using ClosedXML.Excel;
 using Newtonsoft.Json;
 using WebApplication_StockDataFixx.Database;
 using Microsoft.IdentityModel.Tokens;
@@ -9,6 +8,14 @@ using System.Globalization;
 using NPOI.SS.Formula.Functions;
 using DocumentFormat.OpenXml.Vml.Spreadsheet;
 using DocumentFormat.OpenXml.Bibliography;
+using System.Collections;
+using DocumentFormat.OpenXml.Spreadsheet;
+using System.Reflection.Metadata;
+using ClosedXML.Excel;
+using ExcelDataReader;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace WebApplication_StockDataFixx.Controllers
 {
@@ -41,14 +48,14 @@ namespace WebApplication_StockDataFixx.Controllers
             return View();
         }
 
-        public ActionResult Aprovement()
+        public ActionResult DownloadPageWrh()
         {
-            // Tampilkan halaman upload file warehouse
+            
             return View();
         }
 
 
-        // =============================================================================================== READ DATA =============================================================================================== //
+// =============================================================================================== READ DATA =============================================================================================== //
 
 
 
@@ -210,7 +217,7 @@ namespace WebApplication_StockDataFixx.Controllers
         }
 
         // Method to Get Data from Database Main
-        private List<WarehouseItem> GetDataFromDatabase(string serialNo, bool? Isvmi, string accessPlant)
+            private List<WarehouseItem> GetDataFromDatabase(string serialNo, bool? Isvmi, string accessPlant)
         {
             // Fetch data from the warehouse database (adjust this based on your actual database context)
             var data = _dbContext.WarehouseItems.AsQueryable();
@@ -258,20 +265,22 @@ namespace WebApplication_StockDataFixx.Controllers
             return data.OrderBy(w => w.SerialNo).ToList();
         }
 
-        // ============================================================================================================================================================================================================ //
+// ============================================================================================================================================================================================================ //
 
 
-        // ================================================================================================ UPLOAD DATA =============================================================================================== //
+// ================================================================================================ UPLOAD DATA =============================================================================================== //
 
+        // Method to Process Upload File  
         [HttpPost]
         public IActionResult UploadFile(IFormFile file)
         {
             if (file == null || file.Length <= 0)
             {
-                TempData["Message"] = "Error: File tidak ada atau kosong.";
+                TempData["UnsupportedFileFormat"] = true;
                 return RedirectToAction("UploadDataWarehouse");
             }
 
+            _dbContext.DeleteFromLog();
             List<TempWarehouseItem> uploadedData = ProcessExcelFile(file);
 
             // Group uploaded data by Plant, Month, Sloc, and StockType
@@ -292,24 +301,209 @@ namespace WebApplication_StockDataFixx.Controllers
                 // Add the new data to the database
                 _dbContext.TempWarehouseItems.AddRange(group);
             }
-            
+           
             _dbContext.SaveChanges();
 
             // Redirect to the ReportWarehouse action
             return RedirectToAction("ReportTempWarehouse");
         }
 
-        // Main method for processing the uploaded Excel file based on its content
+
+        // main method for processing the uploaded Excel file extensions .XLS //
+        ///////////////////////////////////////////////////////////////////////
+
+        //private List<TempWarehouseItem> ProcessExcelFile(IFormFile file)
+        //{
+        //    List<TempWarehouseItem> uploadedData = new List<TempWarehouseItem>();
+
+        //    // Read data from the Excel file using UTF-8 encoding
+        //    using (var stream = file.OpenReadStream())
+        //    {
+        //        using (var reader = ExcelReaderFactory.CreateReader(stream))
+        //        {
+        //            // Dataset untuk menyimpan data dari Excel
+        //            var dataSet = reader.AsDataSet();
+
+        //            // Ambil tabel pertama (asumsi data berada di tabel pertama)
+        //            var dataTable = dataSet.Tables[0];
+
+        //            // Check if the Excel file is VMI or Non-VMI based on column names
+        //            bool isVMI = IsVMIExcelFile(dataTable);
+
+        //            if (isVMI)
+        //            {
+        //                uploadedData = ProcessExcelFileVMI(dataTable.Rows);
+        //            }
+        //            else
+        //            {
+        //                uploadedData = ProcessExcelFileNonVMI(dataTable.Rows);
+        //            }
+        //        }
+        //    }
+        //    return uploadedData;
+        //}
+
+        //// Check if the Excel file is VMI based on column names
+        //private bool IsVMIExcelFile(DataTable dataTable)
+        //{
+        //    var columnNames = dataTable.Rows[0].ItemArray.Select(cell => cell.ToString().Trim()).ToList();
+
+        //    return columnNames.Contains("Vendor") && columnNames.Contains("Vendor Name") && columnNames.Contains("Stock Typ");
+        //}
+
+        //// Method for processing the uploaded Excel file StorageType VMI 
+        //private List<TempWarehouseItem> ProcessExcelFileVMI(DataRowCollection rows)
+        //{
+        //    List<TempWarehouseItem> uploadedData = new List<TempWarehouseItem>();
+
+        //    foreach (DataRow row in rows.Cast<DataRow>().Skip(1)) // Skip header row
+        //    {
+        //        double actualQty;
+        //        var actualQtyCell = row[10]; // Corrected index for the Unrestr field
+        //        if (double.TryParse(actualQtyCell.ToString(), out actualQty))
+        //        {
+        //            // If Unrestr field contains a numeric value, set ActualQty to 0
+        //            actualQty = 0;
+        //        }
+
+        //        string plant = row[0].ToString();
+        //        string Description = "";
+
+        //        // Tambahkan logika kondisional di sini
+        //        switch (plant)
+        //        {
+        //            case "RIFA":
+        //                Description = "PMI-AUDIO";
+        //                break;
+        //            case "RIFC":
+        //                Description = "PMI-AIR CONDITIONER (AC)";
+        //                break;
+        //            case "RIFR":
+        //                Description = "PMI-REFRIGRATOR";
+        //                break;
+        //            case "RIFW":
+        //                Description = "PMI-IAQ";
+        //                break;
+        //            default:
+        //                Description = "Default Description"; // Deskripsi default jika tidak ada kondisi yang cocok
+        //                break;
+        //        }
+
+        //        TempWarehouseItem item = new TempWarehouseItem
+        //        {
+        //            WarehouseId = $"{row[0]}{row[1]}{row[2]}{row[6]}{row[8]}",
+        //            Plant = row[0].ToString(),
+        //            Sloc = row[1].ToString(),
+        //            Month = row[2].ToString(),
+        //            SerialNo = row[3].ToString(),
+        //            TagNo = row[4].ToString(),
+        //            StockType = row[5].ToString(),
+        //            VendorCode = row[6].ToString(),
+        //            VendorName = row[7].ToString(),
+        //            Material = row[8].ToString(),
+        //            MaterialDesc = row[9].ToString(),
+        //            ActualQty = actualQty,
+        //            QualInsp = row[11].ToString(),
+        //            Blocked = row[12].ToString(),
+        //            Unit = row[13].ToString(),
+        //            IssuePlanner = row[14].ToString(),
+        //            Isvmi = "VMI",
+        //            Description = Description,
+        //            WrhId = $"WRH-{row[0]}-{row[14]}",
+        //            AccessPlant = $"WRH-{row[0]}"
+        //        };
+
+        //        uploadedData.Add(item);
+        //    }
+
+        //    return uploadedData;
+        //}
+
+        //// Method for processing the uploaded Excel file StorageType Non VMI 
+        //private List<TempWarehouseItem> ProcessExcelFileNonVMI(DataRowCollection rows)
+        //{
+        //    List<TempWarehouseItem> uploadedData = new List<TempWarehouseItem>();
+
+        //    foreach (var row in rows.Cast<DataRow>().Skip(1)) // Skip header row
+        //    {
+        //        double actualQty;
+        //        var actualQtyCell = row[7]; // Corrected index for the Unrestr field
+        //        if (double.TryParse(actualQtyCell.ToString(), out actualQty))
+        //        {
+        //            // If Unrestr field contains a numeric value, set ActualQty to 0
+        //            actualQty = 0;
+        //        }
+
+        //        string plant = row[0].ToString();
+        //        string Description = "";
+
+        //        // Tambahkan logika kondisional di sini
+        //        switch (plant)
+        //        {
+        //            case "RIFA":
+        //                Description = "PMI-AUDIO";
+        //                break;
+        //            case "RIFC":
+        //                Description = "PMI-AIR CONDITIONER (AC)";
+        //                break;
+        //            case "RIFR":
+        //                Description = "PMI-REFRIGRATOR";
+        //                break;
+        //            case "RIFW":
+        //                Description = "PMI-IAQ";
+        //                break;
+        //            default:
+        //                Description = "Default Description"; // Deskripsi default jika tidak ada kondisi yang cocok
+        //                break;
+        //        }
+
+        //        TempWarehouseItem item = new TempWarehouseItem
+        //        {
+        //            WarehouseId = $"{row[0]}{row[1]}{row[2]}{row[5]}",
+        //            Plant = row[0].ToString(),
+        //            Sloc = row[1].ToString(),
+        //            Month = row[2].ToString(),
+        //            SerialNo = row[3].ToString(),
+        //            TagNo = row[4].ToString(),
+        //            Material = row[5].ToString(),
+        //            MaterialDesc = row[6].ToString(),
+        //            ActualQty = actualQty,
+        //            QualInsp = row[8].ToString(),
+        //            Blocked = row[9].ToString(),
+        //            Unit = row[10].ToString(),
+        //            IssuePlanner = row[11].ToString(),
+        //            StockType = "-", // Set to "-" as StockType, VendorCode, and VendorName are not available for NonVMI
+        //            VendorCode = "-",
+        //            VendorName = "-",
+        //            Isvmi = "NonVMI",
+        //            Description = Description,
+        //            WrhId = $"WRH-{row[0]}-{row[11]}",
+        //            AccessPlant = $"WRH-{row[0]}"
+        //        };
+
+        //        uploadedData.Add(item);
+        //    }
+
+        //    return uploadedData;
+        //}
+        //// END MAIN 
+
+
+        // Main method for processing the uploaded Excel .xlsx file based on its content
         private List<TempWarehouseItem> ProcessExcelFile(IFormFile file)
         {
             List<TempWarehouseItem> uploadedData = new List<TempWarehouseItem>();
 
+            // Read data from the Excel file using UTF-8 encoding
             using (var stream = file.OpenReadStream())
             {
                 using (var workbook = new XLWorkbook(stream))
                 {
                     var worksheet = workbook.Worksheet(1); // Assuming data is in the first worksheet
                     var rows = worksheet.RowsUsed();
+
+                    // Check if the Excel file is VMI or Non-VMI based on column names
+                    bool isVMI = IsVMIExcelFile(worksheet);
 
                     if (isVMI)
                     {
@@ -331,7 +525,9 @@ namespace WebApplication_StockDataFixx.Controllers
             var columnNames = headerRow.Cells().Select(cell => cell.Value.ToString().Trim()).ToList();
 
             return columnNames.Contains("Vendor") && columnNames.Contains("Vendor Name") && columnNames.Contains("Stock Typ");
+            //return columnNames.Contains("VendorCode") && columnNames.Contains("VendorName") && columnNames.Contains("StockType");
         }
+
 
         // Method for processing the uploaded Excel file StorageType VMI 
         private List<TempWarehouseItem> ProcessExcelFileVMI(IEnumerable<IXLRow> rows)
@@ -344,6 +540,7 @@ namespace WebApplication_StockDataFixx.Controllers
                 var actualQtyCell = row.Cell(11); // Corrected index for the Unrestr field
                 if (actualQtyCell.TryGetValue(out actualQty))
                 {
+                    // If Unrestr field contains a numeric value, set ActualQty to 0
                     actualQty = 0;
                 }
 
@@ -399,6 +596,7 @@ namespace WebApplication_StockDataFixx.Controllers
 
             return uploadedData;
         }
+
 
         // Method for processing the uploaded Excel file StorageType Non VMI 
         private List<TempWarehouseItem> ProcessExcelFileNonVMI(IEnumerable<IXLRow> rows)
@@ -468,22 +666,44 @@ namespace WebApplication_StockDataFixx.Controllers
             return uploadedData;
         }
 
+        //// END MAIN 
+
         // Action method to handle the request for checking the status of saved data
         [HttpGet]
         public IActionResult CheckDataSaved()
         {
             // Example: Check if there is any WarehouseItem data in the database
+            var isvmiValue = _dbContext.TempWarehouseItemLogs.FirstOrDefault(); // Mengambil data pertama dari tabel
+
+            string result = "default"; // Default jika tidak ditemukan
+
+            if (isvmiValue != null)
+            {
+                // Cek nilai ISVMI pada data yang diambil
+                if (isvmiValue.Isvmi == "VMI")
+                {
+                    result = "VMI";
+                }
+                else if (isvmiValue.Isvmi == "NonVMI")
+                {
+                    result = "NonVMI";
+                }
+                else
+                {
+                    result = "Tidak Diketahui";
+                }
+            }
 
             return Json(new { statusISVMI = result });
         }
 
-        // =========================================================================================================================================================================================================== //
+// =========================================================================================================================================================================================================== //
 
 
 
 
 
-        // ============================================================================================== DOWNLOAD DATA ============================================================================================== //
+// ============================================================================================== DOWNLOAD DATA ============================================================================================== //
 
         // Method Download File Excel 
         [HttpGet]
@@ -577,7 +797,7 @@ namespace WebApplication_StockDataFixx.Controllers
             var stream = new MemoryStream();
             workbook.SaveAs(stream);
             stream.Position = 0;
-            string excelFileName = "Warehouse_" + serialNo + ".xlsx";
+            string excelFileName = "Warehouse_" + serialNo + ".xls";
 
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFileName);
         }
@@ -646,6 +866,8 @@ namespace WebApplication_StockDataFixx.Controllers
             return Json(monthlyCountData);
         }
 
+
+        // Actual Qty 
         [HttpGet]
         public IActionResult GetChart2Data(int year)
         {
@@ -727,7 +949,6 @@ namespace WebApplication_StockDataFixx.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while fetching chart data.");
             }
         }
-
 
         // =============================================================================================================================================================================================== //
     }

@@ -4,7 +4,6 @@ using WebApplication_StockDataFixx.Database;
 using WebApplication_StockDataFixx.Models.Domain;
 using Microsoft.AspNetCore.Http;
 
-
 namespace WebApplication_StockDataFixx.Controllers
 {
     public class HomeController : Controller
@@ -29,7 +28,6 @@ namespace WebApplication_StockDataFixx.Controllers
             return View();
         }
 
-
         [HttpPost]
         public ActionResult Index(string userId, string password)
         {
@@ -45,18 +43,18 @@ namespace WebApplication_StockDataFixx.Controllers
                     // Menyimpan informasi user di session
                     HttpContext.Session.SetString("CurrentUser", userId);
 
-
-                    // Get the user's AccessPlant value
+                    // Get and set AccessPlant and Username in ViewBag and session
                     string accessPlant = GetAccessPlantFromDatabase(userId);
                     ViewBag.AccessPlant = accessPlant; // Store AccessPlant in ViewBag
                     HttpContext.Session.SetString("AccessPlant", accessPlant); // Store in session
 
-
                     string username = GetUsernameFromDatabase(userId);
-                    HttpContext.Session.SetString("CurrentUsername", username);
+                    ViewBag.CurrentUsername = username; // Store Username in ViewBag
+                    HttpContext.Session.SetString("CurrentUsername", username); // Store in session
 
-                    // Menyimpan LevelId di ViewBag
-                    ViewBag.LevelId = levelId;
+                    // Get and set LevelId in ViewBag and session
+                    ViewBag.LevelId = GetLevelIdAndSetInSession(userId);
+                    HttpContext.Session.SetInt32("LevelId", levelId);
 
                     // Redirect ke halaman utama sesuai dengan jenis user
                     if (levelId == 0)
@@ -85,10 +83,9 @@ namespace WebApplication_StockDataFixx.Controllers
             }
 
             // Jika login tidak valid, kembalikan ke halaman login dengan pesan error
-            ViewBag.ErrorMessage = "Invalid username or password.";
+            ViewBag.ErrorMessage = "*Invalid username or password.";
             return View();
         }
-
 
         private int GetStatFromDatabase(string userId)
         {
@@ -121,6 +118,33 @@ namespace WebApplication_StockDataFixx.Controllers
             return ""; // Return an empty string if the username is not found
         }
 
+        private int GetLevelIdFromDatabase(string userId)
+        {
+            // Retrieve the LevelId value from the database based on the userId
+            var user = _dbContext.UserTbs.FirstOrDefault(u => u.UserId == userId);
+
+            if (user != null)
+            {
+                return user.LevelId;
+            }
+
+            return 0; // Return a default value if the LevelId is not found
+        }
+
+
+        private int GetLevelIdAndSetInSession(string userId)
+        {
+            // Retrieve the LevelId value from the database based on the userId
+            var levelId = GetLevelIdFromDatabase(userId);
+
+            // Store LevelId in ViewBag
+            ViewBag.LevelId = levelId;
+
+            // Store LevelId in session
+            HttpContext.Session.SetInt32("LevelId", levelId);
+
+            return levelId;
+        }
 
         [HttpGet]
         public ActionResult Logout()
@@ -131,7 +155,6 @@ namespace WebApplication_StockDataFixx.Controllers
             // Mengarahkan pengguna ke halaman login setelah logout
             return RedirectToAction("Index", "Home");
         }
-
 
         private bool IsValidLogin(string userId, string password, out int levelId)
         {
@@ -150,7 +173,3 @@ namespace WebApplication_StockDataFixx.Controllers
         }
     }
 }
-
-
-
-

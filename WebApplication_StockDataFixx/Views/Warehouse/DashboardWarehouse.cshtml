@@ -16,57 +16,7 @@
         </div>
         <div></div>
     </div>
-    @*Baris Chart Pertama*@
-    @*<div class="chartFirst">
-        <div class="row mt-4">
-            <div class="col-md-4">
-                <div class="card half-color-card">
-                    <div class="top-background green-background">
-                        <h5 class="card-title" data-category="VMI">0</h5>
-                        <h5 class="card-title">VMI</h5>
-                    </div>
-                    <div class="white-background">
-                        <div class="label-left">0</div>
-                        <div class="progress">
-                            <div class="progress-bar progress-barVMI" role="progressbar" style="width: 0%; background-color: #4EA652;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <div class="label-right">100</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card half-color-card">
-                    <div class="top-background red-background">
-                        <h5 class="card-title" data-category="NONVMI">0</h5>
-                        <h5 class="card-title">NVMI</h5>
-                    </div>
-                    <div class="white-background">
-                        <div class="label-left">0</div>
-                        <div class="progress">
-                            <div class="progress-bar progress-barNONVMI" role="progressbar" style="width: 0%; background-color: #A64E4E;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <div class="label-right">100</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card half-color-card">
-                    <div class="top-background purple-background">
-                        <h5 class="card-title" data-category="ALL">0</h5>
-                        <h5 class="card-title">ALL</h5>
-                    </div>
-                    <div class="white-background">
-                        <div class="label-left">0</div>
-                        <div class="progress">
-                            <div class="progress-bar progress-barALL" role="progressbar" style="width: 0%; background-color:rgba(0, 0, 0, 0.5);" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <div class="label-right">100</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>*@
-
+    
     @*Baris Chart Kedua*@
     <div class="row mt-4">
         <div class="col-md-4">
@@ -110,10 +60,10 @@
                             <p class="card-text">Per Month</p>
                         </div>
                         <div class="dropdown">
-                            @*<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            @*<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonYear" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Select Year
                             </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="yearDropdown">
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonYear" id="yearDropdown">
                             <a class="dropdown-item"  data-year="2022">2022</a>
                             <a class="dropdown-item"  data-year="2023">2023</a>
                             <a class="dropdown-item"  data-year="2024">2024</a>
@@ -139,23 +89,7 @@
                             <p class="card-text">Total Per UoM</p>
                         </div>
                         <div class="dropdown">
-                            @*<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Select Month
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" data-month="01">January</a>
-                                <a class="dropdown-item" data-month="02">February</a>
-                                <a class="dropdown-item" data-month="03">March</a>
-                                <a class="dropdown-item" data-month="04">April</a>
-                                <a class="dropdown-item" data-month="05">May</a>
-                                <a class="dropdown-item" data-month="06">June</a>
-                                <a class="dropdown-item" data-month="07">July</a>
-                                <a class="dropdown-item" data-month="08">August</a>
-                                <a class="dropdown-item" data-month="09">September</a>
-                                <a class="dropdown-item" data-month="10">October</a>
-                                <a class="dropdown-item" data-month="11">November</a>
-                                <a class="dropdown-item" data-month="12">December</a>
-                            </div>*@
+                          
                         </div>
                     </div>
                     <canvas id="chart4"></canvas>
@@ -171,13 +105,7 @@
                             <p class="card-text">Per Month</p>
                         </div>
                         <div class="dropdown">
-                           @* <button class="btn btn-primary dropdown-toggle btn-typeChart" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                VMI
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item active" value="VMI">VMI</a>
-                                <a class="dropdown-item" value="NonVMI">NON VMI</a>
-                            </div>*@
+                           
                         </div>
                     </div>
                     <canvas id="grafik2"></canvas>
@@ -189,6 +117,8 @@
 <div style="margin-top: 50px;"></div>
 
 
+
+@*========================== SCRIPT INTERNAL JS ===================================*@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
@@ -385,53 +315,6 @@
     window.addEventListener('offline', checkNetworkStatus);
 
 
-    // GRAFIK   BARU
-    // Progress Bar Chart Atas
-     // Mengambil elemen-elemen progress bar berdasarkan class mereka
-    //var progressBarVMI = document.querySelector(".progress-barVMI");
-    //var progressBarNONVMI = document.querySelector(".progress-barNONVMI");
-    //var progressBarALL = document.querySelector(".progress-barALL");
-
-    //fetch('/Warehouse/GetProgressData?selectedMonth=yourSelectedMonthValue')
-    //    .then(response => response.json())
-    //    .then(data => {
-    //        // Data yang diterima dari server
-    //        var vmiCount = data[0];
-    //        var nonVmiCount = data[1];
-    //        var totalCount = data[2];
-
-    //        // Mengatur nilai progress bar untuk masing-masing elemen
-    //        var progressValueVMI = (vmiCount / totalCount) * 100;
-    //        var progressValueNONVMI = (nonVmiCount / totalCount) * 100;
-    //        var progressValueALL = (totalCount / totalCount) * 100;
-
-    //        // Mengatur nilai atribut aria-valuenow dan lebar progress bar
-    //        progressBarVMI.style.width = progressValueVMI + "%";
-    //        progressBarVMI.setAttribute("aria-valuenow", progressValueVMI);
-
-    //        progressBarNONVMI.style.width = progressValueNONVMI + "%";
-    //        progressBarNONVMI.setAttribute("aria-valuenow", progressValueNONVMI);
-
-    //        progressBarALL.style.width = progressValueALL + "%";
-    //        progressBarALL.setAttribute("aria-valuenow", progressValueALL);
-
-    //        // Mengganti teks pada elemen h5 dengan jumlah data
-    //        var cardTitleVMI = document.querySelector(".card-title[data-category='VMI']");
-    //        var cardTitleNONVMI = document.querySelector(".card-title[data-category='NONVMI']");
-    //        var cardTitleALL = document.querySelector(".card-title[data-category='ALL']");
-
-    //        cardTitleVMI.textContent = vmiCount;
-    //        cardTitleNONVMI.textContent = nonVmiCount;
-    //        cardTitleALL.textContent = totalCount;
-    //    })
-    //    .catch(error => {
-    //        console.error("Error fetching progress data: " + error);
-    //    });
-
-    // End Progress Bar Chart Atas
-
-
-
     // Grafik Chart 
 
         // Grafik Chart 1 Total Actual Qty
@@ -453,7 +336,7 @@
                     type: "line",
                     borderColor: "rgba(0, 0, 0, 1)",
                     borderWidth: 1,
-                    data: [] // Data Total ActualQty akan diisi dari hasil controller
+                    data: [] // Data Total All Type akan diisi dari hasil controller
                 }
             ]
         };
@@ -470,8 +353,15 @@
             }
         };
 
-        // Ambil data dari controller
-        $.get("/Warehouse/GetChart2Data?year=2023", function (data) {
+        // Baru using realtime for year
+        // Mendapatkan tahun saat ini
+        var currentYear = new Date().getFullYear();
+
+        // Membuat URL dengan tahun saat ini
+        var url1 = "/Warehouse/GetChart2Data?year=" + currentYear;
+
+        // Melakukan permintaan AJAX dengan URL yang telah dibuat
+        $.get(url1, function (data) {
             // Mengisi data grafik dengan hasil dari controller
             dataBar.datasets[0].data = data.map(item => item[0]); // Data VMI
             dataBar.datasets[1].data = data.map(item => item[1]); // Data Non VMI
@@ -485,6 +375,23 @@
                 options: options
             });
         });
+
+        // Lama 
+        //// Ambil data dari controller
+        //$.get("/Warehouse/GetChart2Data?year=2023", function (data) {
+        //    // Mengisi data grafik dengan hasil dari controller
+        //    dataBar.datasets[0].data = data.map(item => item[0]); // Data VMI
+        //    dataBar.datasets[1].data = data.map(item => item[1]); // Data Non VMI
+        //    dataBar.datasets[2].data = data.map(item => item[2]); // Data Total ActualQty
+
+        //    // Buat grafik dengan data yang telah diisi
+        //    var ctxBar = document.getElementById("grafik1").getContext("2d");
+        //    var myChartBar = new Chart(ctxBar, {
+        //        type: "bar",
+        //        data: dataBar,
+        //        options: options
+        //    });
+        //});
 
 
         // Grafik Chart 2 Total Count Data
@@ -523,8 +430,11 @@
             }
         };
 
-        // Ambil data dari controller
-        $.get("/Warehouse/GetChartData?year=2023", function (data) {
+
+        var url2 = "/Warehouse/GetChartData?year=" + currentYear;
+
+        // Melakukan permintaan AJAX dengan URL yang telah dibuat
+        $.get(url2, function (data) {
             // Mengisi data grafik dengan hasil dari controller
             dataBar2.datasets[0].data = data.map(item => item[0]); // Data VMI
             dataBar2.datasets[1].data = data.map(item => item[1]); // Data Non VMI
@@ -540,33 +450,19 @@
         });
 
 
+
+
     // Dropwon Chart
-    $(document).ready(function () {
-        // Ketika item dropdown dipilih
-        $(".dropdown-item").click(function () {
-            // Hapus kelas active dari semua item dropdown
-            $(".dropdown-item").removeClass("active");
-
-            // Tambahkan kelas active ke item yang dipilih
-            $(this).addClass("active");
-
-            // Ambil nilai (value) dari item yang dipilih
-            var selectedValue = $(this).attr("value");
-
-            // Ganti teks pada tombol dropdown dengan nilai yang dipilih
+    $(document).ready(function () {   
+        $(".dropdown-item").click(function () {   
+            $(".dropdown-item").removeClass("active");        
+            $(this).addClass("active");      
+            var selectedValue = $(this).attr("value");          
             $(".btn-typeChart").text(selectedValue);
-
-            // Anda juga dapat melakukan tindakan lain sesuai kebutuhan di sini
-
-            // Contoh: Cetak nilai yang dipilih ke konsol
             console.log("Anda memilih: " + selectedValue);
         });
     });
     // End Dropdown Chart
-
-
-    
-
 
     // Donut Chart Bawah
     const progressCircles = document.querySelectorAll('.progress-circle');
@@ -596,74 +492,12 @@
     setInterval(updateProgress, 50);
 
     // End Donut Chart Bawah
-
-
 </script>
+
+@*========================== END SCRIPT INTERNAL JS ===================================*@
 
 @*Populoader*@
 <div id="loading-popup" class="loading-popup">
     <div class="custom-loader"></div>
 </div>
 
-
-
-
-@*             //function updateChart3(data) {
-    //    const ctx = chart3.getContext('2d');
-    //    if (window.chart3Instance) {
-    //        window.chart3Instance.destroy(); // Hancurkan objek Chart yang ada
-    //    }
-
-    //    window.chart3Instance = new Chart(ctx, {
-    //        type: 'doughnut',
-    //        data: {
-    //            labels: ['K', 'PC', 'SET', 'G', 'KG', 'M', 'ML', 'ROLL'],
-    //            datasets: [
-    //                {
-    //                    label: `Unit Distribution VMI for ${getMonthName(selectedMonth)}`,
-    //                    data: data,
-    //                    borderWidth: 2,
-    //                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#E91E63', '#2196F3', '#FFA07A', '#FFD700'],
-    //                },
-    //            ],
-    //        },
-    //        options: {
-    //            cutout: '50%',
-    //            plugins: {
-    //                legend: {
-    //                    position: 'bottom',
-    //                },
-    //            },
-    //        },
-    //    });
-    //}
-
-    //function updateChart4(data) {
-    //    const ctx = chart4.getContext('2d');
-    //    if (window.chart4Instance) {
-    //        window.chart4Instance.destroy(); // Hancurkan objek Chart yang ada
-    //    }
-
-    //    window.chart4Instance = new Chart(ctx, {
-    //        type: 'doughnut',
-    //        data: {
-    //            labels: ['K', 'PC', 'SET', 'G', 'KG', 'M', 'ML', 'ROLL'],
-    //            datasets: [
-    //                {
-    //                    label: `Unit Distribution NonVMI for ${getMonthName(selectedMonth)}`,
-    //                    data: data,
-    //                    borderWidth: 2,
-    //                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#E91E63', '#2196F3', '#FFA07A', '#FFD700'],
-    //                },
-    //            ],
-    //        },
-    //        options: {
-    //            cutout: '50%',
-    //            plugins: {
-    //                legend: {
-    //                    position: 'bottom',
-    //                },
-    //            },
-    //        },
-    //    });
-    //}*@

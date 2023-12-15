@@ -37,6 +37,14 @@ namespace WebApplication_StockDataFixx.Controllers
             return View();
         }
 
+        [HttpGet]
+        public ActionResult AprovementPage()
+        {
+            // Tampilan halaman dashboard manajemen
+            return View();
+        }
+
+
         // Method dispaly report page
         [HttpGet]
         public ActionResult ReportManagement(string type)

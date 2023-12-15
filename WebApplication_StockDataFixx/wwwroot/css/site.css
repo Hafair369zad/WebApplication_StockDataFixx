@@ -502,7 +502,6 @@ input[type="radio"] {
 
 
 
-
 /*Description Ketentuan File*/
 .li-file ul {
     list-style-type: none; 
@@ -1579,3 +1578,561 @@ body.active .wrapper .section .top_navbar .nav-logout {
     margin-left: 45px;
 }
 /*End IMG Add User*/
+
+
+/*AllView (Admin Page)*/
+.AllProd,
+.AllWrh,
+.AllMng {
+    margin-top: 40px;
+}
+
+.AllView {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 70px;
+}
+.card-AllView {
+    width: 352px;
+    height: 370px;
+    filter: brightness(0.8);
+    transition: filter 0.5s, box-shadow 0.5s;
+}
+
+    .card-AllView:hover {
+        filter: brightness(1);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    }
+
+@media (max-width: 767px) {
+    .AllView {
+        flex-direction: column;
+    }
+}
+
+.AllProd p,
+.AllWrh p,
+.AllMng p{
+    font-size: 25px;
+    font-family: Verdana;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 15px;
+    margin-top: 10px;
+}
+
+
+.AllProd a,
+.AllWrh a,
+.AllMng a {
+    color: #1D5D9B;
+    text-decoration: none;
+}
+
+.AllProd img,
+.AllMng img,
+.AllWrh img {
+    width: 352px;
+    height: 320px;    
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+
+.bgAllView {
+    margin-top: -100px;
+    margin-left: 300px;
+    object-fit: cover;
+    position: absolute;
+    width: 700px;
+    height: 600px;
+    opacity: 20%;
+}
+/*End AllView (Admin Page)*/
+
+
+/*===============Aprovement Page====================*/
+.title-header h1{
+    text-transform: uppercase;
+    font-weight: 800;
+    margin-top: -20px;
+    margin-bottom: 35px; 
+    font-size: 25px;
+    font-family: 'Segoe UI';
+}
+
+.aprove-title-wrh h3 {
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-family: 'Segoe UI';
+    color: #388E3D;
+    letter-spacing: -1px;
+}
+
+.aprove-title-prod h3 {
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-family: 'Segoe UI';
+    color: #1D76D7;
+    letter-spacing: -1px;
+}
+
+.aprove-title-prod p,
+.aprove-title-wrh p {
+    margin-top: 12px;
+    margin-bottom: 40px; 
+    font-size: 12px;
+    font-family: 'Segoe UI';
+    font-weight: 600;
+    color: #2a2b2b;
+    line-height: 100%;
+    letter-spacing: -0px;
+    word-spacing: -0px;
+}
+
+.card-aprove-wrh .card{
+    border-radius: 7px;
+}
+.card-aprove-prod .card {
+    border-radius: 7px;
+}
+
+.stts-aprove p{
+    font-weight: 500;
+    font-family: 'Segoe UI';
+    font-size: 13px;
+    margin-top: 15px;
+    margin-bottom: -15px;
+}
+.stts-FtrDow {
+    font-weight: 500;
+    font-family: 'Segoe UI';
+    font-size: 13px;
+    margin-left: 4px;
+    font-style: italic;
+}
+    .stts-FtrDow.open {
+        color: green;
+    }
+
+    .stts-FtrDow.close {
+        color: red;
+    }
+
+.aprove-btn a {
+    width: 102.193px;
+    height: 39px;
+    flex-shrink: 0;
+    text-align: center;
+    border-radius: 7px;
+}
+
+#openBtnFtrWrh {
+    background-color: #198754;
+    color: #fff;
+    font-weight: 700;
+}
+#openBtnFtrProd {
+    background-color: #1D76D7;
+    color: #fff;
+    font-weight: 700;
+    border-color: #1D76D7;
+}
+
+#closeBtnFtrWrh {
+    color: #198754;
+    background-color: #fff;
+    border: 1px solid;
+    border-color: #198754;
+    font-weight: 700;
+}
+
+#closeBtnFtrProd {
+    color: #1D76D7;
+    background-color: #fff;
+    border: 1px solid;
+    border-color: #1D76D7;
+    font-weight: 700;
+}
+
+.btnDowAcces {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+/*Table List Activity User*/
+.CompListUser .card {
+    margin-top: 25px;
+    border-radius: 7px;
+}
+.aprove-title-tbl h4 {
+    font-size: 20px;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-family: 'Segoe UI';
+    color: #000;
+    margin-top: 20px;
+    margin-bottom: 120px;
+    margin-left: 20px; 
+    /*    letter-spacing: -1px;*/
+}
+
+.head-listact {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+#btn-drop1 {
+    margin-left: 380px;
+    margin-right: -45px;
+    margin-top: 20px;
+    width: 180px;
+    height: 35px;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #1861AC;
+    font-weight: 600;
+    font-size: 15px;
+    text-align: center;
+}
+#btn-drop2 {
+    /* margin-left: 300px;*/
+    margin-right: 20px;
+    margin-top: 20px;
+    width: 180px;
+    height: 35px;
+    border-radius: 5px;
+    background: #388E3D;
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+    text-align: center;
+}
+
+.table-list table{
+    margin-right: 20px;
+}
+
+.table-list th {
+    background-color: #ECEBEB;
+    color: #1b1b1b;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.table-list tbody tr:nth-child(odd) td{
+    background-color: #ffffff; 
+}
+
+.table-list tbody tr:nth-child(even) td{
+    background-color: #ffffff; 
+}
+
+.table-list tbody tr td{
+    padding-bottom: 2px; 
+    font-size: 13px;
+    font-weight:500;
+}
+.aprov-img {
+    margin-right:20px;
+    width: 35px;
+}
+
+.aprove-ket {
+    text-align: center;
+    background-color: #388E3D;
+    width: 61px;
+    height: 23px;
+    flex-shrink: 0;
+    color: #FFF;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    border-radius: 5px;
+    /*margin-right: 5px;*/
+    margin-top: 7px;
+}
+.dow-ket {
+    text-align: center;
+    background-color: #1861AC;
+    width: 82px;
+    height: 23px;
+    flex-shrink: 0;
+    color: #FFF;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    border-radius: 5px;
+    /*margin-right: 5px;*/
+    margin-top: 7px;
+}
+
+.closed-ket {
+    text-align: center;
+    background-color: #C00606;
+    width: 61px;
+    height: 23px;
+    flex-shrink: 0;
+    color: #FFF;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    border-radius: 5px;
+    /*margin-right: 5px;*/
+    margin-top: 7px;
+}
+
+.ketList p{
+    display: inline-block;
+}
+
+
+#List-Activity_filter {
+    margin-bottom: 20px;
+    margin-top: 0px;
+}
+
+
+@media (max-width: 767px) {
+    .head-listact {
+        flex-direction: column;
+    }
+    .btnDowAcces {
+        flex-direction: column;
+    }
+    .aprove-btn {
+        margin-top: 20px;
+    }
+
+    #btn-drop1 {
+        margin-left: 20px;
+        margin-right: 0px;
+        margin-top: 20px;
+        float: left;
+    }
+    #btn-drop2 {
+        margin-left: 20px;
+    }
+    .aprove-title-tbl h4 {
+        margin-bottom: 0px;
+    }
+    .card-aprove-prod .card {
+        margin-top: 25px;
+    }
+}
+
+/*===================End Aprovement Page==================*/
+
+
+/*=============== Download Page (dp) ====================*/
+
+.header-dp h2 {
+    color: #388E3D;
+    font-size: 28px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+}
+.header-dpProd h2 {
+    color: #1861AC;
+    font-size: 28px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+}
+
+.main-dpWrh,
+.main-dpProd {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .main-dpWrh button {
+        margin-top: 40px;
+        margin-bottom: 40px;
+        border-radius: 7px;
+        background: #388E3D;
+        width: 144px;
+        height: 40px;
+        color: #FFF;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        margin-left: 5px;
+        text-align: center;
+    }
+
+        .main-dpWrh button:hover {
+            background: #1861AC;
+            color: #fff;
+            box-shadow: 0 0 5px #888;
+        }
+
+    .main-dpProd button {
+        margin-top: 40px;
+        margin-bottom: 40px;
+        border-radius: 7px;
+        background: #1861AC;
+        width: 144px;
+        height: 40px;
+        color: #FFF;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        margin-left: 5px;
+        text-align: center;
+    }
+
+        .main-dpProd button:hover {
+            background: #388E3D;
+            color: #fff;
+            box-shadow: 0 0 5px #888;
+        }
+
+
+    .main-dpWrh input,
+    .main-dpProd input {
+        margin-top: 40px;
+        margin-bottom: 40px;
+        border-radius: 7px;
+        border: 1px solid #000;
+        background: #FFF;
+        width: 284px;
+        height: 40px;
+        flex-shrink: 0;
+    }
+
+        .main-dpWrh input::placeholder,
+        .main-dpProd input::placeholder {
+            color: #000;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            text-align: left;
+            opacity: 70%;
+        }
+
+
+    .stts-dp p {
+        float: right;
+        margin-bottom: -5px;
+        margin-right: 3px;
+        color: #000;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+    }
+
+    .dp-stts {
+        /*color: #009008;*/
+        font-size: 14px;
+        font-style: italic;
+        font-weight: 600;
+        line-height: normal;
+        text-decoration-line: underline;
+    }
+
+        /*.dp-stts[status="open"] {
+            color: #008000;*/ /* Warna hijau */
+        /*}
+
+        .dp-stts[status="close"] {
+            color: #FF0000;*/ /* Warna merah */
+        /*}*/
+
+    .dp-comp-dow {
+        margin-bottom: 20px;
+    }
+
+.header-note-dp h2 {
+    color: #282727;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+    margin-bottom: 20px;
+
+}
+
+.note-dp ol{
+    margin-left: 20px;
+    margin-right: 20px;
+    letter-spacing: 0px;
+    font-weight: 400;
+}
+
+@media (max-width: 767px) {
+    .main-dpWrh,
+    .main-dpProd {
+        flex-direction: column;
+    }
+}
+/*=============== End Download Page (dp) ====================*/
+
+
+/*==================== FOOTER APLCATION =====================*/
+footer {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0 50px;
+    position: fixed; 
+    top: 730px;
+    left: 265px;
+    width: 100%; 
+    z-index: 1;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-p {
+    /*color: #b6b6b6;*/
+    color: #fff;
+    font-size: 12px;
+    margin-top: 15px;
+    margin-top: 15px;
+    text-align: center;
+    margin-left: -250px;
+    text-decoration: none;
+    /*background-color: #1D5D9B;*/
+}
+
+
+/*==================== END FOOTER APLCATION =====================*/
+
+
+
+
+/*@media only screen and (max-width: 768px){
+
+     .box-area{
+        margin: 0 10px;
+
+     }
+     .left-box{
+        height: 100px;
+        overflow: hidden;
+     }
+     .right-box{
+        padding: 20px;
+     }
+
+}*/
+
+
+
+/*@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');*/
